@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 
 <meta charset="UTF-8">
@@ -38,7 +39,13 @@ font-weight:600;
 color:#6366f1;
 }
 
-/* NAVBAR */
+/* NAVBAR LAYOUT */
+
+.nav-right{
+display:flex;
+align-items:center;
+gap:25px;
+}
 
 nav{
 display:flex;
@@ -50,6 +57,24 @@ text-decoration:none;
 color:#cbd5f5;
 font-size:14px;
 }
+
+/* SHARE BUTTON */
+
+.share-nav{
+background:#6366f1;
+border:none;
+padding:8px 16px;
+border-radius:6px;
+color:white;
+cursor:pointer;
+font-size:13px;
+}
+
+.share-nav:hover{
+background:#4f46e5;
+}
+
+/* MOBILE MENU BUTTON */
 
 .menu-btn{
 display:none;
@@ -76,7 +101,7 @@ color:#94a3b8;
 margin-bottom:35px;
 }
 
-/* SEARCH */
+/* SEARCH BOX */
 
 .search-box{
 background:#020617;
@@ -113,7 +138,7 @@ button:hover{
 background:#4f46e5;
 }
 
-/* INSTITUTE CTA */
+/* CTA */
 
 .cta{
 text-align:center;
@@ -172,6 +197,14 @@ display:flex;
 display:block;
 }
 
+.nav-right{
+gap:15px;
+}
+
+.share-nav{
+display:none;
+}
+
 .hero h1{
 font-size:28px;
 }
@@ -189,6 +222,7 @@ width:100%;
 }
 
 </style>
+
 </head>
 
 <body>
@@ -196,6 +230,8 @@ width:100%;
 <header>
 
 <div class="logo">Classify</div>
+
+<div class="nav-right">
 
 <div class="menu-btn" onclick="toggleMenu()">☰</div>
 
@@ -206,7 +242,12 @@ width:100%;
 <a href="#">Contact</a>
 </nav>
 
+<button onclick="shareWebsite()" class="share-nav">Share</button>
+
+</div>
+
 </header>
+
 
 
 <section class="hero">
@@ -256,9 +297,8 @@ List your institute on Classify and reach students searching for coaching.
 
 <p>© 2026 Classify</p>
 
-<button onclick="shareWebsite()">Share Classify</button>
-
 </footer>
+
 
 
 <script>
@@ -302,4 +342,5 @@ alert("Link copied");
 </script>
 
 </body>
+
 </html>
