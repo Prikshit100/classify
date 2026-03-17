@@ -282,8 +282,27 @@ Search and discover coaching institutes for competative exams.
 
 <input type="text" placeholder="Enter your city">
 
-<button class="search-btn"
-oneclick="goToresults()">Search</button>
+<button class="search-btn" 
+  oneclick="search()">Search</button>
+  
+<script>
+  
+function search(){
+
+const exam =
+  document.getElementById("exam").value
+const city =
+  document.getElementById("city").value
+
+window.location.href =
+pages/search.html?exam=${exam}&city=${city}`
+
+})
+
+</script
+
+</button>
+
 
 </div>
 
