@@ -271,33 +271,30 @@ Search and discover coaching institutes for competative exams.
 
 <div class="search-box">
 
-<select>
-<option>Select Exam</option>
-<option>JEE</option>
-<option>NEET</option>
-<option>NDA</option>
-<option>UPSC</option>
-<option>CUET</option>
+<select id="exam">
+<option value="JEE">JEE</option>
+<option value="NEET">NEET</option>
+<option value="NDA">NDA</option>
+<option value="CUET">CUET</option>
 </select>
 
-<input type="text" placeholder="Enter your city">
+<input type="text" id="city" placeholder="Enter your city">
 
-<button class="search-btn" 
-  oneclick="search()">Search</button>
-  
+<button class="search-btn" onclick="search()">Search</button>
+
 <script>
-  
+
 function search(){
 
-const exam =
-  document.getElementById("JEE").value
-const city =
-  document.getElementById("city").value
+const exam = document.getElementById("exam").value;
+const city = document.getElementById("city").value;
 
-window.location.href =
-pages/search.html?exam=${exam}&city=${city}`
+console.log("Exam:", exam);
+console.log("City:", city);
 
-})
+window.location.href = "search.html?exam=" + exam + "&city=" + city;
+
+}
 
 </script
 
