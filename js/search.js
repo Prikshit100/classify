@@ -1,3 +1,9 @@
+console.log("JS LOADED");
+
+const params = new URLSearchParams(window.location.search);
+console.log("Exam:", params.get("exam"));
+console.log("City:", params.get("city"));
+
 const params = new URLSearchParams(window.location.search)
 
 const exam = params.get("exam")
