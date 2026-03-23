@@ -32,5 +32,8 @@ if (filtered.length === 0) {
     const div = document.createElement("div");
     div.innerHTML = `<h2>${item.name}</h2><p>${item.city}</p>`;
     results.appendChild(div);
+
+    const div = document.createElement("div");
+div.className = "card";
   });
 }
