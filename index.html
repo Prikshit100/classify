@@ -1,830 +1,427 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Classify – Find the Best Coaching Near You</title>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --navy: #1a237e;
-      --navy-dark: #0d1257;
-      --navy-light: #283593;
-      --gold: #FFC107;
-      --gold-dark: #f9a825;
-      --gold-light: #FFE082;
-      --white: #ffffff;
-      --off-white: #f5f6ff;
-      --gray: #6b7280;
-      --light-gray: #e8eaf6;
-      --card-border: #c5cae9;
-      --text-dark: #0d1257;
-      --text-mid: #3949ab;
+      --navy:       #1a237e;
+      --navy-dark:  #0d1257;
+      --navy-mid:   #283593;
+      --gold:       #FFC107;
+      --gold-dark:  #f9a825;
+      --gold-pale:  #FFF8E1;
+      --white:      #ffffff;
+      --bg:         #f4f5ff;
+      --card-bg:    #ffffff;
+      --border:     #dde0f5;
+      --text:       #0d1257;
+      --muted:      #6b7280;
+      --light:      #e8eaf6;
     }
 
     html { scroll-behavior: smooth; }
 
     body {
-      font-family: 'DM Sans', sans-serif;
-      background: var(--off-white);
-      color: var(--text-dark);
+      font-family: 'Nunito', sans-serif;
+      background: var(--bg);
+      color: var(--text);
       overflow-x: hidden;
     }
 
-    /* ── NAVBAR ── */
+    /* NAVBAR */
     nav {
-      background: var(--navy);
+      position: sticky; top: 0; z-index: 999;
+      background: var(--navy-dark);
+      height: 66px;
+      display: flex; align-items: center;
       padding: 0 2rem;
-      height: 64px;
-      display: flex;
-      align-items: center;
       justify-content: space-between;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      box-shadow: 0 2px 20px rgba(26,35,126,0.4);
+      box-shadow: 0 2px 24px rgba(13,18,87,0.45);
     }
-
-    .nav-logo {
+    .logo {
       font-family: 'Syne', sans-serif;
-      font-weight: 800;
-      font-size: 1.6rem;
-      color: var(--white);
-      letter-spacing: -0.5px;
-    }
-
-    .nav-logo span { color: var(--gold); }
-
-    .nav-links { display: flex; gap: 2rem; list-style: none; }
-
-    .nav-links a {
-      color: rgba(255,255,255,0.85);
+      font-weight: 800; font-size: 1.65rem;
+      color: var(--white); letter-spacing: -0.5px;
       text-decoration: none;
-      font-size: 0.95rem;
-      font-weight: 500;
+    }
+    .logo span { color: var(--gold); }
+
+    .nav-center { display: flex; gap: 2.2rem; list-style: none; }
+    .nav-center a {
+      color: rgba(255,255,255,0.78);
+      text-decoration: none; font-size: 0.95rem; font-weight: 600;
       transition: color 0.2s;
     }
+    .nav-center a:hover { color: var(--gold); }
 
-    .nav-links a:hover { color: var(--gold); }
+    .nav-right { display: flex; gap: 0.8rem; align-items: center; }
 
-    .nav-cta {
-      background: var(--gold);
-      color: var(--navy-dark) !important;
-      padding: 0.4rem 1.1rem;
-      border-radius: 20px;
-      font-weight: 700 !important;
+    .btn-ghost {
+      background: transparent; border: 2px solid rgba(255,255,255,0.3);
+      color: white; padding: 0.42rem 1.1rem; border-radius: 25px;
+      font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.85rem;
+      cursor: pointer; transition: all 0.2s; text-decoration: none;
     }
+    .btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
 
-    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
-    .hamburger span { width: 24px; height: 2px; background: white; border-radius: 2px; transition: 0.3s; }
+    .btn-gold {
+      background: var(--gold); border: none;
+      color: var(--navy-dark); padding: 0.48rem 1.2rem; border-radius: 25px;
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.85rem;
+      cursor: pointer; transition: all 0.2s; text-decoration: none;
+    }
+    .btn-gold:hover { background: var(--gold-dark); transform: translateY(-1px); }
 
-    /* ── HERO ── */
+    .hamburger {
+      display: none; flex-direction: column; gap: 5px;
+      cursor: pointer; background: none; border: none; padding: 4px;
+    }
+    .hamburger span { width: 24px; height: 2.5px; background: white; border-radius: 3px; display: block; }
+
+    .mobile-menu {
+      display: none; flex-direction: column;
+      background: var(--navy-dark); padding: 1rem 2rem 1.5rem;
+      gap: 1rem; border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    .mobile-menu a {
+      color: rgba(255,255,255,0.8); text-decoration: none;
+      font-weight: 600; font-size: 1rem; padding: 0.4rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .mobile-menu.open { display: flex; }
+
+    /* HERO */
     .hero {
-      background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 50%, var(--navy-light) 100%);
-      padding: 5rem 2rem 4rem;
-      position: relative;
-      overflow: hidden;
+      background: linear-gradient(140deg, var(--navy-dark) 0%, var(--navy) 55%, #1e3a8a 100%);
+      padding: 5.5rem 2rem 5rem;
+      position: relative; overflow: hidden;
     }
-
     .hero::before {
-      content: '';
-      position: absolute;
-      top: -80px; right: -80px;
-      width: 400px; height: 400px;
-      background: radial-gradient(circle, rgba(255,193,7,0.12) 0%, transparent 70%);
-      border-radius: 50%;
+      content: ''; position: absolute; top: -100px; right: -100px;
+      width: 500px; height: 500px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,193,7,0.1) 0%, transparent 65%);
+      pointer-events: none;
     }
-
     .hero::after {
-      content: '';
-      position: absolute;
-      bottom: -60px; left: -60px;
-      width: 300px; height: 300px;
-      background: radial-gradient(circle, rgba(255,193,7,0.08) 0%, transparent 70%);
-      border-radius: 50%;
+      content: ''; position: absolute; bottom: -80px; left: -80px;
+      width: 380px; height: 380px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,193,7,0.07) 0%, transparent 65%);
+      pointer-events: none;
     }
-
+    .hero-dots {
+      position: absolute; inset: 0;
+      background-image: radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px);
+      background-size: 30px 30px; pointer-events: none;
+    }
     .hero-inner {
-      max-width: 1100px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 3rem;
-      align-items: center;
+      max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 420px;
+      gap: 3rem; align-items: center; position: relative; z-index: 1;
     }
-
-    .hero-text { position: relative; z-index: 1; }
-
     .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      background: rgba(255,193,7,0.15);
-      border: 1px solid rgba(255,193,7,0.3);
-      color: var(--gold);
-      padding: 0.3rem 0.9rem;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-      margin-bottom: 1.2rem;
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: rgba(255,193,7,0.14); border: 1px solid rgba(255,193,7,0.35);
+      color: var(--gold); padding: 0.35rem 1rem; border-radius: 20px;
+      font-size: 0.78rem; font-weight: 700; letter-spacing: 0.8px;
+      text-transform: uppercase; margin-bottom: 1.3rem;
+      animation: fadeDown 0.6s ease both;
     }
-
     .hero h1 {
       font-family: 'Syne', sans-serif;
-      font-size: clamp(2rem, 4vw, 3.2rem);
-      font-weight: 800;
-      color: var(--white);
-      line-height: 1.15;
-      margin-bottom: 1rem;
-    }
-
-    .hero h1 em {
-      font-style: normal;
-      color: var(--gold);
-    }
-
-    .hero p {
-      color: rgba(255,255,255,0.7);
-      font-size: 1rem;
-      line-height: 1.7;
-      margin-bottom: 2rem;
-    }
-
-    .search-box {
-      display: flex;
-      background: white;
-      border-radius: 50px;
-      overflow: hidden;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.25);
-      margin-bottom: 1.2rem;
-    }
-
-    .search-box input {
-      flex: 1;
-      padding: 1rem 1.5rem;
-      border: none;
-      outline: none;
-      font-size: 0.95rem;
-      font-family: 'DM Sans', sans-serif;
-      color: var(--text-dark);
-    }
-
-    .search-box button {
-      background: var(--gold);
-      border: none;
-      padding: 0 1.8rem;
-      font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      font-size: 0.95rem;
-      color: var(--navy-dark);
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-
-    .search-box button:hover { background: var(--gold-dark); }
-
-    .exam-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-
-    .exam-tag {
-      background: rgba(255,255,255,0.1);
-      border: 1px solid rgba(255,255,255,0.2);
-      color: rgba(255,255,255,0.85);
-      padding: 0.35rem 0.9rem;
-      border-radius: 20px;
-      font-size: 0.82rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .exam-tag:hover, .exam-tag.active {
-      background: var(--gold);
-      border-color: var(--gold);
-      color: var(--navy-dark);
-    }
-
-    /* Hero Illustration */
-    .hero-visual {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      justify-content: center;
-    }
-
-    .hero-illustration {
-      width: 100%;
-      max-width: 420px;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 24px;
-      padding: 2rem;
-      backdrop-filter: blur(10px);
-      animation: float 4s ease-in-out infinite;
-    }
-
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-12px); }
-    }
-
-    .stat-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .stat-card {
-      background: rgba(255,255,255,0.1);
-      border-radius: 16px;
-      padding: 1rem;
-      text-align: center;
-    }
-
-    .stat-card .num {
-      font-family: 'Syne', sans-serif;
-      font-size: 1.5rem;
-      font-weight: 800;
-      color: var(--gold);
-    }
-
-    .stat-card .lbl {
-      font-size: 0.72rem;
-      color: rgba(255,255,255,0.6);
-      margin-top: 0.2rem;
-    }
-
-    .mini-card {
-      background: rgba(255,255,255,0.08);
-      border-radius: 14px;
-      padding: 0.9rem 1rem;
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-      margin-bottom: 0.7rem;
-      border: 1px solid rgba(255,255,255,0.1);
-      transition: background 0.2s;
-    }
-
-    .mini-card:hover { background: rgba(255,255,255,0.14); }
-
-    .mini-icon {
-      width: 40px; height: 40px;
-      border-radius: 12px;
-      background: var(--gold);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.1rem;
-      flex-shrink: 0;
-    }
-
-    .mini-info { flex: 1; }
-
-    .mini-name {
-      font-weight: 600;
-      color: white;
-      font-size: 0.88rem;
-    }
-
-    .mini-sub {
-      font-size: 0.75rem;
-      color: rgba(255,255,255,0.55);
-    }
-
-    .mini-stars { color: var(--gold); font-size: 0.75rem; }
-
-    /* ── STATS BAR ── */
-    .stats-bar {
-      background: var(--navy-dark);
-      padding: 1.5rem 2rem;
-      display: flex;
-      justify-content: center;
-      gap: 4rem;
-    }
-
-    .stats-bar .item { text-align: center; }
-    .stats-bar .item .n {
-      font-family: 'Syne', sans-serif;
-      font-size: 1.8rem;
-      font-weight: 800;
-      color: var(--gold);
-    }
-    .stats-bar .item .t {
-      font-size: 0.82rem;
-      color: rgba(255,255,255,0.6);
-    }
-
-    /* ── SECTIONS ── */
-    section { padding: 4rem 2rem; }
-
-    .section-inner { max-width: 1100px; margin: 0 auto; }
-
-    .section-header {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      margin-bottom: 2rem;
-    }
-
-    .section-header h2 {
-      font-family: 'Syne', sans-serif;
-      font-size: 1.8rem;
-      font-weight: 800;
-      color: var(--navy-dark);
-    }
-
-    .section-header h2 span { color: var(--gold-dark); }
-
-    .see-all {
-      color: var(--navy);
-      font-weight: 600;
-      font-size: 0.9rem;
-      text-decoration: none;
-      border-bottom: 2px solid var(--gold);
-      padding-bottom: 2px;
-    }
-
-    /* ── EXAM FILTER ── */
-    .exam-filters {
-      display: flex;
-      gap: 0.7rem;
-      margin-bottom: 2rem;
-      flex-wrap: wrap;
-    }
-
-    .filter-btn {
-      padding: 0.55rem 1.4rem;
-      border-radius: 25px;
-      border: 2px solid var(--card-border);
-      background: white;
-      font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      font-size: 0.88rem;
-      color: var(--gray);
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .filter-btn:hover, .filter-btn.active {
-      background: var(--navy);
-      border-color: var(--navy);
-      color: white;
-    }
-
-    .filter-btn.active { box-shadow: 0 4px 12px rgba(26,35,126,0.3); }
-
-    /* ── INSTITUTE CARDS ── */
-    .cards-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 1.5rem;
-    }
-
-    .institute-card {
-      background: white;
-      border-radius: 20px;
-      padding: 1.5rem;
-      border: 1.5px solid var(--card-border);
-      transition: all 0.3s;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .institute-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, var(--navy), var(--gold));
-      transform: scaleX(0);
-      transition: transform 0.3s;
-    }
-
-    .institute-card:hover {
-      border-color: var(--navy-light);
-      box-shadow: 0 12px 36px rgba(26,35,126,0.14);
-      transform: translateY(-4px);
-    }
-
-    .institute-card:hover::before { transform: scaleX(1); }
-
-    .card-top {
-      display: flex;
-      align-items: flex-start;
-      gap: 1rem;
-      margin-bottom: 1rem;
-    }
-
-    .card-logo {
-      width: 52px; height: 52px;
-      border-radius: 14px;
-      background: var(--light-gray);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.4rem;
-      flex-shrink: 0;
-      border: 2px solid var(--card-border);
-    }
-
-    .card-title h3 {
-      font-family: 'Syne', sans-serif;
-      font-size: 1.05rem;
-      font-weight: 700;
-      color: var(--navy-dark);
-      margin-bottom: 0.2rem;
-    }
-
-    .card-title .location {
-      font-size: 0.8rem;
-      color: var(--gray);
-      display: flex;
-      align-items: center;
-      gap: 0.2rem;
-    }
-
-    .card-stars {
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      margin-bottom: 0.8rem;
-    }
-
-    .stars { color: var(--gold); font-size: 0.95rem; }
-    .rating-num { font-weight: 700; font-size: 0.9rem; color: var(--navy-dark); }
-    .rating-count { font-size: 0.78rem; color: var(--gray); }
-
-    .card-tags {
-      display: flex;
-      gap: 0.4rem;
-      flex-wrap: wrap;
-      margin-bottom: 1rem;
-    }
-
-    .tag {
-      background: var(--light-gray);
-      color: var(--navy);
-      padding: 0.2rem 0.6rem;
-      border-radius: 8px;
-      font-size: 0.75rem;
-      font-weight: 600;
-    }
-
-    .tag.gold { background: #FFF8E1; color: #e65100; }
-
-    .card-info {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.6rem;
-      margin-bottom: 1.2rem;
-      padding: 0.8rem;
-      background: var(--off-white);
-      border-radius: 12px;
-    }
-
-    .info-item .lbl { font-size: 0.72rem; color: var(--gray); }
-    .info-item .val { font-size: 0.88rem; font-weight: 600; color: var(--navy-dark); }
-
-    .card-actions { display: flex; gap: 0.7rem; }
-
-    .btn-apply {
-      flex: 1;
-      background: var(--gold);
-      color: var(--navy-dark);
-      border: none;
-      padding: 0.7rem;
-      border-radius: 12px;
-      font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      font-size: 0.88rem;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .btn-apply:hover { background: var(--gold-dark); transform: scale(1.02); }
-
-    .btn-save {
-      width: 42px;
-      background: var(--light-gray);
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      font-size: 1.1rem;
-      transition: all 0.2s;
-      display: flex; align-items: center; justify-content: center;
-    }
-
-    .btn-save:hover { background: #e8eaf6; }
-
-    /* ── TOP EXAMS ── */
-    .exams-section { background: white; }
-
-    .exams-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-      gap: 1rem;
-    }
-
-    .exam-card {
-      background: var(--off-white);
-      border: 2px solid var(--card-border);
-      border-radius: 18px;
-      padding: 1.5rem 1rem;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.25s;
-    }
-
-    .exam-card:hover {
-      border-color: var(--navy);
-      background: var(--navy);
-      transform: translateY(-4px);
-      box-shadow: 0 8px 24px rgba(26,35,126,0.2);
-    }
-
-    .exam-card:hover .exam-icon { background: rgba(255,255,255,0.15); }
-    .exam-card:hover .exam-name, .exam-card:hover .exam-full { color: white; }
-
-    .exam-icon {
-      width: 56px; height: 56px;
-      background: var(--light-gray);
-      border-radius: 16px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.6rem;
-      margin: 0 auto 0.8rem;
-      transition: background 0.25s;
-    }
-
-    .exam-name {
-      font-family: 'Syne', sans-serif;
-      font-weight: 800;
-      font-size: 1.1rem;
-      color: var(--navy-dark);
-      transition: color 0.25s;
-    }
-
-    .exam-full {
-      font-size: 0.72rem;
-      color: var(--gray);
-      margin-top: 0.2rem;
-      transition: color 0.25s;
-    }
-
-    /* ── HOW IT WORKS ── */
-    .how-section { background: var(--navy-dark); }
-
-    .how-section h2 {
-      font-family: 'Syne', sans-serif;
-      font-size: 1.8rem;
-      font-weight: 800;
-      color: white;
-      text-align: center;
-      margin-bottom: 0.5rem;
-    }
-
-    .how-section .subtitle {
-      text-align: center;
-      color: rgba(255,255,255,0.55);
-      margin-bottom: 3rem;
-    }
-
-    .steps-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 1.5rem;
-    }
-
-    .step-card {
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 20px;
-      padding: 2rem 1.5rem;
-      text-align: center;
-      transition: background 0.2s;
-    }
-
-    .step-card:hover { background: rgba(255,255,255,0.1); }
-
-    .step-num {
-      width: 48px; height: 48px;
-      border-radius: 50%;
-      background: var(--gold);
-      color: var(--navy-dark);
-      font-family: 'Syne', sans-serif;
-      font-weight: 800;
-      font-size: 1.2rem;
-      display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 1rem;
-    }
-
-    .step-icon { font-size: 2rem; margin-bottom: 1rem; }
-
-    .step-card h3 {
-      font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      color: white;
-      margin-bottom: 0.5rem;
-    }
-
-    .step-card p { font-size: 0.88rem; color: rgba(255,255,255,0.55); line-height: 1.6; }
-
-    /* ── REVIEWS ── */
-    .reviews-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 1.5rem;
-    }
-
-    .review-card {
-      background: white;
-      border-radius: 18px;
-      padding: 1.5rem;
-      border: 1.5px solid var(--card-border);
-    }
-
-    .review-top {
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-      margin-bottom: 1rem;
-    }
-
-    .reviewer-avatar {
-      width: 44px; height: 44px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--navy), var(--gold));
-      display: flex; align-items: center; justify-content: center;
-      color: white;
-      font-weight: 700;
-      font-family: 'Syne', sans-serif;
-    }
-
-    .reviewer-name { font-weight: 600; font-size: 0.9rem; color: var(--navy-dark); }
-    .reviewer-exam { font-size: 0.75rem; color: var(--gray); }
-
-    .review-text {
-      font-size: 0.88rem;
-      color: #374151;
-      line-height: 1.7;
-      font-style: italic;
-    }
-
-    .review-institute {
-      margin-top: 0.8rem;
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: var(--navy);
-    }
-
-    /* ── CTA ── */
-    .cta-section {
-      background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
-      text-align: center;
-      padding: 5rem 2rem;
-    }
-
-    .cta-section h2 {
-      font-family: 'Syne', sans-serif;
-      font-size: clamp(1.8rem, 4vw, 2.8rem);
-      font-weight: 800;
-      color: var(--navy-dark);
-      margin-bottom: 0.8rem;
-    }
-
-    .cta-section p {
-      color: rgba(13,18,87,0.7);
-      margin-bottom: 2rem;
-      font-size: 1rem;
-    }
-
-    .cta-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
-
-    .btn-navy {
-      background: var(--navy-dark);
-      color: white;
-      padding: 0.9rem 2rem;
-      border-radius: 50px;
-      border: none;
-      font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      font-size: 0.95rem;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .btn-navy:hover { background: var(--navy); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
-
-    .btn-outline {
+      font-size: clamp(2.1rem, 4.5vw, 3.4rem); font-weight: 800;
+      color: var(--white); line-height: 1.12; margin-bottom: 1.1rem;
+      animation: fadeUp 0.7s 0.1s ease both;
+    }
+    .hero h1 em { font-style: normal; color: var(--gold); }
+    .hero-sub {
+      color: rgba(255,255,255,0.65); font-size: 1.05rem; line-height: 1.75;
+      margin-bottom: 2.2rem; max-width: 500px;
+      animation: fadeUp 0.7s 0.2s ease both;
+    }
+    .search-wrap {
+      background: white; border-radius: 50px;
+      display: flex; align-items: center;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.28);
+      margin-bottom: 1.4rem; animation: fadeUp 0.7s 0.3s ease both;
+      padding: 5px 5px 5px 1.2rem;
+    }
+    .search-wrap input {
+      flex: 1; border: none; outline: none;
+      padding: 0.8rem 0.5rem;
+      font-family: 'Nunito', sans-serif; font-size: 0.95rem; color: var(--text);
       background: transparent;
-      color: var(--navy-dark);
-      padding: 0.9rem 2rem;
-      border-radius: 50px;
-      border: 2px solid var(--navy-dark);
-      font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      font-size: 0.95rem;
-      cursor: pointer;
-      transition: all 0.2s;
     }
-
-    .btn-outline:hover { background: var(--navy-dark); color: white; }
-
-    /* ── FOOTER ── */
-    footer {
-      background: var(--navy-dark);
-      padding: 3rem 2rem 1.5rem;
-      color: rgba(255,255,255,0.6);
+    .search-wrap button {
+      background: var(--gold); border: none;
+      padding: 0.78rem 1.6rem; border-radius: 40px;
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.92rem;
+      color: var(--navy-dark); cursor: pointer; transition: background 0.2s; white-space: nowrap;
+      display: flex; align-items: center; gap: 0.35rem; flex-shrink: 0;
     }
+    .search-wrap button:hover { background: var(--gold-dark); }
 
-    .footer-inner {
-      max-width: 1100px;
-      margin: 0 auto;
+    .hero-tags {
+      display: flex; gap: 0.5rem; flex-wrap: wrap;
+      margin-bottom: 2rem; animation: fadeUp 0.7s 0.4s ease both;
     }
-
-    .footer-grid {
-      display: grid;
-      grid-template-columns: 2fr 1fr 1fr 1fr;
-      gap: 2rem;
-      margin-bottom: 2rem;
+    .hero-tag {
+      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.85); padding: 0.3rem 0.9rem; border-radius: 20px;
+      font-size: 0.82rem; font-weight: 700; cursor: pointer; transition: all 0.2s;
     }
-
-    .footer-brand .logo {
-      font-family: 'Syne', sans-serif;
-      font-weight: 800;
-      font-size: 1.4rem;
-      color: white;
-      margin-bottom: 0.8rem;
+    .hero-tag:hover, .hero-tag.active {
+      background: var(--gold); border-color: var(--gold); color: var(--navy-dark);
     }
-
-    .footer-brand .logo span { color: var(--gold); }
-
-    .footer-brand p {
-      font-size: 0.85rem;
-      line-height: 1.7;
-      max-width: 240px;
+    .hero-cta {
+      display: flex; gap: 1rem; flex-wrap: wrap;
+      animation: fadeUp 0.7s 0.5s ease both;
     }
-
-    .footer-col h4 {
-      font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      color: white;
-      margin-bottom: 1rem;
-      font-size: 0.9rem;
+    .btn-hero-primary {
+      background: var(--gold); color: var(--navy-dark); border: none;
+      padding: 0.9rem 2rem; border-radius: 50px;
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.95rem;
+      cursor: pointer; transition: all 0.25s; text-decoration: none; display: inline-block;
     }
+    .btn-hero-primary:hover { background: var(--gold-dark); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(255,193,7,0.4); }
+    .btn-hero-ghost {
+      background: transparent; color: white; border: 2px solid rgba(255,255,255,0.35);
+      padding: 0.9rem 2rem; border-radius: 50px;
+      font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.95rem;
+      cursor: pointer; transition: all 0.25s; text-decoration: none; display: inline-block;
+    }
+    .btn-hero-ghost:hover { border-color: var(--gold); color: var(--gold); }
 
+    /* Hero floating card */
+    .hero-card {
+      background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 28px; padding: 2.2rem; backdrop-filter: blur(12px);
+      opacity: 0;
+      animation: cardEntrance 0.8s 0.3s ease forwards;
+    }
+    .hero-card.loaded {
+      opacity: 1;
+      animation: float 5s ease-in-out infinite;
+    }
+    @keyframes cardEntrance {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
+
+    .hero-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1.6rem; }
+    .hstat { background: rgba(255,255,255,0.09); border-radius: 16px; padding: 1.1rem 0.5rem; text-align: center; }
+    .hstat-num { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; color: var(--gold); }
+    .hstat-lbl { font-size: 0.75rem; color: rgba(255,255,255,0.55); margin-top: 0.2rem; }
+
+    .mini-institute {
+      display: flex; align-items: center; gap: 1rem;
+      padding: 1rem 1.1rem;
+      background: rgba(255,255,255,0.08); border-radius: 16px;
+      margin-bottom: 0.75rem; border: 1px solid rgba(255,255,255,0.1);
+      cursor: pointer; transition: background 0.2s;
+    }
+    .mini-institute:last-child { margin-bottom: 0; }
+    .mini-institute:hover { background: rgba(255,255,255,0.14); }
+    .mi-icon {
+      width: 48px; height: 48px; border-radius: 14px;
+      background: var(--gold); display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; flex-shrink: 0;
+    }
+    .mi-info { flex: 1; min-width: 0; }
+    .mi-name { font-weight: 700; color: white; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .mi-loc { font-size: 0.76rem; color: rgba(255,255,255,0.5); margin-top: 0.1rem; }
+    .mi-stars { font-size: 0.82rem; color: var(--gold); margin-top: 0.1rem; }
+
+    /* STATS BAR */
+    .statsbar { background: var(--navy-dark); display: flex; justify-content: center; flex-wrap: wrap; }
+    .sbar-item { text-align: center; padding: 1.4rem 3rem; border-right: 1px solid rgba(255,255,255,0.08); }
+    .sbar-item:last-child { border-right: none; }
+    .sbar-num { font-family: 'Syne', sans-serif; font-size: 1.9rem; font-weight: 800; color: var(--gold); }
+    .sbar-lbl { font-size: 0.8rem; color: rgba(255,255,255,0.5); margin-top: 0.1rem; }
+
+    /* SECTIONS */
+    section { padding: 4.5rem 2rem; }
+    .inner { max-width: 1100px; margin: 0 auto; }
+    .sec-head { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 2.2rem; }
+    .sec-head h2 { font-family: 'Syne', sans-serif; font-size: 1.9rem; font-weight: 800; color: var(--navy-dark); }
+    .sec-head h2 span { color: var(--gold-dark); }
+    .sec-head p { font-size: 0.9rem; color: var(--muted); margin-top: 0.3rem; }
+    .see-all { color: var(--navy); font-weight: 700; font-size: 0.88rem; text-decoration: none; border-bottom: 2px solid var(--gold); padding-bottom: 1px; white-space: nowrap; }
+
+    /* EXAM CATEGORIES */
+    .exams-section { background: white; }
+    .exams-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 1.1rem; }
+    .exam-card {
+      background: var(--bg); border: 2px solid var(--border);
+      border-radius: 20px; padding: 1.6rem 1rem; text-align: center;
+      cursor: pointer; transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1); text-decoration: none;
+    }
+    .exam-card:hover {
+      border-color: var(--navy); background: var(--navy);
+      transform: translateY(-6px); box-shadow: 0 12px 32px rgba(26,35,126,0.22);
+    }
+    .exam-card:hover .ec-name, .exam-card:hover .ec-full { color: white; }
+    .exam-card:hover .ec-icon-wrap { background: rgba(255,255,255,0.15); }
+    .ec-icon-wrap {
+      width: 60px; height: 60px; background: var(--light); border-radius: 18px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.7rem; margin: 0 auto 0.9rem; transition: background 0.25s;
+    }
+    .ec-name { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.15rem; color: var(--navy-dark); transition: color 0.25s; }
+    .ec-full { font-size: 0.72rem; color: var(--muted); margin-top: 0.25rem; transition: color 0.25s; }
+    .ec-count { display: inline-block; background: var(--gold-pale); color: var(--gold-dark); font-size: 0.7rem; font-weight: 700; padding: 0.15rem 0.5rem; border-radius: 10px; margin-top: 0.5rem; }
+
+    /* INSTITUTE CARDS */
+    .institutes-section { background: var(--bg); }
+    .filter-row { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 2rem; }
+    .fbtn {
+      padding: 0.5rem 1.3rem; border-radius: 25px;
+      border: 2px solid var(--border); background: white;
+      font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.84rem;
+      color: var(--muted); cursor: pointer; transition: all 0.2s;
+    }
+    .fbtn:hover, .fbtn.active { background: var(--navy); border-color: var(--navy); color: white; box-shadow: 0 4px 14px rgba(26,35,126,0.25); }
+
+    .inst-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 1.5rem; }
+    .inst-card {
+      background: var(--card-bg); border-radius: 22px;
+      border: 1.5px solid var(--border); overflow: hidden;
+      transition: all 0.3s; position: relative;
+    }
+    .inst-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+      background: linear-gradient(90deg, var(--navy), var(--gold));
+      transform: scaleX(0); transform-origin: left; transition: transform 0.35s;
+    }
+    .inst-card:hover { border-color: #9fa8da; box-shadow: 0 16px 44px rgba(26,35,126,0.13); transform: translateY(-5px); }
+    .inst-card:hover::before { transform: scaleX(1); }
+
+    .card-body { padding: 1.4rem; }
+    .card-header { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1rem; }
+    .card-avatar {
+      width: 54px; height: 54px; border-radius: 15px;
+      background: var(--light); border: 2px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem; flex-shrink: 0;
+    }
+    .card-title h3 { font-family: 'Syne', sans-serif; font-size: 1.05rem; font-weight: 700; color: var(--navy-dark); margin-bottom: 0.2rem; }
+    .card-loc { font-size: 0.79rem; color: var(--muted); }
+    .card-rating { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.9rem; }
+    .stars { color: var(--gold); font-size: 0.92rem; }
+    .rnum { font-weight: 800; font-size: 0.9rem; color: var(--navy-dark); }
+    .rcnt { font-size: 0.76rem; color: var(--muted); }
+
+    .card-chips { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1rem; }
+    .chip { background: var(--light); color: var(--navy); padding: 0.2rem 0.65rem; border-radius: 8px; font-size: 0.74rem; font-weight: 700; }
+    .chip.gold { background: var(--gold-pale); color: #b45309; }
+
+    .card-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; background: var(--bg); border-radius: 14px; padding: 0.9rem; margin-bottom: 1.2rem; }
+    .cs-lbl { font-size: 0.7rem; color: var(--muted); }
+    .cs-val { font-size: 0.88rem; font-weight: 700; color: var(--navy-dark); }
+
+    .card-footer-btns { display: flex; gap: 0.7rem; }
+    .btn-apply {
+      flex: 1; background: var(--gold); color: var(--navy-dark); border: none;
+      padding: 0.72rem; border-radius: 12px;
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.88rem;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .btn-apply:hover { background: var(--gold-dark); transform: scale(1.02); }
+    .btn-save {
+      width: 44px; background: var(--light); border: none; border-radius: 12px;
+      font-size: 1.1rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; transition: background 0.2s;
+    }
+    .btn-save:hover { background: #c5cae9; }
+
+    /* REVIEWS */
+    .reviews-section { background: white; }
+    .reviews-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 1.4rem; }
+    .review-card { background: var(--bg); border: 1.5px solid var(--border); border-radius: 20px; padding: 1.5rem; transition: box-shadow 0.2s; }
+    .review-card:hover { box-shadow: 0 8px 28px rgba(26,35,126,0.1); }
+    .rev-top { display: flex; align-items: center; gap: 0.85rem; margin-bottom: 1rem; }
+    .rev-avatar {
+      width: 46px; height: 46px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1rem; color: white; flex-shrink: 0;
+    }
+    .av1 { background: linear-gradient(135deg, var(--navy), #3949ab); }
+    .av2 { background: linear-gradient(135deg, #c62828, #ef5350); }
+    .av3 { background: linear-gradient(135deg, #1b5e20, #388e3c); }
+    .av4 { background: linear-gradient(135deg, #4a148c, #7b1fa2); }
+    .rev-name { font-weight: 700; font-size: 0.9rem; color: var(--navy-dark); }
+    .rev-exam { font-size: 0.74rem; color: var(--muted); margin-top: 0.1rem; }
+    .rev-stars { color: var(--gold); font-size: 0.9rem; margin-bottom: 0.7rem; }
+    .rev-text { font-size: 0.88rem; color: #374151; line-height: 1.72; font-style: italic; margin-bottom: 0.9rem; }
+    .rev-inst { font-size: 0.78rem; font-weight: 700; color: var(--navy); border-top: 1px solid var(--border); padding-top: 0.7rem; }
+
+    /* CTA BANNER */
+    .cta-banner {
+      background: linear-gradient(135deg, var(--gold) 0%, #ffb300 100%);
+      padding: 5rem 2rem; text-align: center; position: relative; overflow: hidden;
+    }
+    .cta-banner::before { content: ''; position: absolute; top: -60px; right: -60px; width: 280px; height: 280px; background: rgba(255,255,255,0.1); border-radius: 50%; }
+    .cta-banner::after { content: ''; position: absolute; bottom: -80px; left: -40px; width: 220px; height: 220px; background: rgba(255,255,255,0.08); border-radius: 50%; }
+    .cta-banner h2 { font-family: 'Syne', sans-serif; font-size: clamp(1.8rem,4vw,2.7rem); font-weight: 800; color: var(--navy-dark); margin-bottom: 0.7rem; position: relative; z-index: 1; }
+    .cta-banner p { color: rgba(13,18,87,0.68); font-size: 1rem; margin-bottom: 2rem; position: relative; z-index: 1; }
+    .cta-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; position: relative; z-index: 1; }
+    .btn-navy {
+      background: var(--navy-dark); color: white; border: none;
+      padding: 0.9rem 2.2rem; border-radius: 50px;
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.95rem;
+      cursor: pointer; transition: all 0.2s; text-decoration: none; display: inline-block;
+    }
+    .btn-navy:hover { background: var(--navy); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+    .btn-outline-navy {
+      background: transparent; color: var(--navy-dark); border: 2.5px solid var(--navy-dark);
+      padding: 0.9rem 2.2rem; border-radius: 50px;
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.95rem;
+      cursor: pointer; transition: all 0.2s; text-decoration: none; display: inline-block;
+    }
+    .btn-outline-navy:hover { background: var(--navy-dark); color: white; }
+
+    /* FOOTER */
+    footer { background: var(--navy-dark); padding: 3.5rem 2rem 1.5rem; }
+    .footer-inner { max-width: 1100px; margin: 0 auto; }
+    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 2.5rem; margin-bottom: 2.5rem; }
+    .footer-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.5rem; color: white; margin-bottom: 0.9rem; display: block; text-decoration: none; }
+    .footer-logo span { color: var(--gold); }
+    .footer-desc { font-size: 0.85rem; color: rgba(255,255,255,0.5); line-height: 1.75; max-width: 230px; margin-bottom: 1.2rem; }
+    .footer-social { display: flex; gap: 0.6rem; }
+    .social-btn { width: 36px; height: 36px; border-radius: 10px; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 1rem; cursor: pointer; transition: background 0.2s; text-decoration: none; }
+    .social-btn:hover { background: var(--gold); }
+    .footer-col h4 { font-family: 'Syne', sans-serif; font-weight: 700; color: white; font-size: 0.92rem; margin-bottom: 1.1rem; }
     .footer-col ul { list-style: none; }
-
-    .footer-col ul li {
-      margin-bottom: 0.5rem;
-    }
-
-    .footer-col ul li a {
-      color: rgba(255,255,255,0.55);
-      text-decoration: none;
-      font-size: 0.85rem;
-      transition: color 0.2s;
-    }
-
+    .footer-col ul li { margin-bottom: 0.55rem; }
+    .footer-col ul li a { color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.85rem; transition: color 0.2s; }
     .footer-col ul li a:hover { color: var(--gold); }
+    .footer-bottom { border-top: 1px solid rgba(255,255,255,0.08); padding-top: 1.3rem; display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: rgba(255,255,255,0.4); flex-wrap: wrap; gap: 0.5rem; }
 
-    .footer-bottom {
-      border-top: 1px solid rgba(255,255,255,0.1);
-      padding-top: 1.2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.8rem;
-    }
+    /* ANIMATIONS */
+    @keyframes fadeUp { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes fadeDown { from{opacity:0;transform:translateY(-12px)} to{opacity:1;transform:translateY(0)} }
 
-    /* ── ANIMATIONS ── */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(24px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .hero-text { animation: fadeUp 0.7s ease both; }
-    .hero-visual { animation: fadeUp 0.7s 0.2s ease both; }
-
-    /* ── MOBILE ── */
-    @media (max-width: 768px) {
-      .nav-links { display: none; }
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      .hero-inner { grid-template-columns: 1fr; }
+      .hero-card { display: none; }
+      .hero h1, .hero-badge { text-align: center; }
+      .hero-sub { text-align: center; margin: 0 auto 2rem; }
+      .hero-tags, .hero-cta { justify-content: center; }
+      .nav-center, .nav-right { display: none; }
       .hamburger { display: flex; }
-
-      .hero-inner {
-        grid-template-columns: 1fr;
-        text-align: center;
-      }
-
-      .hero-visual { display: none; }
-
-      .exam-tags { justify-content: center; }
-
-      .stats-bar { gap: 2rem; flex-wrap: wrap; }
-
       .footer-grid { grid-template-columns: 1fr 1fr; }
-
-      .footer-bottom { flex-direction: column; gap: 0.5rem; text-align: center; }
+      .sbar-item { padding: 1.2rem 1.5rem; flex: 1; }
+    }
+    @media (max-width: 560px) {
+      .footer-grid { grid-template-columns: 1fr; }
+      .exams-grid { grid-template-columns: repeat(3,1fr); }
+      .inst-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -832,433 +429,273 @@
 
 <!-- NAVBAR -->
 <nav>
-  <div class="nav-logo">Classi<span>fy</span></div>
-  <ul class="nav-links">
-    <li><a href="#">Home</a></li>
-    <li><a href="#">Institutes</a></li>
-    <li><a href="#">Compare</a></li>
-    <li><a href="#">About</a></li>
-    <li><a href="#" class="nav-cta">List Your Institute</a></li>
+  <a href="index.html" class="logo">Classi<span>fy</span></a>
+  <ul class="nav-center">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="institutes.html">Institutes</a></li>
+    <li><a href="compare.html">Compare</a></li>
+    <li><a href="about.html">About</a></li>
   </ul>
-  <div class="hamburger">
-    <span></span><span></span><span></span>
+  <div class="nav-right">
+    <a href="login.html" class="btn-ghost">Log In</a>
+    <a href="login.html" class="btn-gold">Sign Up Free</a>
   </div>
+  <button class="hamburger" id="ham">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html">Home</a>
+  <a href="institutes.html">Institutes</a>
+  <a href="compare.html">Compare</a>
+  <a href="about.html">About</a>
+  <a href="login.html">Log In</a>
+  <a href="login.html">Sign Up Free →</a>
+</div>
 
 <!-- HERO -->
 <section class="hero">
+  <div class="hero-dots"></div>
   <div class="hero-inner">
     <div class="hero-text">
-      <div class="hero-badge">🎓 India's Coaching Discovery Platform</div>
-      <h1>Find the <em>Best Coaching</em> Near You</h1>
-      <p>Compare institutes, read real student reviews, and choose the right coaching for JEE, NEET, NDA, CUET & more.</p>
-      <div class="search-box">
-        <input type="text" placeholder="Search by coaching name, city or exam…" />
-        <button>Search</button>
+      <div class="hero-badge">🎓 India's #1 Coaching Discovery Platform</div>
+      <h1>Find the <em>Best Coaching</em><br/>Near You</h1>
+      <p class="hero-sub">Compare institutes, read real student reviews, and choose the right coaching for JEE, NEET, NDA, CUET & more — all in one place.</p>
+      <div class="search-wrap">
+        <input type="text" placeholder="Search by coaching name, city or exam…"/>
+        <button>🔍 Search</button>
       </div>
-      <div class="exam-tags">
-        <span class="exam-tag active">All</span>
-        <span class="exam-tag">JEE</span>
-        <span class="exam-tag">NEET</span>
-        <span class="exam-tag">NDA</span>
-        <span class="exam-tag">CUET</span>
-        <span class="exam-tag">UPSC</span>
+      <div class="hero-tags">
+        <span class="hero-tag active">All</span>
+        <span class="hero-tag">JEE</span>
+        <span class="hero-tag">NEET</span>
+        <span class="hero-tag">NDA</span>
+        <span class="hero-tag">CUET</span>
+        <span class="hero-tag">UPSC</span>
+      </div>
+      <div class="hero-cta">
+        <a href="login.html" class="btn-hero-primary">🚀 Get Started Free</a>
+        <a href="institutes.html" class="btn-hero-ghost">Browse Institutes →</a>
       </div>
     </div>
-    <div class="hero-visual">
-      <div class="hero-illustration">
-        <div class="stat-row">
-          <div class="stat-card">
-            <div class="num">500+</div>
-            <div class="lbl">Institutes</div>
-          </div>
-          <div class="stat-card">
-            <div class="num">12K+</div>
-            <div class="lbl">Reviews</div>
-          </div>
-          <div class="stat-card">
-            <div class="num">50+</div>
-            <div class="lbl">Cities</div>
-          </div>
+    <div class="hero-card">
+      <div class="hero-stats">
+        <div class="hstat"><div class="hstat-num">500+</div><div class="hstat-lbl">Institutes</div></div>
+        <div class="hstat"><div class="hstat-num">12K+</div><div class="hstat-lbl">Reviews</div></div>
+        <div class="hstat"><div class="hstat-num">50+</div><div class="hstat-lbl">Cities</div></div>
+      </div>
+      <div class="mini-institute">
+        <div class="mi-icon">🏫</div>
+        <div class="mi-info">
+          <div class="mi-name">Allen Career Institute</div>
+          <div class="mi-loc">📍 Kota, Rajasthan</div>
+          <div class="mi-stars">★★★★★ 4.8</div>
         </div>
-        <div class="mini-card">
-          <div class="mini-icon">🏫</div>
-          <div class="mini-info">
-            <div class="mini-name">Allen Career Institute</div>
-            <div class="mini-sub">Kota, Rajasthan</div>
-            <div class="mini-stars">★★★★★ 4.8</div>
-          </div>
+      </div>
+      <div class="mini-institute">
+        <div class="mi-icon">⚗️</div>
+        <div class="mi-info">
+          <div class="mi-name">Aakash Institute</div>
+          <div class="mi-loc">📍 Delhi, NCR</div>
+          <div class="mi-stars">★★★★★ 4.7</div>
         </div>
-        <div class="mini-card">
-          <div class="mini-icon">📚</div>
-          <div class="mini-info">
-            <div class="mini-name">Resonance Institute</div>
-            <div class="mini-sub">Kota, Rajasthan</div>
-            <div class="mini-stars">★★★★☆ 4.5</div>
-          </div>
-        </div>
-        <div class="mini-card">
-          <div class="mini-icon">⚗️</div>
-          <div class="mini-info">
-            <div class="mini-name">Aakash Institute</div>
-            <div class="mini-sub">Delhi, NCR</div>
-            <div class="mini-stars">★★★★★ 4.7</div>
-          </div>
+      </div>
+      <div class="mini-institute">
+        <div class="mi-icon">📚</div>
+        <div class="mi-info">
+          <div class="mi-name">Resonance Institute</div>
+          <div class="mi-loc">📍 Kota, Rajasthan</div>
+          <div class="mi-stars">★★★★☆ 4.5</div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- STATS BAR -->
-<div class="stats-bar">
-  <div class="item"><div class="n">500+</div><div class="t">Institutes Listed</div></div>
-  <div class="item"><div class="n">12K+</div><div class="t">Student Reviews</div></div>
-  <div class="item"><div class="n">50+</div><div class="t">Cities Covered</div></div>
-  <div class="item"><div class="n">6</div><div class="t">Exams Covered</div></div>
-</div>
+
+
+
 
 <!-- TOP INSTITUTES -->
-<section>
-  <div class="section-inner">
-    <div class="section-header">
-      <h2>Top <span>Institutes</span></h2>
-      <a href="#" class="see-all">See all →</a>
+<section class="institutes-section">
+  <div class="inner">
+    <div class="sec-head">
+      <div>
+        <h2>Top <span>Institutes</span></h2>
+        <p>Highest rated coaching centres across India</p>
+      </div>
+      <a href="institutes.html" class="see-all">View all →</a>
     </div>
-
-    <div class="exam-filters">
-      <button class="filter-btn active">All</button>
-      <button class="filter-btn">JEE</button>
-      <button class="filter-btn">NEET</button>
-      <button class="filter-btn">NDA</button>
-      <button class="filter-btn">CUET</button>
-      <button class="filter-btn">UPSC</button>
+    <div class="filter-row">
+      <button class="fbtn active">All</button>
+      <button class="fbtn">JEE</button>
+      <button class="fbtn">NEET</button>
+      <button class="fbtn">NDA</button>
+      <button class="fbtn">CUET</button>
+      <button class="fbtn">UPSC</button>
     </div>
-
-    <div class="cards-grid">
-
-      <div class="institute-card">
-        <div class="card-top">
-          <div class="card-logo">🏫</div>
-          <div class="card-title">
-            <h3>Allen Career Institute</h3>
-            <div class="location">📍 Kota, Rajasthan</div>
+    <div class="inst-grid">
+      <div class="inst-card">
+        <div class="card-body">
+          <div class="card-header">
+            <div class="card-avatar">🏫</div>
+            <div class="card-title">
+              <h3>Allen Career Institute</h3>
+              <div class="card-loc">📍 Kota, Rajasthan</div>
+            </div>
+          </div>
+          <div class="card-rating">
+            <span class="stars">★★★★★</span>
+            <span class="rnum">4.8</span>
+            <span class="rcnt">(1,530 reviews)</span>
+          </div>
+          <div class="card-chips">
+            <span class="chip">JEE</span><span class="chip">NEET</span>
+            <span class="chip gold">🏆 Top Ranked</span>
+          </div>
+          <div class="card-stats">
+            <div><div class="cs-lbl">Fees/year</div><div class="cs-val">₹1.2L – 1.8L</div></div>
+            <div><div class="cs-lbl">Batch Size</div><div class="cs-val">60–80</div></div>
+            <div><div class="cs-lbl">Faculty</div><div class="cs-val">IIT/AIIMS</div></div>
+            <div><div class="cs-lbl">Success Rate</div><div class="cs-val">82%</div></div>
+          </div>
+          <div class="card-footer-btns">
+            <button class="btn-apply" onclick="location.href='login.html'">Apply Now</button>
+            <button class="btn-save">🔖</button>
           </div>
         </div>
-        <div class="card-stars">
-          <span class="stars">★★★★★</span>
-          <span class="rating-num">4.8</span>
-          <span class="rating-count">(1,530 reviews)</span>
-        </div>
-        <div class="card-tags">
-          <span class="tag">JEE</span>
-          <span class="tag">NEET</span>
-          <span class="tag gold">🏆 Top Ranked</span>
-        </div>
-        <div class="card-info">
-          <div class="info-item"><div class="lbl">Fees/year</div><div class="val">₹1.2L – 1.8L</div></div>
-          <div class="info-item"><div class="lbl">Batch Size</div><div class="val">60–80</div></div>
-          <div class="info-item"><div class="lbl">Faculty</div><div class="val">IIT/AIIMS</div></div>
-          <div class="info-item"><div class="lbl">Success Rate</div><div class="val">82%</div></div>
-        </div>
-        <div class="card-actions">
-          <button class="btn-apply">Apply Now</button>
-          <button class="btn-save">🔖</button>
-        </div>
       </div>
 
-      <div class="institute-card">
-        <div class="card-top">
-          <div class="card-logo">📚</div>
-          <div class="card-title">
-            <h3>Resonance Institute</h3>
-            <div class="location">📍 Kota, Rajasthan</div>
+      <div class="inst-card">
+        <div class="card-body">
+          <div class="card-header">
+            <div class="card-avatar">⚗️</div>
+            <div class="card-title">
+              <h3>Aakash Institute</h3>
+              <div class="card-loc">📍 Delhi, NCR</div>
+            </div>
+          </div>
+          <div class="card-rating">
+            <span class="stars">★★★★★</span>
+            <span class="rnum">4.7</span>
+            <span class="rcnt">(2,210 reviews)</span>
+          </div>
+          <div class="card-chips">
+            <span class="chip">NEET</span><span class="chip">JEE</span>
+            <span class="chip gold">🏆 Top Ranked</span>
+          </div>
+          <div class="card-stats">
+            <div><div class="cs-lbl">Fees/year</div><div class="cs-val">₹1L – 2L</div></div>
+            <div><div class="cs-lbl">Batch Size</div><div class="cs-val">40–60</div></div>
+            <div><div class="cs-lbl">Faculty</div><div class="cs-val">MBBS/IIT</div></div>
+            <div><div class="cs-lbl">Success Rate</div><div class="cs-val">79%</div></div>
+          </div>
+          <div class="card-footer-btns">
+            <button class="btn-apply" onclick="location.href='login.html'">Apply Now</button>
+            <button class="btn-save">🔖</button>
           </div>
         </div>
-        <div class="card-stars">
-          <span class="stars">★★★★☆</span>
-          <span class="rating-num">4.5</span>
-          <span class="rating-count">(880 reviews)</span>
-        </div>
-        <div class="card-tags">
-          <span class="tag">JEE</span>
-          <span class="tag">CUET</span>
-        </div>
-        <div class="card-info">
-          <div class="info-item"><div class="lbl">Fees/year</div><div class="val">₹90K – 1.5L</div></div>
-          <div class="info-item"><div class="lbl">Batch Size</div><div class="val">50–70</div></div>
-          <div class="info-item"><div class="lbl">Faculty</div><div class="val">IIT Grads</div></div>
-          <div class="info-item"><div class="lbl">Success Rate</div><div class="val">74%</div></div>
-        </div>
-        <div class="card-actions">
-          <button class="btn-apply">Apply Now</button>
-          <button class="btn-save">🔖</button>
-        </div>
       </div>
 
-      <div class="institute-card">
-        <div class="card-top">
-          <div class="card-logo">⚗️</div>
-          <div class="card-title">
-            <h3>Aakash Institute</h3>
-            <div class="location">📍 Delhi, NCR</div>
+      <div class="inst-card">
+        <div class="card-body">
+          <div class="card-header">
+            <div class="card-avatar">📚</div>
+            <div class="card-title">
+              <h3>Resonance Institute</h3>
+              <div class="card-loc">📍 Kota, Rajasthan</div>
+            </div>
+          </div>
+          <div class="card-rating">
+            <span class="stars">★★★★☆</span>
+            <span class="rnum">4.5</span>
+            <span class="rcnt">(880 reviews)</span>
+          </div>
+          <div class="card-chips">
+            <span class="chip">JEE</span><span class="chip">CUET</span>
+          </div>
+          <div class="card-stats">
+            <div><div class="cs-lbl">Fees/year</div><div class="cs-val">₹90K – 1.5L</div></div>
+            <div><div class="cs-lbl">Batch Size</div><div class="cs-val">50–70</div></div>
+            <div><div class="cs-lbl">Faculty</div><div class="cs-val">IIT Grads</div></div>
+            <div><div class="cs-lbl">Success Rate</div><div class="cs-val">74%</div></div>
+          </div>
+          <div class="card-footer-btns">
+            <button class="btn-apply" onclick="location.href='login.html'">Apply Now</button>
+            <button class="btn-save">🔖</button>
           </div>
         </div>
-        <div class="card-stars">
-          <span class="stars">★★★★★</span>
-          <span class="rating-num">4.7</span>
-          <span class="rating-count">(2,210 reviews)</span>
-        </div>
-        <div class="card-tags">
-          <span class="tag">NEET</span>
-          <span class="tag">JEE</span>
-          <span class="tag gold">🏆 Top Ranked</span>
-        </div>
-        <div class="card-info">
-          <div class="info-item"><div class="lbl">Fees/year</div><div class="val">₹1L – 2L</div></div>
-          <div class="info-item"><div class="lbl">Batch Size</div><div class="val">40–60</div></div>
-          <div class="info-item"><div class="lbl">Faculty</div><div class="val">MBBS/IIT</div></div>
-          <div class="info-item"><div class="lbl">Success Rate</div><div class="val">79%</div></div>
-        </div>
-        <div class="card-actions">
-          <button class="btn-apply">Apply Now</button>
-          <button class="btn-save">🔖</button>
-        </div>
-      </div>
-
-      <div class="institute-card">
-        <div class="card-top">
-          <div class="card-logo">🎖️</div>
-          <div class="card-title">
-            <h3>Centurion Defence Academy</h3>
-            <div class="location">📍 Lucknow, UP</div>
-          </div>
-        </div>
-        <div class="card-stars">
-          <span class="stars">★★★★☆</span>
-          <span class="rating-num">4.4</span>
-          <span class="rating-count">(460 reviews)</span>
-        </div>
-        <div class="card-tags">
-          <span class="tag">NDA</span>
-          <span class="tag">CDS</span>
-        </div>
-        <div class="card-info">
-          <div class="info-item"><div class="lbl">Fees/year</div><div class="val">₹60K – 1L</div></div>
-          <div class="info-item"><div class="lbl">Batch Size</div><div class="val">30–50</div></div>
-          <div class="info-item"><div class="lbl">Faculty</div><div class="val">Ex-Army</div></div>
-          <div class="info-item"><div class="lbl">Success Rate</div><div class="val">68%</div></div>
-        </div>
-        <div class="card-actions">
-          <button class="btn-apply">Apply Now</button>
-          <button class="btn-save">🔖</button>
-        </div>
-      </div>
-
-      <div class="institute-card">
-        <div class="card-top">
-          <div class="card-logo">🔬</div>
-          <div class="card-title">
-            <h3>FIITJEE Delhi</h3>
-            <div class="location">📍 New Delhi</div>
-          </div>
-        </div>
-        <div class="card-stars">
-          <span class="stars">★★★★☆</span>
-          <span class="rating-num">4.3</span>
-          <span class="rating-count">(990 reviews)</span>
-        </div>
-        <div class="card-tags">
-          <span class="tag">JEE</span>
-          <span class="tag">CUET</span>
-        </div>
-        <div class="card-info">
-          <div class="info-item"><div class="lbl">Fees/year</div><div class="val">₹1.1L – 1.9L</div></div>
-          <div class="info-item"><div class="lbl">Batch Size</div><div class="val">35–55</div></div>
-          <div class="info-item"><div class="lbl">Faculty</div><div class="val">IIT Grads</div></div>
-          <div class="info-item"><div class="lbl">Success Rate</div><div class="val">71%</div></div>
-        </div>
-        <div class="card-actions">
-          <button class="btn-apply">Apply Now</button>
-          <button class="btn-save">🔖</button>
-        </div>
-      </div>
-
-      <div class="institute-card">
-        <div class="card-top">
-          <div class="card-logo">🧬</div>
-          <div class="card-title">
-            <h3>Narayana Institute</h3>
-            <div class="location">📍 Hyderabad, TS</div>
-          </div>
-        </div>
-        <div class="card-stars">
-          <span class="stars">★★★★☆</span>
-          <span class="rating-num">4.2</span>
-          <span class="rating-count">(1,120 reviews)</span>
-        </div>
-        <div class="card-tags">
-          <span class="tag">NEET</span>
-          <span class="tag">JEE</span>
-        </div>
-        <div class="card-info">
-          <div class="info-item"><div class="lbl">Fees/year</div><div class="val">₹75K – 1.3L</div></div>
-          <div class="info-item"><div class="lbl">Batch Size</div><div class="val">50–80</div></div>
-          <div class="info-item"><div class="lbl">Faculty</div><div class="val">MBBS/IIT</div></div>
-          <div class="info-item"><div class="lbl">Success Rate</div><div class="val">76%</div></div>
-        </div>
-        <div class="card-actions">
-          <button class="btn-apply">Apply Now</button>
-          <button class="btn-save">🔖</button>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- TOP EXAMS -->
-<section class="exams-section">
-  <div class="section-inner">
-    <div class="section-header">
-      <h2>Browse by <span>Exam</span></h2>
-    </div>
-    <div class="exams-grid">
-      <div class="exam-card">
-        <div class="exam-icon">⚛️</div>
-        <div class="exam-name">JEE</div>
-        <div class="exam-full">Joint Entrance Exam</div>
-      </div>
-      <div class="exam-card">
-        <div class="exam-icon">🧬</div>
-        <div class="exam-name">NEET</div>
-        <div class="exam-full">National Eligibility Test</div>
-      </div>
-      <div class="exam-card">
-        <div class="exam-icon">🎖️</div>
-        <div class="exam-name">NDA</div>
-        <div class="exam-full">National Defence Academy</div>
-      </div>
-      <div class="exam-card">
-        <div class="exam-icon">🎓</div>
-        <div class="exam-name">CUET</div>
-        <div class="exam-full">Common University Entrance</div>
-      </div>
-      <div class="exam-card">
-        <div class="exam-icon">🏛️</div>
-        <div class="exam-name">UPSC</div>
-        <div class="exam-full">Civil Services Exam</div>
-      </div>
-      <div class="exam-card">
-        <div class="exam-icon">🏦</div>
-        <div class="exam-name">Banking</div>
-        <div class="exam-full">IBPS, SBI & More</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- HOW IT WORKS -->
-<section class="how-section">
-  <div class="section-inner">
-    <h2>How Classify Works</h2>
-    <p class="subtitle">Find your perfect coaching in 4 simple steps</p>
-    <div class="steps-grid">
-      <div class="step-card">
-        <div class="step-num">1</div>
-        <div class="step-icon">🔍</div>
-        <h3>Search</h3>
-        <p>Enter your city, exam, or coaching name to discover institutes near you.</p>
+<!-- REVIEWS -->
+<section class="reviews-section">
+  <div class="inner">
+    <div class="sec-head">
+      <div>
+        <h2>What <span>Students</span> Say</h2>
+        <p>Real reviews from real students across India</p>
       </div>
-      <div class="step-card">
-        <div class="step-num">2</div>
-        <div class="step-icon">⚖️</div>
-        <h3>Compare</h3>
-        <p>Compare fees, faculty, batch size, and success rates side by side.</p>
-      </div>
-      <div class="step-card">
-        <div class="step-num">3</div>
-        <div class="step-icon">⭐</div>
-        <h3>Read Reviews</h3>
-        <p>Check real student reviews and ratings before making a decision.</p>
-      </div>
-      <div class="step-card">
-        <div class="step-num">4</div>
-        <div class="step-icon">✅</div>
-        <h3>Apply</h3>
-        <p>Apply directly through Classify and start your preparation journey.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- STUDENT REVIEWS -->
-<section>
-  <div class="section-inner">
-    <div class="section-header">
-      <h2>What <span>Students</span> Say</h2>
-      <a href="#" class="see-all">All reviews →</a>
+      <a href="institutes.html" class="see-all">All reviews →</a>
     </div>
     <div class="reviews-grid">
       <div class="review-card">
-        <div class="review-top">
-          <div class="reviewer-avatar">AK</div>
-          <div>
-            <div class="reviewer-name">Arjun Kumar</div>
-            <div class="reviewer-exam">JEE Advanced 2024 — AIR 412</div>
-          </div>
+        <div class="rev-top">
+          <div class="rev-avatar av1">AK</div>
+          <div><div class="rev-name">Arjun Kumar</div><div class="rev-exam">JEE Aspirant · Delhi</div></div>
         </div>
-        <div class="stars">★★★★★</div>
-        <p class="review-text">"Allen completely changed how I prepared. The faculty is exceptional and the study material is comprehensive. Got into IIT Bombay!"</p>
-        <div class="review-institute">📍 Allen Career Institute, Kota</div>
+        <div class="rev-stars">★★★★★</div>
+        <p class="rev-text">"Classify made it so easy to compare coaching centres in my city. Found the perfect JEE institute within minutes. Brilliant platform!"</p>
+        <div class="rev-inst">🌐 Found via Classify</div>
       </div>
       <div class="review-card">
-        <div class="review-top">
-          <div class="reviewer-avatar">PS</div>
-          <div>
-            <div class="reviewer-name">Priya Sharma</div>
-            <div class="reviewer-exam">NEET 2024 — AIR 890</div>
-          </div>
+        <div class="rev-top">
+          <div class="rev-avatar av2">PS</div>
+          <div><div class="rev-name">Priya Sharma</div><div class="rev-exam">NEET Aspirant · Mumbai</div></div>
         </div>
-        <div class="stars">★★★★★</div>
-        <p class="review-text">"Aakash's NEET program is top notch. Mock tests were very close to the actual exam. Got into AIIMS Delhi in first attempt!"</p>
-        <div class="review-institute">📍 Aakash Institute, Delhi</div>
+        <div class="rev-stars">★★★★★</div>
+        <p class="rev-text">"The comparison feature on Classify is a game changer. I could see fees, batch size and reviews side by side. Saved me weeks of research!"</p>
+        <div class="rev-inst">🌐 Found via Classify</div>
       </div>
       <div class="review-card">
-        <div class="review-top">
-          <div class="reviewer-avatar">RS</div>
-          <div>
-            <div class="reviewer-name">Rahul Singh</div>
-            <div class="reviewer-exam">NDA 2024 — Selected</div>
-          </div>
+        <div class="rev-top">
+          <div class="rev-avatar av3">RS</div>
+          <div><div class="rev-name">Rahul Singh</div><div class="rev-exam">NDA Aspirant · Lucknow</div></div>
         </div>
-        <div class="stars">★★★★☆</div>
-        <p class="review-text">"Centurion prepared me physically and mentally for NDA. The ex-army faculty gives real insights that no book can teach."</p>
-        <div class="review-institute">📍 Centurion Defence Academy, Lucknow</div>
+        <div class="rev-stars">★★★★☆</div>
+        <p class="rev-text">"Never knew there were so many good NDA coaching options near me. Classify showed me institutes I had never heard of. Really helpful!"</p>
+        <div class="rev-inst">🌐 Found via Classify</div>
+      </div>
+      <div class="review-card">
+        <div class="rev-top">
+          <div class="rev-avatar av4">MV</div>
+          <div><div class="rev-name">Meera Verma</div><div class="rev-exam">CUET Aspirant · Jaipur</div></div>
+        </div>
+        <div class="rev-stars">★★★★★</div>
+        <p class="rev-text">"Student reviews on Classify are genuine and very detailed. I trusted them completely while choosing my coaching. Best decision ever!"</p>
+        <div class="rev-inst">🌐 Found via Classify</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- CTA -->
-<section class="cta-section">
-  <div class="section-inner">
-    <h2>Ready to Find Your Perfect Coaching?</h2>
-    <p>Join thousands of students who found their ideal institute through Classify.</p>
-    <div class="cta-btns">
-      <button class="btn-navy">🔍 Start Searching</button>
-      <button class="btn-outline">List Your Institute</button>
-    </div>
-  </div>
-</section>
+
 
 <!-- FOOTER -->
 <footer>
   <div class="footer-inner">
     <div class="footer-grid">
-      <div class="footer-brand">
-        <div class="logo">Classi<span>fy</span></div>
-        <p>India's most trusted platform to discover, compare and choose coaching institutes for competitive exams.</p>
+      <div>
+        <a href="index.html" class="footer-logo">Classi<span>fy</span></a>
+        <p class="footer-desc">India's most trusted platform to discover, compare and choose the right coaching institute for every competitive exam.</p>
+        <div class="footer-social">
+          <a href="#" class="social-btn">📘</a>
+          <a href="#" class="social-btn">🐦</a>
+          <a href="#" class="social-btn">📸</a>
+          <a href="#" class="social-btn">▶️</a>
+        </div>
       </div>
       <div class="footer-col">
         <h4>Exams</h4>
@@ -1267,14 +704,15 @@
           <li><a href="#">NEET UG</a></li>
           <li><a href="#">NDA / CDS</a></li>
           <li><a href="#">CUET</a></li>
-          <li><a href="#">UPSC</a></li>
+          <li><a href="#">UPSC CSE</a></li>
+          <li><a href="#">Banking / SSC</a></li>
         </ul>
       </div>
       <div class="footer-col">
         <h4>Platform</h4>
         <ul>
-          <li><a href="#">Browse Institutes</a></li>
-          <li><a href="#">Compare</a></li>
+          <li><a href="institutes.html">Browse Institutes</a></li>
+          <li><a href="compare.html">Compare</a></li>
           <li><a href="#">Write a Review</a></li>
           <li><a href="#">List Your Institute</a></li>
         </ul>
@@ -1282,8 +720,8 @@
       <div class="footer-col">
         <h4>Company</h4>
         <ul>
-          <li><a href="#">About Us</a></li>
-          <li><a href="#">Contact</a></li>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="contact.html">Contact</a></li>
           <li><a href="#">Privacy Policy</a></li>
           <li><a href="#">Terms of Use</a></li>
         </ul>
@@ -1297,30 +735,32 @@
 </footer>
 
 <script>
-  // Exam tag toggle (hero)
-  document.querySelectorAll('.exam-tag').forEach(tag => {
-    tag.addEventListener('click', () => {
-      document.querySelectorAll('.exam-tag').forEach(t => t.classList.remove('active'));
-      tag.classList.add('active');
+  // Hero card: fade in first, then float
+  const heroCard = document.querySelector('.hero-card');
+  if (heroCard) {
+    heroCard.addEventListener('animationend', () => {
+      heroCard.classList.add('loaded');
+    }, { once: true });
+  }
+
+  // Hamburger menu
+  document.getElementById('ham').addEventListener('click', () => {
+    document.getElementById('mobileMenu').classList.toggle('open');
+  });
+  // Hero exam tags
+  document.querySelectorAll('.hero-tag').forEach(t => {
+    t.addEventListener('click', () => {
+      document.querySelectorAll('.hero-tag').forEach(x => x.classList.remove('active'));
+      t.classList.add('active');
     });
   });
-
   // Filter buttons
-  document.querySelectorAll('.filter-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-    });
-  });
-
-  // Exam cards hover
-  document.querySelectorAll('.exam-card').forEach(card => {
-    card.addEventListener('click', () => {
-      const exam = card.querySelector('.exam-name').textContent;
-      alert(`Showing institutes for ${exam}...`);
+  document.querySelectorAll('.fbtn').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('.fbtn').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
     });
   });
 </script>
 </body>
 </html>
-
