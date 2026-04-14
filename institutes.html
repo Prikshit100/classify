@@ -1,1 +1,1130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Classify – Browse Institutes</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:      #1a237e;
+      --navy-dark: #0d1257;
+      --navy-mid:  #283593;
+      --gold:      #FFC107;
+      --gold-dark: #f9a825;
+      --gold-pale: #FFF8E1;
+      --white:     #ffffff;
+      --bg:        #f4f5ff;
+      --card-bg:   #ffffff;
+      --border:    #dde0f5;
+      --text:      #0d1257;
+      --muted:     #6b7280;
+      --light:     #e8eaf6;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* ── NAVBAR ── */
+    nav {
+      position: sticky; top: 0; z-index: 999;
+      background: var(--navy-dark);
+      height: 66px;
+      display: flex; align-items: center;
+      padding: 0 2rem;
+      justify-content: space-between;
+      box-shadow: 0 2px 24px rgba(13,18,87,0.45);
+    }
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800; font-size: 1.65rem;
+      color: var(--white); letter-spacing: -0.5px;
+      text-decoration: none;
+    }
+    .logo span { color: var(--gold); }
+    .nav-center { display: flex; gap: 2.2rem; list-style: none; }
+    .nav-center a {
+      color: rgba(255,255,255,0.78);
+      text-decoration: none; font-size: 0.95rem; font-weight: 600;
+      transition: color 0.2s;
+    }
+    .nav-center a:hover, .nav-center a.active { color: var(--gold); }
+    .nav-right { display: flex; gap: 0.8rem; align-items: center; }
+    .btn-ghost {
+      background: transparent; border: 2px solid rgba(255,255,255,0.3);
+      color: white; padding: 0.42rem 1.1rem; border-radius: 25px;
+      font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.85rem;
+      cursor: pointer; transition: all 0.2s; text-decoration: none;
+    }
+    .btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
+    .btn-gold {
+      background: var(--gold); border: none;
+      color: var(--navy-dark); padding: 0.48rem 1.2rem; border-radius: 25px;
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.85rem;
+      cursor: pointer; transition: all 0.2s; text-decoration: none;
+    }
+    .btn-gold:hover { background: var(--gold-dark); transform: translateY(-1px); }
+    .hamburger {
+      display: none; flex-direction: column; gap: 5px;
+      cursor: pointer; background: none; border: none; padding: 4px;
+    }
+    .hamburger span { width: 24px; height: 2.5px; background: white; border-radius: 3px; display: block; }
+    .mobile-menu {
+      display: none; flex-direction: column;
+      background: var(--navy-dark); padding: 1rem 2rem 1.5rem;
+      gap: 1rem; border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    .mobile-menu a {
+      color: rgba(255,255,255,0.8); text-decoration: none;
+      font-weight: 600; font-size: 1rem; padding: 0.4rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .mobile-menu.open { display: flex; }
+
+    /* ── PAGE HERO ── */
+    .page-hero {
+      background: linear-gradient(140deg, var(--navy-dark) 0%, var(--navy) 60%, #1e3a8a 100%);
+      padding: 3rem 2rem;
+      position: relative; overflow: hidden;
+    }
+    .page-hero::before {
+      content: ''; position: absolute; top: -80px; right: -80px;
+      width: 350px; height: 350px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,193,7,0.1) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .hero-dots {
+      position: absolute; inset: 0;
+      background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
+      background-size: 28px 28px; pointer-events: none;
+    }
+    .page-hero-inner {
+      max-width: 1200px; margin: 0 auto;
+      position: relative; z-index: 1;
+    }
+    .breadcrumb {
+      display: flex; align-items: center; gap: 0.5rem;
+      font-size: 0.8rem; color: rgba(255,255,255,0.5);
+      margin-bottom: 1rem;
+    }
+    .breadcrumb a { color: rgba(255,255,255,0.5); text-decoration: none; transition: color 0.2s; }
+    .breadcrumb a:hover { color: var(--gold); }
+    .breadcrumb span { color: rgba(255,255,255,0.3); }
+    .breadcrumb .current { color: var(--gold); font-weight: 600; }
+
+    .page-hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.6rem, 3vw, 2.4rem); font-weight: 800;
+      color: white; margin-bottom: 0.5rem;
+      animation: fadeUp 0.6s ease both;
+    }
+    .page-hero h1 em { font-style: normal; color: var(--gold); }
+    .page-hero p {
+      color: rgba(255,255,255,0.6); font-size: 0.95rem;
+      margin-bottom: 1.8rem;
+      animation: fadeUp 0.6s 0.1s ease both;
+    }
+
+    /* Hero search */
+    .hero-search {
+      display: flex; gap: 0.8rem; flex-wrap: wrap;
+      animation: fadeUp 0.6s 0.2s ease both;
+    }
+    .hero-search-wrap {
+      flex: 1; min-width: 260px;
+      background: white; border-radius: 50px;
+      display: flex; align-items: center;
+      padding: 5px 5px 5px 1.2rem;
+      box-shadow: 0 8px 28px rgba(0,0,0,0.2);
+    }
+    .hero-search-wrap input {
+      flex: 1; border: none; outline: none;
+      font-family: 'Nunito', sans-serif; font-size: 0.92rem;
+      color: var(--text); background: transparent; padding: 0.6rem 0.4rem;
+    }
+    .hero-search-wrap button {
+      background: var(--gold); border: none;
+      padding: 0.65rem 1.4rem; border-radius: 40px;
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.88rem;
+      color: var(--navy-dark); cursor: pointer; transition: background 0.2s;
+      white-space: nowrap;
+    }
+    .hero-search-wrap button:hover { background: var(--gold-dark); }
+
+    .hero-result-count {
+      color: rgba(255,255,255,0.6); font-size: 0.82rem;
+      margin-top: 1rem;
+      animation: fadeUp 0.6s 0.3s ease both;
+    }
+    .hero-result-count strong { color: var(--gold); }
+
+    /* ── MAIN LAYOUT ── */
+    .main-layout {
+      max-width: 1200px; margin: 0 auto;
+      padding: 2rem;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    /* ── SIDEBAR FILTERS ── */
+    .sidebar {
+      position: sticky; top: 86px;
+      animation: fadeUp 0.6s 0.1s ease both;
+    }
+
+    .filter-card {
+      background: white; border-radius: 20px;
+      border: 1.5px solid var(--border);
+      overflow: hidden;
+      margin-bottom: 1.2rem;
+    }
+
+    .filter-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 1.2rem;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+    }
+    .filter-header h3 {
+      font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: 0.9rem; color: var(--navy-dark);
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .filter-toggle { font-size: 0.75rem; color: var(--muted); transition: transform 0.2s; }
+    .filter-toggle.open { transform: rotate(180deg); }
+
+    .filter-body { padding: 1rem 1.2rem; }
+
+    /* Checkbox filters */
+    .filter-option {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.4rem 0; cursor: pointer;
+    }
+    .filter-option label {
+      display: flex; align-items: center; gap: 0.6rem;
+      font-size: 0.86rem; color: var(--text); cursor: pointer; flex: 1;
+    }
+    .filter-option input[type="checkbox"] {
+      accent-color: var(--navy); width: 15px; height: 15px; cursor: pointer; flex-shrink: 0;
+    }
+    .filter-count {
+      font-size: 0.72rem; color: var(--muted);
+      background: var(--light); padding: 0.1rem 0.45rem;
+      border-radius: 20px; font-weight: 600;
+    }
+
+    /* Range slider */
+    .range-wrap { padding: 0.5rem 0; }
+    .range-labels {
+      display: flex; justify-content: space-between;
+      font-size: 0.78rem; color: var(--muted); margin-bottom: 0.6rem;
+    }
+    .range-labels strong { color: var(--navy-dark); font-weight: 700; }
+    input[type="range"] {
+      width: 100%; accent-color: var(--navy); cursor: pointer;
+    }
+
+    /* City search in filter */
+    .city-search {
+      width: 100%; padding: 0.55rem 0.8rem;
+      border: 1.5px solid var(--border); border-radius: 10px;
+      font-family: 'Nunito', sans-serif; font-size: 0.85rem;
+      color: var(--text); outline: none; margin-bottom: 0.8rem;
+      transition: border-color 0.2s;
+    }
+    .city-search:focus { border-color: var(--navy); }
+
+    /* Clear filters */
+    .clear-btn {
+      width: 100%; padding: 0.65rem;
+      background: var(--light); border: none; border-radius: 12px;
+      font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.84rem;
+      color: var(--navy); cursor: pointer; transition: all 0.2s;
+    }
+    .clear-btn:hover { background: var(--border); }
+
+    /* ── RIGHT CONTENT ── */
+    .content-area { min-width: 0; }
+
+    /* Sort + view bar */
+    .sort-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      background: white; border-radius: 16px; padding: 0.9rem 1.2rem;
+      border: 1.5px solid var(--border); margin-bottom: 1.5rem;
+      flex-wrap: wrap; gap: 0.8rem;
+      animation: fadeUp 0.6s 0.15s ease both;
+    }
+    .sort-left {
+      display: flex; align-items: center; gap: 0.6rem;
+      font-size: 0.85rem; color: var(--muted);
+    }
+    .sort-left strong { color: var(--navy-dark); font-weight: 700; }
+    .sort-select {
+      padding: 0.4rem 0.8rem; border: 1.5px solid var(--border);
+      border-radius: 10px; font-family: 'Nunito', sans-serif;
+      font-size: 0.84rem; color: var(--text); outline: none;
+      cursor: pointer; background: var(--bg);
+    }
+    .sort-select:focus { border-color: var(--navy); }
+
+    .view-btns { display: flex; gap: 0.4rem; }
+    .view-btn {
+      width: 34px; height: 34px; border-radius: 10px;
+      border: 1.5px solid var(--border); background: white;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.9rem; cursor: pointer; transition: all 0.2s;
+    }
+    .view-btn.active, .view-btn:hover {
+      background: var(--navy); border-color: var(--navy); color: white;
+    }
+
+    /* Active filters chips */
+    .active-filters {
+      display: flex; gap: 0.5rem; flex-wrap: wrap;
+      margin-bottom: 1.2rem;
+    }
+    .filter-chip {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      background: var(--light); color: var(--navy);
+      padding: 0.3rem 0.75rem; border-radius: 20px;
+      font-size: 0.78rem; font-weight: 700; cursor: pointer;
+      transition: all 0.2s; border: 1px solid var(--border);
+    }
+    .filter-chip:hover { background: #c5cae9; }
+    .filter-chip .chip-x { font-size: 0.7rem; opacity: 0.6; }
+
+    /* ── INSTITUTE CARDS ── */
+    .inst-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.4rem;
+    }
+    .inst-grid.list-view {
+      grid-template-columns: 1fr;
+    }
+
+    .inst-card {
+      background: var(--card-bg); border-radius: 22px;
+      border: 1.5px solid var(--border); overflow: hidden;
+      transition: all 0.3s; position: relative;
+      animation: fadeUp 0.5s ease both;
+    }
+    .inst-card:nth-child(1) { animation-delay: 0.05s; }
+    .inst-card:nth-child(2) { animation-delay: 0.1s; }
+    .inst-card:nth-child(3) { animation-delay: 0.15s; }
+    .inst-card:nth-child(4) { animation-delay: 0.2s; }
+    .inst-card:nth-child(5) { animation-delay: 0.25s; }
+    .inst-card:nth-child(6) { animation-delay: 0.3s; }
+
+    .inst-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+      background: linear-gradient(90deg, var(--navy), var(--gold));
+      transform: scaleX(0); transform-origin: left; transition: transform 0.35s;
+    }
+    .inst-card:hover { border-color: #9fa8da; box-shadow: 0 16px 44px rgba(26,35,126,0.13); transform: translateY(-5px); }
+    .inst-card:hover::before { transform: scaleX(1); }
+
+    /* List view card layout */
+    .inst-grid.list-view .inst-card { display: flex; }
+    .inst-grid.list-view .card-body { display: flex; flex: 1; gap: 1.5rem; align-items: flex-start; }
+    .inst-grid.list-view .card-left { flex-shrink: 0; }
+    .inst-grid.list-view .card-middle { flex: 1; min-width: 0; }
+    .inst-grid.list-view .card-right { flex-shrink: 0; display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end; min-width: 130px; }
+    .inst-grid.list-view .card-stats { margin-bottom: 0; }
+
+    .card-body { padding: 1.4rem; }
+
+    .card-header { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1rem; }
+    .card-avatar {
+      width: 54px; height: 54px; border-radius: 15px;
+      background: var(--light); border: 2px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem; flex-shrink: 0;
+    }
+    .card-title h3 {
+      font-family: 'Syne', sans-serif; font-size: 1.05rem;
+      font-weight: 700; color: var(--navy-dark); margin-bottom: 0.2rem;
+    }
+    .card-loc { font-size: 0.79rem; color: var(--muted); }
+
+    .card-rating { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.9rem; }
+    .stars { color: var(--gold); font-size: 0.92rem; }
+    .rnum { font-weight: 800; font-size: 0.9rem; color: var(--navy-dark); }
+    .rcnt { font-size: 0.76rem; color: var(--muted); }
+
+    .card-chips { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1rem; }
+    .chip { background: var(--light); color: var(--navy); padding: 0.2rem 0.65rem; border-radius: 8px; font-size: 0.74rem; font-weight: 700; }
+    .chip.gold { background: var(--gold-pale); color: #b45309; }
+    .chip.new { background: #dcfce7; color: #15803d; }
+
+    .card-stats {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 0.5rem; background: var(--bg);
+      border-radius: 14px; padding: 0.9rem; margin-bottom: 1.2rem;
+    }
+    .cs-lbl { font-size: 0.7rem; color: var(--muted); }
+    .cs-val { font-size: 0.88rem; font-weight: 700; color: var(--navy-dark); }
+
+    .card-footer-btns { display: flex; gap: 0.7rem; }
+    .btn-apply {
+      flex: 1; background: var(--gold); color: var(--navy-dark); border: none;
+      padding: 0.72rem; border-radius: 12px;
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.88rem;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .btn-apply:hover { background: var(--gold-dark); transform: scale(1.02); }
+    .btn-save {
+      width: 44px; background: var(--light); border: none; border-radius: 12px;
+      font-size: 1.1rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+    }
+    .btn-save:hover { background: #c5cae9; }
+    .btn-save.saved { background: var(--gold-pale); }
+
+    /* Compare checkbox */
+    .compare-check {
+      display: flex; align-items: center; gap: 0.4rem;
+      font-size: 0.76rem; color: var(--muted); margin-bottom: 0.7rem;
+      cursor: pointer;
+    }
+    .compare-check input { accent-color: var(--navy); cursor: pointer; }
+
+    /* ── COMPARE BAR ── */
+    .compare-bar {
+      position: fixed; bottom: -80px; left: 50%; transform: translateX(-50%);
+      background: var(--navy-dark); color: white;
+      padding: 1rem 2rem; border-radius: 20px;
+      display: flex; align-items: center; gap: 1.5rem;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      z-index: 500; transition: bottom 0.35s cubic-bezier(0.34,1.56,0.64,1);
+      white-space: nowrap;
+    }
+    .compare-bar.visible { bottom: 24px; }
+    .compare-bar span { font-size: 0.9rem; }
+    .compare-bar strong { color: var(--gold); }
+    .btn-compare-now {
+      background: var(--gold); color: var(--navy-dark); border: none;
+      padding: 0.6rem 1.4rem; border-radius: 25px;
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.85rem;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .btn-compare-now:hover { background: var(--gold-dark); }
+    .btn-clear-compare {
+      background: rgba(255,255,255,0.1); color: white; border: none;
+      padding: 0.6rem 1rem; border-radius: 25px;
+      font-size: 0.82rem; cursor: pointer; transition: all 0.2s;
+    }
+    .btn-clear-compare:hover { background: rgba(255,255,255,0.2); }
+
+    /* ── PAGINATION ── */
+    .pagination {
+      display: flex; justify-content: center; align-items: center;
+      gap: 0.5rem; margin-top: 2.5rem; flex-wrap: wrap;
+    }
+    .page-btn {
+      width: 38px; height: 38px; border-radius: 10px;
+      border: 1.5px solid var(--border); background: white;
+      font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.88rem;
+      color: var(--muted); cursor: pointer; transition: all 0.2s;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .page-btn:hover { border-color: var(--navy); color: var(--navy); }
+    .page-btn.active { background: var(--navy); border-color: var(--navy); color: white; }
+    .page-btn.arrow { font-size: 1rem; }
+
+    /* ── NO RESULTS ── */
+    .no-results {
+      text-align: center; padding: 4rem 2rem;
+      display: none;
+    }
+    .no-results .nr-icon { font-size: 3rem; margin-bottom: 1rem; }
+    .no-results h3 { font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 800; color: var(--navy-dark); margin-bottom: 0.5rem; }
+    .no-results p { font-size: 0.88rem; color: var(--muted); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .main-layout { grid-template-columns: 1fr; }
+      .sidebar { position: static; }
+      .nav-center, .nav-right { display: none; }
+      .hamburger { display: flex; }
+      .inst-grid { grid-template-columns: 1fr; }
+      .inst-grid.list-view .card-body { flex-direction: column; }
+      .inst-grid.list-view .card-right { flex-direction: row; align-items: center; min-width: auto; width: 100%; }
+    }
+    @media (max-width: 560px) {
+      .main-layout { padding: 1rem; }
+      .sort-bar { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <a href="index.html" class="logo">Classi<span>fy</span></a>
+  <ul class="nav-center">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="institutes.html" class="active">Institutes</a></li>
+    <li><a href="compare.html">Compare</a></li>
+    <li><a href="about.html">About</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="login.html" class="btn-ghost">Log In</a>
+    <a href="login.html" class="btn-gold">Sign Up Free</a>
+  </div>
+  <button class="hamburger" id="ham">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html">Home</a>
+  <a href="institutes.html">Institutes</a>
+  <a href="compare.html">Compare</a>
+  <a href="about.html">About</a>
+  <a href="login.html">Log In</a>
+  <a href="login.html">Sign Up Free →</a>
+</div>
+
+<!-- PAGE HERO -->
+<div class="page-hero">
+  <div class="hero-dots"></div>
+  <div class="page-hero-inner">
+    <div class="breadcrumb">
+      <a href="index.html">Home</a>
+      <span>›</span>
+      <span class="current">Institutes</span>
+    </div>
+    <h1>Browse <em>All Institutes</em></h1>
+    <p>Discover and compare coaching centres across India for every competitive exam</p>
+    <div class="hero-search">
+      <div class="hero-search-wrap">
+        <input type="text" id="heroSearch" placeholder="Search by institute name, city or exam…" oninput="liveSearch()"/>
+        <button onclick="liveSearch()">🔍 Search</button>
+      </div>
+    </div>
+    <p class="hero-result-count">Showing <strong id="resultCount">12</strong> institutes</p>
+  </div>
+</div>
+
+<!-- MAIN LAYOUT -->
+<div class="main-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+
+    <!-- Exam Filter -->
+    <div class="filter-card">
+      <div class="filter-header" onclick="toggleFilter('examFilter', this)">
+        <h3>🎯 Exam</h3>
+        <span class="filter-toggle open">▼</span>
+      </div>
+      <div class="filter-body" id="examFilter">
+        <div class="filter-option"><label><input type="checkbox" class="exam-filter" value="JEE" onchange="applyFilters()"/> JEE Main & Advanced</label><span class="filter-count">180</span></div>
+        <div class="filter-option"><label><input type="checkbox" class="exam-filter" value="NEET" onchange="applyFilters()"/> NEET UG</label><span class="filter-count">150</span></div>
+        <div class="filter-option"><label><input type="checkbox" class="exam-filter" value="NDA" onchange="applyFilters()"/> NDA / CDS</label><span class="filter-count">60</span></div>
+        <div class="filter-option"><label><input type="checkbox" class="exam-filter" value="CUET" onchange="applyFilters()"/> CUET</label><span class="filter-count">90</span></div>
+        <div class="filter-option"><label><input type="checkbox" class="exam-filter" value="UPSC" onchange="applyFilters()"/> UPSC CSE</label><span class="filter-count">70</span></div>
+        <div class="filter-option"><label><input type="checkbox" class="exam-filter" value="Banking" onchange="applyFilters()"/> Banking / SSC</label><span class="filter-count">40</span></div>
+      </div>
+    </div>
+
+    <!-- City Filter -->
+    <div class="filter-card">
+      <div class="filter-header" onclick="toggleFilter('cityFilter', this)">
+        <h3>📍 City</h3>
+        <span class="filter-toggle open">▼</span>
+      </div>
+      <div class="filter-body" id="cityFilter">
+        <input type="text" class="city-search" placeholder="Search city…" oninput="filterCities(this)"/>
+        <div id="cityList">
+          <div class="filter-option"><label><input type="checkbox" class="city-filter" value="Kota" onchange="applyFilters()"/> Kota, Rajasthan</label><span class="filter-count">42</span></div>
+          <div class="filter-option"><label><input type="checkbox" class="city-filter" value="Delhi" onchange="applyFilters()"/> Delhi / NCR</label><span class="filter-count">85</span></div>
+          <div class="filter-option"><label><input type="checkbox" class="city-filter" value="Mumbai" onchange="applyFilters()"/> Mumbai</label><span class="filter-count">38</span></div>
+          <div class="filter-option"><label><input type="checkbox" class="city-filter" value="Hyderabad" onchange="applyFilters()"/> Hyderabad</label><span class="filter-count">29</span></div>
+          <div class="filter-option"><label><input type="checkbox" class="city-filter" value="Lucknow" onchange="applyFilters()"/> Lucknow</label><span class="filter-count">22</span></div>
+          <div class="filter-option"><label><input type="checkbox" class="city-filter" value="Chennai" onchange="applyFilters()"/> Chennai</label><span class="filter-count">18</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fees Filter -->
+    <div class="filter-card">
+      <div class="filter-header" onclick="toggleFilter('feesFilter', this)">
+        <h3>💰 Fees Range</h3>
+        <span class="filter-toggle open">▼</span>
+      </div>
+      <div class="filter-body" id="feesFilter">
+        <div class="range-wrap">
+          <div class="range-labels">
+            <span>₹0</span>
+            <strong id="feesVal">Up to ₹2L/yr</strong>
+          </div>
+          <input type="range" min="0" max="300" value="200" step="10"
+            oninput="document.getElementById('feesVal').textContent='Up to ₹'+this.value+'K/yr'; applyFilters()"/>
+        </div>
+        <div style="margin-top:0.8rem; display:flex; flex-direction:column; gap:0.4rem;">
+          <div class="filter-option"><label><input type="checkbox" class="fees-filter" value="under50k" onchange="applyFilters()"/> Under ₹50K</label></div>
+          <div class="filter-option"><label><input type="checkbox" class="fees-filter" value="50k-1l" onchange="applyFilters()"/> ₹50K – ₹1L</label></div>
+          <div class="filter-option"><label><input type="checkbox" class="fees-filter" value="1l-2l" onchange="applyFilters()"/> ₹1L – ₹2L</label></div>
+          <div class="filter-option"><label><input type="checkbox" class="fees-filter" value="above2l" onchange="applyFilters()"/> Above ₹2L</label></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rating Filter -->
+    <div class="filter-card">
+      <div class="filter-header" onclick="toggleFilter('ratingFilter', this)">
+        <h3>⭐ Rating</h3>
+        <span class="filter-toggle open">▼</span>
+      </div>
+      <div class="filter-body" id="ratingFilter">
+        <div class="filter-option"><label><input type="checkbox" class="rating-filter" value="4.5" onchange="applyFilters()"/> ★★★★★ 4.5 & above</label></div>
+        <div class="filter-option"><label><input type="checkbox" class="rating-filter" value="4.0" onchange="applyFilters()"/> ★★★★☆ 4.0 & above</label></div>
+        <div class="filter-option"><label><input type="checkbox" class="rating-filter" value="3.5" onchange="applyFilters()"/> ★★★½☆ 3.5 & above</label></div>
+      </div>
+    </div>
+
+    <!-- Batch Size -->
+    <div class="filter-card">
+      <div class="filter-header" onclick="toggleFilter('batchFilter', this)">
+        <h3>👥 Batch Size</h3>
+        <span class="filter-toggle open">▼</span>
+      </div>
+      <div class="filter-body" id="batchFilter">
+        <div class="filter-option"><label><input type="checkbox" onchange="applyFilters()"/> Small (Under 30)</label></div>
+        <div class="filter-option"><label><input type="checkbox" onchange="applyFilters()"/> Medium (30–60)</label></div>
+        <div class="filter-option"><label><input type="checkbox" onchange="applyFilters()"/> Large (60+)</label></div>
+      </div>
+    </div>
+
+    <button class="clear-btn" onclick="clearFilters()">✕ Clear All Filters</button>
+  </aside>
+
+  <!-- CONTENT -->
+  <div class="content-area">
+
+    <!-- Sort Bar -->
+    <div class="sort-bar">
+      <div class="sort-left">
+        <span>Sort by:</span>
+        <select class="sort-select" onchange="sortCards(this.value)">
+          <option value="rating">Highest Rated</option>
+          <option value="fees-low">Fees: Low to High</option>
+          <option value="fees-high">Fees: High to Low</option>
+          <option value="reviews">Most Reviewed</option>
+          <option value="success">Success Rate</option>
+        </select>
+      </div>
+      <div style="display:flex; align-items:center; gap:1rem;">
+        <span style="font-size:0.82rem; color:var(--muted);">View:</span>
+        <div class="view-btns">
+          <button class="view-btn active" id="gridBtn" onclick="setView('grid')" title="Grid view">⊞</button>
+          <button class="view-btn" id="listBtn" onclick="setView('list')" title="List view">☰</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active filter chips -->
+    <div class="active-filters" id="activeFilters"></div>
+
+    <!-- Cards Grid -->
+    <div class="inst-grid" id="cardsGrid">
+
+      <div class="inst-card" data-exam="JEE,NEET" data-city="Kota" data-rating="4.8" data-fees="150" data-reviews="1530">
+        <div class="card-body">
+          <div class="card-header">
+            <div class="card-avatar">🏫</div>
+            <div class="card-title">
+              <h3>Allen Career Institute</h3>
+              <div class="card-loc">📍 Kota, Rajasthan</div>
+            </div>
+          </div>
+          <div class="card-rating">
+            <span class="stars">★★★★★</span>
+            <span class="rnum">4.8</span>
+            <span class="rcnt">(1,530 reviews)</span>
+          </div>
+          <div class="card-chips">
+            <span class="chip">JEE</span><span class="chip">NEET</span>
+            <span class="chip gold">🏆 Top Ranked</span>
+          </div>
+          <div class="card-stats">
+            <div><div class="cs-lbl">Fees/year</div><div class="cs-val">₹1.2L – 1.8L</div></div>
+            <div><div class="cs-lbl">Batch Size</div><div class="cs-val">60–80</div></div>
+            <div><div class="cs-lbl">Faculty</div><div class="cs-val">IIT/AIIMS</div></div>
+            <div><div class="cs-lbl">Success Rate</div><div class="cs-val">82%</div></div>
+          </div>
+          <label class="compare-check"><input type="checkbox" class="compare-cb" onchange="updateCompare(this, 'Allen Career Institute')"/> Add to Compare</label>
+          <div class="card-footer-btns">
+            <button class="btn-apply" onclick="location.href='login.html'">Apply Now</button>
+            <button class="btn-save" onclick="toggleSave(this)">🔖</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="inst-card" data-exam="NEET,JEE" data-city="Delhi" data-rating="4.7" data-fees="150" data-reviews="2210">
+        <div class="card-body">
+          <div class="card-header">
+            <div class="card-avatar">⚗️</div>
+            <div class="card-title">
+              <h3>Aakash Institute</h3>
+              <div class="card-loc">📍 Delhi, NCR</div>
+            </div>
+          </div>
+          <div class="card-rating">
+            <span class="stars">★★★★★</span>
+            <span class="rnum">4.7</span>
+            <span class="rcnt">(2,210 reviews)</span>
+          </div>
+          <div class="card-chips">
+            <span class="chip">NEET</span><span class="chip">JEE</span>
+            <span class="chip gold">🏆 Top Ranked</span>
+          </div>
+          <div class="card-stats">
+            <div><div class="cs-lbl">Fees/year</div><div class="cs-val">₹1L – 2L</div></div>
+            <div><div class="cs-lbl">Batch Size</div><div class="cs-val">40–60</div></div>
+            <div><div class="cs-lbl">Faculty</div><div class="cs-val">MBBS/IIT</div></div>
+            <div><div class="cs-lbl">Success Rate</div><div class="cs-val">79%</div></div>
+          </div>
+          <label class="compare-check"><input type="checkbox" class="compare-cb" onchange="updateCompare(this, 'Aakash Institute')"/> Add to Compare</label>
+          <div class="card-footer-btns">
+            <button class="btn-apply" onclick="location.href='login.html'">Apply Now</button>
+            <button class="btn-save" onclick="toggleSave(this)">🔖</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="inst-card" data-exam="JEE,CUET" data-city="Kota" data-rating="4.5" data-fees="120" data-reviews="880">
+        <div class="card-body">
+          <div class="card-header">
+            <div class="card-avatar">📚</div>
+            <div class="card-title">
+              <h3>Resonance Institute</h3>
+              <div class="card-loc">📍 Kota, Rajasthan</div>
+            </div>
+          </div>
+          <div class="card-rating">
+            <span class="stars">★★★★☆</span>
+            <span class="rnum">4.5</span>
+            <span class="rcnt">(880 reviews)</span>
+          </div>
+          <div class="card-chips">
+            <span class="chip">JEE</span><span class="chip">CUET</span>
+          </div>
+          <div class="card-stats">
+            <div><div class="cs-lbl">Fees/year</div><div class="cs-val">₹90K – 1.5L</div></div>
+            <div><div class="cs-lbl">Batch Size</div><div class="cs-val">50–70</div></div>
+            <div><div class="cs-lbl">Faculty</div><div class="cs-val">IIT Grads</div></div>
+            <div><div class="cs-lbl">Success Rate</div><div class="cs-val">74%</div></div>
+          </div>
+          <label class="compare-check"><input type="checkbox" class="compare-cb" onchange="updateCompare(this, 'Resonance Institute')"/> Add to Compare</label>
+          <div class="card-footer-btns">
+            <button class="btn-apply" onclick="location.href='login.html'">Apply Now</button>
+            <button class="btn-save" onclick="toggleSave(this)">🔖</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="inst-card" data-exam="NDA,CDS" data-city="Lucknow" data-rating="4.4" data-fees="80" data-reviews="460">
+        <div class="card-body">
+          <div class="card-header">
+            <div class="card-avatar">🎖️</div>
+            <div class="card-title">
+              <h3>Centurion Defence Academy</h3>
+              <div class="card-loc">📍 Lucknow, UP</div>
+            </div>
+          </div>
+          <div class="card-rating">
+            <span class="stars">★★★★☆</span>
+            <span class="rnum">4.4</span>
+            <span class="rcnt">(460 reviews)</span>
+          </div>
+          <div class="card-chips">
+            <span class="chip">NDA</span><span class="chip">CDS</span>
+          </div>
+          <div class="card-stats">
+            <div><div class="cs-lbl">Fees/year</div><div class="cs-val">₹60K – 1L</div></div>
+            <div><div class="cs-lbl">Batch Size</div><div class="cs-val">30–50</div></div>
+            <div><div class="cs-lbl">Faculty</div><div class="cs-val">Ex-Army</div></div>
+            <div><div class="cs-lbl">Success Rate</div><div class="cs-val">68%</div></div>
+          </div>
+          <label class="compare-check"><input type="checkbox" class="compare-cb" onchange="updateCompare(this, 'Centurion Defence Academy')"/> Add to Compare</label>
+          <div class="card-footer-btns">
+            <button class="btn-apply" onclick="location.href='login.html'">Apply Now</button>
+            <button class="btn-save" onclick="toggleSave(this)">🔖</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="inst-card" data-exam="JEE,CUET" data-city="Delhi" data-rating="4.3" data-fees="160" data-reviews="990">
+        <div class="card-body">
+          <div class="card-header">
+            <div class="card-avatar">🔬</div>
+            <div class="card-title">
+              <h3>FIITJEE Delhi</h3>
+              <div class="card-loc">📍 New Delhi</div>
+            </div>
+          </div>
+          <div class="card-rating">
+            <span class="stars">★★★★☆</span>
+            <span class="rnum">4.3</span>
+            <span class="rcnt">(990 reviews)</span>
+          </div>
+          <div class="card-chips">
+            <span class="chip">JEE</span><span class="chip">CUET</span>
+          </div>
+          <div class="card-stats">
+            <div><div class="cs-lbl">Fees/year</div><div class="cs-val">₹1.1L – 1.9L</div></div>
+            <div><div class="cs-lbl">Batch Size</div><div class="cs-val">35–55</div></div>
+            <div><div class="cs-lbl">Faculty</div><div class="cs-val">IIT Grads</div></div>
+            <div><div class="cs-lbl">Success Rate</div><div class="cs-val">71%</div></div>
+          </div>
+          <label class="compare-check"><input type="checkbox" class="compare-cb" onchange="updateCompare(this, 'FIITJEE Delhi')"/> Add to Compare</label>
+          <div class="card-footer-btns">
+            <button class="btn-apply" onclick="location.href='login.html'">Apply Now</button>
+            <button class="btn-save" onclick="toggleSave(this)">🔖</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="inst-card" data-exam="NEET,JEE" data-city="Hyderabad" data-rating="4.2" data-fees="110" data-reviews="1120">
+        <div class="card-body">
+          <div class="card-header">
+            <div class="card-avatar">🧬</div>
+            <div class="card-title">
+              <h3>Narayana Institute</h3>
+              <div class="card-loc">📍 Hyderabad, TS</div>
+            </div>
+          </div>
+          <div class="card-rating">
+            <span class="stars">★★★★☆</span>
+            <span class="rnum">4.2</span>
+            <span class="rcnt">(1,120 reviews)</span>
+          </div>
+          <div class="card-chips">
+            <span class="chip">NEET</span><span class="chip">JEE</span>
+          </div>
+          <div class="card-stats">
+            <div><div class="cs-lbl">Fees/year</div><div class="cs-val">₹75K – 1.3L</div></div>
+            <div><div class="cs-lbl">Batch Size</div><div class="cs-val">50–80</div></div>
+            <div><div class="cs-lbl">Faculty</div><div class="cs-val">MBBS/IIT</div></div>
+            <div><div class="cs-lbl">Success Rate</div><div class="cs-val">76%</div></div>
+          </div>
+          <label class="compare-check"><input type="checkbox" class="compare-cb" onchange="updateCompare(this, 'Narayana Institute')"/> Add to Compare</label>
+          <div class="card-footer-btns">
+            <button class="btn-apply" onclick="location.href='login.html'">Apply Now</button>
+            <button class="btn-save" onclick="toggleSave(this)">🔖</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="inst-card" data-exam="UPSC" data-city="Delhi" data-rating="4.6" data-fees="90" data-reviews="340">
+        <div class="card-body">
+          <div class="card-header">
+            <div class="card-avatar">🏛️</div>
+            <div class="card-title">
+              <h3>Vajiram & Ravi IAS</h3>
+              <div class="card-loc">📍 New Delhi</div>
+            </div>
+          </div>
+          <div class="card-rating">
+            <span class="stars">★★★★★</span>
+            <span class="rnum">4.6</span>
+            <span class="rcnt">(340 reviews)</span>
+          </div>
+          <div class="card-chips">
+            <span class="chip">UPSC</span>
+            <span class="chip gold">🏆 Top Ranked</span>
+          </div>
+          <div class="card-stats">
+            <div><div class="cs-lbl">Fees/year</div><div class="cs-val">₹80K – 1.2L</div></div>
+            <div><div class="cs-lbl">Batch Size</div><div class="cs-val">40–60</div></div>
+            <div><div class="cs-lbl">Faculty</div><div class="cs-val">Ex-IAS/IPS</div></div>
+            <div><div class="cs-lbl">Success Rate</div><div class="cs-val">71%</div></div>
+          </div>
+          <label class="compare-check"><input type="checkbox" class="compare-cb" onchange="updateCompare(this, 'Vajiram & Ravi IAS')"/> Add to Compare</label>
+          <div class="card-footer-btns">
+            <button class="btn-apply" onclick="location.href='login.html'">Apply Now</button>
+            <button class="btn-save" onclick="toggleSave(this)">🔖</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="inst-card" data-exam="Banking" data-city="Mumbai" data-rating="4.1" data-fees="40" data-reviews="620">
+        <div class="card-body">
+          <div class="card-header">
+            <div class="card-avatar">🏦</div>
+            <div class="card-title">
+              <h3>Mahendra's Institute</h3>
+              <div class="card-loc">📍 Mumbai, MH</div>
+            </div>
+          </div>
+          <div class="card-rating">
+            <span class="stars">★★★★☆</span>
+            <span class="rnum">4.1</span>
+            <span class="rcnt">(620 reviews)</span>
+          </div>
+          <div class="card-chips">
+            <span class="chip">Banking</span><span class="chip">SSC</span>
+            <span class="chip new">🆕 New</span>
+          </div>
+          <div class="card-stats">
+            <div><div class="cs-lbl">Fees/year</div><div class="cs-val">₹30K – 55K</div></div>
+            <div><div class="cs-lbl">Batch Size</div><div class="cs-val">40–70</div></div>
+            <div><div class="cs-lbl">Faculty</div><div class="cs-val">Banking Exp.</div></div>
+            <div><div class="cs-lbl">Success Rate</div><div class="cs-val">63%</div></div>
+          </div>
+          <label class="compare-check"><input type="checkbox" class="compare-cb" onchange="updateCompare(this, 'Mahendra\'s Institute')"/> Add to Compare</label>
+          <div class="card-footer-btns">
+            <button class="btn-apply" onclick="location.href='login.html'">Apply Now</button>
+            <button class="btn-save" onclick="toggleSave(this)">🔖</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="inst-card" data-exam="NEET" data-city="Chennai" data-rating="4.4" data-fees="100" data-reviews="510">
+        <div class="card-body">
+          <div class="card-header">
+            <div class="card-avatar">🧪</div>
+            <div class="card-title">
+              <h3>Sri Chaitanya Institute</h3>
+              <div class="card-loc">📍 Chennai, TN</div>
+            </div>
+          </div>
+          <div class="card-rating">
+            <span class="stars">★★★★☆</span>
+            <span class="rnum">4.4</span>
+            <span class="rcnt">(510 reviews)</span>
+          </div>
+          <div class="card-chips">
+            <span class="chip">NEET</span><span class="chip">JEE</span>
+          </div>
+          <div class="card-stats">
+            <div><div class="cs-lbl">Fees/year</div><div class="cs-val">₹80K – 1.4L</div></div>
+            <div><div class="cs-lbl">Batch Size</div><div class="cs-val">45–65</div></div>
+            <div><div class="cs-lbl">Faculty</div><div class="cs-val">MBBS/IIT</div></div>
+            <div><div class="cs-lbl">Success Rate</div><div class="cs-val">72%</div></div>
+          </div>
+          <label class="compare-check"><input type="checkbox" class="compare-cb" onchange="updateCompare(this, 'Sri Chaitanya Institute')"/> Add to Compare</label>
+          <div class="card-footer-btns">
+            <button class="btn-apply" onclick="location.href='login.html'">Apply Now</button>
+            <button class="btn-save" onclick="toggleSave(this)">🔖</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- No results -->
+    <div class="no-results" id="noResults">
+      <div class="nr-icon">🔍</div>
+      <h3>No institutes found</h3>
+      <p>Try adjusting your filters or search query</p>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination">
+      <button class="page-btn arrow">‹</button>
+      <button class="page-btn active">1</button>
+      <button class="page-btn">2</button>
+      <button class="page-btn">3</button>
+      <button class="page-btn">4</button>
+      <button class="page-btn">5</button>
+      <button class="page-btn arrow">›</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- COMPARE BAR -->
+<div class="compare-bar" id="compareBar">
+  <span>Comparing: <strong id="compareNames">0 institutes</strong></span>
+  <button class="btn-compare-now" onclick="location.href='compare.html'">⚖️ Compare Now</button>
+  <button class="btn-clear-compare" onclick="clearCompare()">✕ Clear</button>
+</div>
+
+<script>
+  // Hamburger
+  document.getElementById('ham').addEventListener('click', () => {
+    document.getElementById('mobileMenu').classList.toggle('open');
+  });
+
+  // Toggle filter sections
+  function toggleFilter(id, header) {
+    const body = document.getElementById(id);
+    const toggle = header.querySelector('.filter-toggle');
+    const isOpen = body.style.display !== 'none';
+    body.style.display = isOpen ? 'none' : 'block';
+    toggle.classList.toggle('open', !isOpen);
+  }
+
+  // Live search
+  function liveSearch() {
+    const query = document.getElementById('heroSearch').value.toLowerCase();
+    const cards = document.querySelectorAll('.inst-card');
+    let visible = 0;
+    cards.forEach(card => {
+      const name = card.querySelector('h3').textContent.toLowerCase();
+      const loc  = card.querySelector('.card-loc').textContent.toLowerCase();
+      const exams = card.dataset.exam.toLowerCase();
+      const match = name.includes(query) || loc.includes(query) || exams.includes(query);
+      card.style.display = match ? '' : 'none';
+      if (match) visible++;
+    });
+    document.getElementById('resultCount').textContent = visible;
+    document.getElementById('noResults').style.display = visible === 0 ? 'block' : 'none';
+  }
+
+  // Apply sidebar filters
+  function applyFilters() {
+    const examChecked  = [...document.querySelectorAll('.exam-filter:checked')].map(c => c.value);
+    const cityChecked  = [...document.querySelectorAll('.city-filter:checked')].map(c => c.value);
+    const ratingChecked = [...document.querySelectorAll('.rating-filter:checked')].map(c => parseFloat(c.value));
+
+    const cards = document.querySelectorAll('.inst-card');
+    let visible = 0;
+
+    cards.forEach(card => {
+      const cardExams  = card.dataset.exam;
+      const cardCity   = card.dataset.city;
+      const cardRating = parseFloat(card.dataset.rating);
+
+      const examMatch  = examChecked.length === 0  || examChecked.some(e => cardExams.includes(e));
+      const cityMatch  = cityChecked.length === 0  || cityChecked.some(c => cardCity.includes(c));
+      const ratingMatch = ratingChecked.length === 0 || ratingChecked.some(r => cardRating >= r);
+
+      const show = examMatch && cityMatch && ratingMatch;
+      card.style.display = show ? '' : 'none';
+      if (show) visible++;
+    });
+
+    document.getElementById('resultCount').textContent = visible;
+    document.getElementById('noResults').style.display = visible === 0 ? 'block' : 'none';
+    updateActiveChips();
+  }
+
+  // Update active filter chips
+  function updateActiveChips() {
+    const container = document.getElementById('activeFilters');
+    container.innerHTML = '';
+    const allChecked = document.querySelectorAll('.exam-filter:checked, .city-filter:checked, .rating-filter:checked');
+    allChecked.forEach(cb => {
+      const chip = document.createElement('span');
+      chip.className = 'filter-chip';
+      chip.innerHTML = cb.value + ' <span class="chip-x">✕</span>';
+      chip.onclick = () => { cb.checked = false; applyFilters(); };
+      container.appendChild(chip);
+    });
+  }
+
+  // Clear all filters
+  function clearFilters() {
+    document.querySelectorAll('.exam-filter, .city-filter, .rating-filter, .fees-filter').forEach(cb => cb.checked = false);
+    document.getElementById('heroSearch').value = '';
+    document.querySelectorAll('.inst-card').forEach(c => c.style.display = '');
+    document.getElementById('resultCount').textContent = document.querySelectorAll('.inst-card').length;
+    document.getElementById('activeFilters').innerHTML = '';
+    document.getElementById('noResults').style.display = 'none';
+  }
+
+  // Filter cities in sidebar
+  function filterCities(input) {
+    const query = input.value.toLowerCase();
+    document.querySelectorAll('#cityList .filter-option').forEach(opt => {
+      const label = opt.querySelector('label').textContent.toLowerCase();
+      opt.style.display = label.includes(query) ? '' : 'none';
+    });
+  }
+
+  // Sort cards
+  function sortCards(by) {
+    const grid = document.getElementById('cardsGrid');
+    const cards = [...grid.querySelectorAll('.inst-card')];
+    cards.sort((a, b) => {
+      if (by === 'rating')     return parseFloat(b.dataset.rating) - parseFloat(a.dataset.rating);
+      if (by === 'fees-low')   return parseFloat(a.dataset.fees)   - parseFloat(b.dataset.fees);
+      if (by === 'fees-high')  return parseFloat(b.dataset.fees)   - parseFloat(a.dataset.fees);
+      if (by === 'reviews')    return parseFloat(b.dataset.reviews) - parseFloat(a.dataset.reviews);
+      if (by === 'success')    return parseFloat(b.dataset.rating) - parseFloat(a.dataset.rating);
+      return 0;
+    });
+    cards.forEach(c => grid.appendChild(c));
+  }
+
+  // Grid / List view toggle
+  function setView(view) {
+    const grid = document.getElementById('cardsGrid');
+    const gridBtn = document.getElementById('gridBtn');
+    const listBtn = document.getElementById('listBtn');
+    if (view === 'list') {
+      grid.classList.add('list-view');
+      listBtn.classList.add('active');
+      gridBtn.classList.remove('active');
+    } else {
+      grid.classList.remove('list-view');
+      gridBtn.classList.add('active');
+      listBtn.classList.remove('active');
+    }
+  }
+
+  // Save toggle
+  function toggleSave(btn) {
+    btn.classList.toggle('saved');
+    btn.textContent = btn.classList.contains('saved') ? '❤️' : '🔖';
+  }
+
+  // Compare logic
+  let compareList = [];
+  function updateCompare(cb, name) {
+    if (cb.checked) {
+      if (compareList.length >= 3) {
+        alert('You can compare up to 3 institutes at a time.');
+        cb.checked = false; return;
+      }
+      compareList.push(name);
+    } else {
+      compareList = compareList.filter(n => n !== name);
+    }
+    const bar = document.getElementById('compareBar');
+    const namesEl = document.getElementById('compareNames');
+    if (compareList.length > 0) {
+      bar.classList.add('visible');
+      namesEl.textContent = compareList.join(', ');
+    } else {
+      bar.classList.remove('visible');
+    }
+  }
+
+  function clearCompare() {
+    compareList = [];
+    document.querySelectorAll('.compare-cb').forEach(cb => cb.checked = false);
+    document.getElementById('compareBar').classList.remove('visible');
+  }
+
+  // Pagination
+  document.querySelectorAll('.page-btn:not(.arrow)').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.page-btn:not(.arrow)').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>
 
