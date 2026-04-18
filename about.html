@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Classify – About Us</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy:#1a237e; --navy-dark:#0d1257; --navy-mid:#283593;
+      --gold:#FFC107; --gold-dark:#f9a825; --gold-pale:#FFF8E1;
+      --white:#ffffff; --bg:#f4f5ff; --border:#dde0f5;
+      --text:#0d1257; --muted:#6b7280; --light:#e8eaf6;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family:'Nunito',sans-serif; background:var(--bg); color:var(--text); overflow-x:hidden; }
+
+    /* NAVBAR */
+    nav { position:sticky; top:0; z-index:999; background:var(--navy-dark); height:66px; display:flex; align-items:center; padding:0 2rem; justify-content:space-between; box-shadow:0 2px 24px rgba(13,18,87,0.45); }
+    .logo { font-family:'Syne',sans-serif; font-weight:800; font-size:1.65rem; color:var(--white); text-decoration:none; }
+    .logo span { color:var(--gold); }
+    .nav-center { display:flex; gap:2.2rem; list-style:none; }
+    .nav-center a { color:rgba(255,255,255,0.78); text-decoration:none; font-size:0.95rem; font-weight:600; transition:color 0.2s; }
+    .nav-center a:hover, .nav-center a.active { color:var(--gold); }
+    .nav-right { display:flex; gap:0.8rem; align-items:center; }
+    .btn-ghost { background:transparent; border:2px solid rgba(255,255,255,0.3); color:white; padding:0.42rem 1.1rem; border-radius:25px; font-family:'Syne',sans-serif; font-weight:700; font-size:0.85rem; cursor:pointer; transition:all 0.2s; text-decoration:none; }
+    .btn-ghost:hover { border-color:var(--gold); color:var(--gold); }
+    .btn-gold { background:var(--gold); border:none; color:var(--navy-dark); padding:0.48rem 1.2rem; border-radius:25px; font-family:'Syne',sans-serif; font-weight:800; font-size:0.85rem; cursor:pointer; transition:all 0.2s; text-decoration:none; }
+    .btn-gold:hover { background:var(--gold-dark); }
+    .hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; background:none; border:none; padding:4px; }
+    .hamburger span { width:24px; height:2.5px; background:white; border-radius:3px; display:block; }
+    .mobile-menu { display:none; flex-direction:column; background:var(--navy-dark); padding:1rem 2rem 1.5rem; gap:1rem; border-top:1px solid rgba(255,255,255,0.1); }
+    .mobile-menu a { color:rgba(255,255,255,0.8); text-decoration:none; font-weight:600; font-size:1rem; padding:0.4rem 0; border-bottom:1px solid rgba(255,255,255,0.07); }
+    .mobile-menu.open { display:flex; }
+
+    /* HERO */
+    .hero {
+      background:linear-gradient(140deg,var(--navy-dark) 0%,var(--navy) 60%,#1e3a8a 100%);
+      padding:5rem 2rem;
+      position:relative; overflow:hidden; text-align:center;
+    }
+    .hero::before { content:''; position:absolute; top:-100px; right:-100px; width:450px; height:450px; border-radius:50%; background:radial-gradient(circle,rgba(255,193,7,0.1) 0%,transparent 65%); pointer-events:none; }
+    .hero::after { content:''; position:absolute; bottom:-80px; left:-60px; width:350px; height:350px; border-radius:50%; background:radial-gradient(circle,rgba(255,193,7,0.07) 0%,transparent 65%); pointer-events:none; }
+    .hero-dots { position:absolute; inset:0; background-image:radial-gradient(rgba(255,255,255,0.05) 1px,transparent 1px); background-size:28px 28px; pointer-events:none; }
+    .hero-inner { max-width:700px; margin:0 auto; position:relative; z-index:1; }
+    .hero-badge { display:inline-flex; align-items:center; gap:0.5rem; background:rgba(255,193,7,0.14); border:1px solid rgba(255,193,7,0.3); color:var(--gold); padding:0.35rem 1rem; border-radius:20px; font-size:0.78rem; font-weight:700; letter-spacing:0.8px; text-transform:uppercase; margin-bottom:1.3rem; animation:fadeUp 0.6s ease both; }
+    .hero h1 { font-family:'Syne',sans-serif; font-size:clamp(2rem,5vw,3.2rem); font-weight:800; color:white; line-height:1.15; margin-bottom:1rem; animation:fadeUp 0.6s 0.1s ease both; }
+    .hero h1 em { font-style:normal; color:var(--gold); }
+    .hero p { color:rgba(255,255,255,0.65); font-size:1.05rem; line-height:1.8; margin-bottom:2.2rem; animation:fadeUp 0.6s 0.2s ease both; }
+    .hero-btns { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; animation:fadeUp 0.6s 0.3s ease both; }
+    .btn-hero-gold { background:var(--gold); color:var(--navy-dark); border:none; padding:0.9rem 2rem; border-radius:50px; font-family:'Syne',sans-serif; font-weight:800; font-size:0.95rem; cursor:pointer; transition:all 0.25s; text-decoration:none; display:inline-block; }
+    .btn-hero-gold:hover { background:var(--gold-dark); transform:translateY(-2px); box-shadow:0 8px 24px rgba(255,193,7,0.4); }
+    .btn-hero-outline { background:transparent; color:white; border:2px solid rgba(255,255,255,0.3); padding:0.9rem 2rem; border-radius:50px; font-family:'Syne',sans-serif; font-weight:700; font-size:0.95rem; cursor:pointer; transition:all 0.25s; text-decoration:none; display:inline-block; }
+    .btn-hero-outline:hover { border-color:var(--gold); color:var(--gold); }
+
+    /* STATS STRIP */
+    .stats-strip { background:var(--navy-dark); display:flex; justify-content:center; flex-wrap:wrap; }
+    .stat-item { text-align:center; padding:1.6rem 3rem; border-right:1px solid rgba(255,255,255,0.08); }
+    .stat-item:last-child { border-right:none; }
+    .stat-num { font-family:'Syne',sans-serif; font-size:2rem; font-weight:800; color:var(--gold); }
+    .stat-lbl { font-size:0.8rem; color:rgba(255,255,255,0.5); margin-top:0.2rem; }
+
+    /* SECTIONS */
+    section { padding:5rem 2rem; }
+    .inner { max-width:1100px; margin:0 auto; }
+    .sec-badge { display:inline-flex; align-items:center; gap:0.4rem; background:var(--gold-pale); color:var(--gold-dark); padding:0.3rem 0.9rem; border-radius:20px; font-size:0.76rem; font-weight:700; letter-spacing:0.6px; text-transform:uppercase; margin-bottom:1rem; }
+    .sec-title { font-family:'Syne',sans-serif; font-size:clamp(1.6rem,3vw,2.3rem); font-weight:800; color:var(--navy-dark); margin-bottom:0.8rem; line-height:1.2; }
+    .sec-title em { font-style:normal; color:var(--gold-dark); }
+    .sec-sub { color:var(--muted); font-size:0.95rem; line-height:1.75; max-width:560px; }
+
+    /* MISSION */
+    .mission-section { background:white; }
+    .mission-grid { display:grid; grid-template-columns:1fr 1fr; gap:4rem; align-items:center; }
+    .mission-text p { color:#374151; font-size:0.95rem; line-height:1.8; margin-bottom:1rem; }
+    .mission-visual { position:relative; }
+    .mission-card-stack { position:relative; height:320px; }
+    .mcard {
+      position:absolute; background:white; border-radius:20px;
+      border:1.5px solid var(--border); padding:1.3rem;
+      box-shadow:0 8px 32px rgba(26,35,126,0.1);
+      animation:fadeUp 0.6s ease both;
+    }
+    .mcard-1 { width:260px; top:0; left:0; animation-delay:0.1s; }
+    .mcard-2 { width:240px; top:80px; left:100px; animation-delay:0.25s; background:linear-gradient(135deg,var(--navy-dark),var(--navy)); }
+    .mcard-3 { width:200px; top:190px; left:20px; animation-delay:0.4s; }
+    .mcard-icon { font-size:1.6rem; margin-bottom:0.6rem; }
+    .mcard-title { font-family:'Syne',sans-serif; font-weight:700; font-size:0.88rem; color:var(--navy-dark); margin-bottom:0.3rem; }
+    .mcard-2 .mcard-title { color:white; }
+    .mcard-sub { font-size:0.76rem; color:var(--muted); }
+    .mcard-2 .mcard-sub { color:rgba(255,255,255,0.6); }
+    .mcard-num { font-family:'Syne',sans-serif; font-size:1.6rem; font-weight:800; color:var(--gold); }
+
+    /* VALUES */
+    .values-section { background:var(--bg); }
+    .values-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:1.5rem; margin-top:3rem; }
+    .value-card { background:white; border-radius:20px; border:1.5px solid var(--border); padding:1.8rem; transition:all 0.3s; animation:fadeUp 0.5s ease both; }
+    .value-card:nth-child(1){animation-delay:0.05s}
+    .value-card:nth-child(2){animation-delay:0.1s}
+    .value-card:nth-child(3){animation-delay:0.15s}
+    .value-card:nth-child(4){animation-delay:0.2s}
+    .value-card:nth-child(5){animation-delay:0.25s}
+    .value-card:nth-child(6){animation-delay:0.3s}
+    .value-card:hover { border-color:var(--navy-mid); transform:translateY(-5px); box-shadow:0 12px 32px rgba(26,35,126,0.1); }
+    .vc-icon { width:52px; height:52px; border-radius:16px; background:var(--light); display:flex; align-items:center; justify-content:center; font-size:1.5rem; margin-bottom:1rem; transition:background 0.2s; }
+    .value-card:hover .vc-icon { background:var(--gold); }
+    .vc-title { font-family:'Syne',sans-serif; font-weight:700; font-size:1rem; color:var(--navy-dark); margin-bottom:0.5rem; }
+    .vc-desc { font-size:0.85rem; color:var(--muted); line-height:1.7; }
+
+    /* STORY TIMELINE */
+    .story-section { background:white; }
+    .timeline { position:relative; margin-top:3rem; }
+    .timeline::before { content:''; position:absolute; left:50%; top:0; bottom:0; width:2px; background:var(--border); transform:translateX(-50%); }
+    .tl-item { display:flex; gap:2rem; margin-bottom:2.5rem; align-items:flex-start; }
+    .tl-item:nth-child(even) { flex-direction:row-reverse; }
+    .tl-content { flex:1; background:var(--bg); border-radius:18px; border:1.5px solid var(--border); padding:1.4rem; transition:all 0.2s; animation:fadeUp 0.5s ease both; }
+    .tl-content:hover { border-color:var(--navy-mid); box-shadow:0 8px 24px rgba(26,35,126,0.08); }
+    .tl-dot { width:44px; height:44px; border-radius:50%; background:var(--gold); border:4px solid white; box-shadow:0 0 0 2px var(--navy); display:flex; align-items:center; justify-content:center; font-size:1rem; flex-shrink:0; margin-top:0.5rem; z-index:1; }
+    .tl-space { flex:1; }
+    .tl-year { font-family:'Syne',sans-serif; font-size:0.75rem; font-weight:800; color:var(--gold-dark); letter-spacing:1px; text-transform:uppercase; margin-bottom:0.4rem; }
+    .tl-title { font-family:'Syne',sans-serif; font-weight:700; font-size:0.95rem; color:var(--navy-dark); margin-bottom:0.4rem; }
+    .tl-desc { font-size:0.83rem; color:var(--muted); line-height:1.65; }
+
+    /* TEAM */
+    .team-section { background:var(--bg); }
+    .team-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:1.5rem; margin-top:3rem; }
+    .team-card { background:white; border-radius:20px; border:1.5px solid var(--border); padding:1.8rem; text-align:center; transition:all 0.3s; animation:fadeUp 0.5s ease both; }
+    .team-card:hover { border-color:var(--navy-mid); transform:translateY(-5px); box-shadow:0 12px 32px rgba(26,35,126,0.1); }
+    .team-avatar { width:72px; height:72px; border-radius:50%; margin:0 auto 1rem; display:flex; align-items:center; justify-content:center; font-family:'Syne',sans-serif; font-weight:800; font-size:1.3rem; color:white; border:3px solid white; box-shadow:0 4px 16px rgba(0,0,0,0.15); }
+    .av-1{background:linear-gradient(135deg,#0d1257,#1a237e)}
+    .av-2{background:linear-gradient(135deg,#b71c1c,#e53935)}
+    .av-3{background:linear-gradient(135deg,#1b5e20,#388e3c)}
+    .av-4{background:linear-gradient(135deg,#4a148c,#8e24aa)}
+    .av-5{background:linear-gradient(135deg,#e65100,#fb8c00)}
+    .av-6{background:linear-gradient(135deg,#006064,#00838f)}
+    .team-name { font-family:'Syne',sans-serif; font-weight:700; font-size:1rem; color:var(--navy-dark); margin-bottom:0.2rem; }
+    .team-role { font-size:0.8rem; color:var(--gold-dark); font-weight:700; margin-bottom:0.6rem; }
+    .team-bio { font-size:0.8rem; color:var(--muted); line-height:1.6; }
+
+    /* HOW WE MAKE MONEY */
+    .business-section { background:var(--navy-dark); padding:5rem 2rem; }
+    .business-inner { max-width:1100px; margin:0 auto; }
+    .business-section .sec-badge { background:rgba(255,193,7,0.15); color:var(--gold); border:1px solid rgba(255,193,7,0.3); }
+    .business-section .sec-title { color:white; }
+    .business-section .sec-sub { color:rgba(255,255,255,0.55); }
+    .biz-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1.2rem; margin-top:3rem; }
+    .biz-card { background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); border-radius:20px; padding:1.8rem; transition:all 0.25s; }
+    .biz-card:hover { background:rgba(255,255,255,0.1); transform:translateY(-4px); }
+    .biz-icon { width:50px; height:50px; border-radius:14px; background:var(--gold); display:flex; align-items:center; justify-content:center; font-size:1.4rem; margin-bottom:1rem; }
+    .biz-title { font-family:'Syne',sans-serif; font-weight:700; color:white; font-size:0.95rem; margin-bottom:0.5rem; }
+    .biz-desc { font-size:0.83rem; color:rgba(255,255,255,0.5); line-height:1.7; }
+
+    /* CTA */
+    .cta-section { background:linear-gradient(135deg,var(--gold) 0%,#ffb300 100%); padding:5rem 2rem; text-align:center; position:relative; overflow:hidden; }
+    .cta-section::before { content:''; position:absolute; top:-60px; right:-60px; width:280px; height:280px; background:rgba(255,255,255,0.1); border-radius:50%; }
+    .cta-section::after { content:''; position:absolute; bottom:-80px; left:-40px; width:220px; height:220px; background:rgba(255,255,255,0.08); border-radius:50%; }
+    .cta-section h2 { font-family:'Syne',sans-serif; font-size:clamp(1.8rem,4vw,2.7rem); font-weight:800; color:var(--navy-dark); margin-bottom:0.7rem; position:relative; z-index:1; }
+    .cta-section p { color:rgba(13,18,87,0.7); margin-bottom:2rem; font-size:1rem; position:relative; z-index:1; }
+    .cta-btns { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; position:relative; z-index:1; }
+    .btn-navy { background:var(--navy-dark); color:white; border:none; padding:0.9rem 2.2rem; border-radius:50px; font-family:'Syne',sans-serif; font-weight:800; font-size:0.95rem; cursor:pointer; transition:all 0.2s; text-decoration:none; display:inline-block; }
+    .btn-navy:hover { background:var(--navy); transform:translateY(-2px); }
+    .btn-outline-dark { background:transparent; color:var(--navy-dark); border:2.5px solid var(--navy-dark); padding:0.9rem 2.2rem; border-radius:50px; font-family:'Syne',sans-serif; font-weight:800; font-size:0.95rem; cursor:pointer; transition:all 0.2s; text-decoration:none; display:inline-block; }
+    .btn-outline-dark:hover { background:var(--navy-dark); color:white; }
+
+    /* FOOTER */
+    footer { background:var(--navy-dark); padding:3.5rem 2rem 1.5rem; }
+    .footer-inner { max-width:1100px; margin:0 auto; }
+    .footer-grid { display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:2.5rem; margin-bottom:2.5rem; }
+    .footer-logo { font-family:'Syne',sans-serif; font-weight:800; font-size:1.5rem; color:white; margin-bottom:0.9rem; display:block; text-decoration:none; }
+    .footer-logo span { color:var(--gold); }
+    .footer-desc { font-size:0.85rem; color:rgba(255,255,255,0.5); line-height:1.75; max-width:230px; margin-bottom:1.2rem; }
+    .footer-col h4 { font-family:'Syne',sans-serif; font-weight:700; color:white; font-size:0.92rem; margin-bottom:1.1rem; }
+    .footer-col ul { list-style:none; }
+    .footer-col ul li { margin-bottom:0.55rem; }
+    .footer-col ul li a { color:rgba(255,255,255,0.5); text-decoration:none; font-size:0.85rem; transition:color 0.2s; }
+    .footer-col ul li a:hover { color:var(--gold); }
+    .footer-bottom { border-top:1px solid rgba(255,255,255,0.08); padding-top:1.3rem; display:flex; justify-content:space-between; align-items:center; font-size:0.8rem; color:rgba(255,255,255,0.4); flex-wrap:wrap; gap:0.5rem; }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
+
+    /* RESPONSIVE */
+    @media(max-width:900px){
+      .mission-grid { grid-template-columns:1fr; }
+      .mission-card-stack { display:none; }
+      .timeline::before { left:22px; }
+      .tl-item { flex-direction:row !important; }
+      .tl-space { display:none; }
+      .nav-center,.nav-right { display:none; }
+      .hamburger { display:flex; }
+      .footer-grid { grid-template-columns:1fr 1fr; }
+      .stat-item { padding:1.2rem 1.5rem; flex:1; }
+    }
+    @media(max-width:560px){
+      .footer-grid { grid-template-columns:1fr; }
+      .team-grid { grid-template-columns:1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <a href="index.html" class="logo">Classi<span>fy</span></a>
+  <ul class="nav-center">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="institutes.html">Institutes</a></li>
+    <li><a href="compare.html">Compare</a></li>
+    <li><a href="about.html" class="active">About</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="login.html" class="btn-ghost">Log In</a>
+    <a href="login.html" class="btn-gold">Sign Up Free</a>
+  </div>
+  <button class="hamburger" id="ham"><span></span><span></span><span></span></button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html">Home</a>
+  <a href="institutes.html">Institutes</a>
+  <a href="compare.html">Compare</a>
+  <a href="about.html">About</a>
+  <a href="login.html">Log In</a>
+  <a href="login.html">Sign Up →</a>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-dots"></div>
+  <div class="hero-inner">
+    <div class="hero-badge">🎓 Our Story</div>
+    <h1>We're on a Mission to Help Every Student Find Their <em>Perfect Coaching</em></h1>
+    <p>Classify was built because we know how confusing and stressful it is to choose the right coaching institute. We're here to make that decision simple, transparent and smart.</p>
+    <div class="hero-btns">
+      <a href="institutes.html" class="btn-hero-gold">🔍 Browse Institutes</a>
+      <a href="login.html" class="btn-hero-outline">Join Free →</a>
+    </div>
+  </div>
+</div>
+
+<!-- STATS STRIP -->
+<div class="stats-strip">
+  <div class="stat-item"><div class="stat-num">500+</div><div class="stat-lbl">Institutes Listed</div></div>
+  <div class="stat-item"><div class="stat-num">50K+</div><div class="stat-lbl">Students Helped</div></div>
+  <div class="stat-item"><div class="stat-num">12K+</div><div class="stat-lbl">Verified Reviews</div></div>
+  <div class="stat-item"><div class="stat-num">50+</div><div class="stat-lbl">Cities Covered</div></div>
+</div>
+
+<!-- MISSION -->
+<section class="mission-section">
+  <div class="inner">
+    <div class="mission-grid">
+      <div class="mission-text">
+        <div class="sec-badge">💡 Our Mission</div>
+        <h2 class="sec-title">Making Coaching Discovery <em>Transparent</em> for Every Student</h2>
+        <p class="sec-sub" style="margin-bottom:1.2rem;">Every year, millions of Indian students and parents spend weeks — sometimes months — trying to figure out which coaching institute is right for JEE, NEET, NDA, CUET and other competitive exams.</p>
+        <p style="color:#374151;font-size:0.95rem;line-height:1.8;margin-bottom:1rem;">They rely on word of mouth, random YouTube videos and outdated information. They visit multiple institutes, get confused by sales pitches, and often end up making the wrong choice — wasting lakhs of rupees and a full year.</p>
+        <p style="color:#374151;font-size:0.95rem;line-height:1.8;">Classify was built to fix this. We are India's first dedicated platform where students can discover, compare, and apply to coaching institutes — all in one place, with real verified data and honest student reviews.</p>
+      </div>
+      <div class="mission-visual">
+        <div class="mission-card-stack">
+          <div class="mcard mcard-1">
+            <div class="mcard-icon">🔍</div>
+            <div class="mcard-title">Smart Discovery</div>
+            <div class="mcard-sub">Find institutes by exam, city, budget & rating instantly</div>
+          </div>
+          <div class="mcard mcard-2">
+            <div class="mcard-num">82%</div>
+            <div class="mcard-title">Average Success Rate</div>
+            <div class="mcard-sub">Across top-listed institutes on Classify</div>
+          </div>
+          <div class="mcard mcard-3">
+            <div class="mcard-icon">⭐</div>
+            <div class="mcard-title">Verified Reviews</div>
+            <div class="mcard-sub">Only real students can review</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VALUES -->
+<section class="values-section">
+  <div class="inner" style="text-align:center;">
+    <div class="sec-badge">❤️ What We Stand For</div>
+    <h2 class="sec-title">Our Core <em>Values</em></h2>
+    <p class="sec-sub" style="margin:0 auto;">Everything we build at Classify is guided by these principles</p>
+    <div class="values-grid" style="text-align:left;">
+      <div class="value-card">
+        <div class="vc-icon">🔍</div>
+        <div class="vc-title">Transparency</div>
+        <div class="vc-desc">We show real fees, real batch sizes, and real success rates. No hidden charges, no marketing fluff — just honest information students can trust.</div>
+      </div>
+      <div class="value-card">
+        <div class="vc-icon">⭐</div>
+        <div class="vc-title">Student First</div>
+        <div class="vc-desc">Every decision we make puts students first. We exist to help students make the right choice — not to just generate revenue from institutes.</div>
+      </div>
+      <div class="value-card">
+        <div class="vc-icon">✅</div>
+        <div class="vc-title">Verified Data</div>
+        <div class="vc-desc">All institute data is verified by our team before going live. Reviews are checked for authenticity so you never read a fake review on Classify.</div>
+      </div>
+      <div class="value-card">
+        <div class="vc-icon">🌐</div>
+        <div class="vc-title">Accessibility</div>
+        <div class="vc-desc">Students from Tier 1, Tier 2 and Tier 3 cities deserve the same quality of information. Classify is free for all students, always.</div>
+      </div>
+      <div class="value-card">
+        <div class="vc-icon">⚡</div>
+        <div class="vc-title">Speed & Simplicity</div>
+        <div class="vc-desc">Finding and applying to a coaching institute on Classify takes minutes, not weeks. We respect your time and your preparation schedule.</div>
+      </div>
+      <div class="value-card">
+        <div class="vc-icon">🤝</div>
+        <div class="vc-title">Fair to Institutes</div>
+        <div class="vc-desc">We believe in win-win. We help genuine, quality institutes reach more students — not just the ones who can pay the most for advertising.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STORY TIMELINE -->
+<section class="story-section">
+  <div class="inner">
+    <div style="text-align:center; margin-bottom:0;">
+      <div class="sec-badge">📅 Our Journey</div>
+      <h2 class="sec-title">How Classify <em>Started</em></h2>
+      <p class="sec-sub" style="margin:0 auto;">From an idea to India's coaching discovery platform</p>
+    </div>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-content">
+          <div class="tl-year">2023 — The Problem</div>
+          <div class="tl-title">😤 We Struggled Too</div>
+          <div class="tl-desc">Our founder spent 3 months trying to choose between coaching institutes for JEE. There was no reliable platform. Every source gave different information. The idea for Classify was born out of this frustration.</div>
+        </div>
+        <div class="tl-dot">💡</div>
+        <div class="tl-space"></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-space"></div>
+        <div class="tl-dot">🔨</div>
+        <div class="tl-content">
+          <div class="tl-year">2024 — Building</div>
+          <div class="tl-title">🚀 Started Building Classify</div>
+          <div class="tl-desc">We started building the platform from scratch — designing the database structure, reaching out to institutes for data, and building the first version of the website with a small passionate team.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-content">
+          <div class="tl-year">2024 — First Listings</div>
+          <div class="tl-title">🏫 First 50 Institutes Listed</div>
+          <div class="tl-desc">We onboarded our first 50 coaching institutes across Kota, Delhi and Hyderabad. Students started discovering and comparing institutes on Classify for the first time.</div>
+        </div>
+        <div class="tl-dot">🏫</div>
+        <div class="tl-space"></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-space"></div>
+        <div class="tl-dot">📈</div>
+        <div class="tl-content">
+          <div class="tl-year">2025 — Growing</div>
+          <div class="tl-title">📈 500+ Institutes, 50K+ Students</div>
+          <div class="tl-desc">Classify grew rapidly with 500+ institutes listed across 50 cities. Over 50,000 students used Classify to find and apply to coaching institutes. We expanded to cover JEE, NEET, NDA, CUET, UPSC and Banking exams.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-content">
+          <div class="tl-year">2025 — Now</div>
+          <div class="tl-title">🎯 Building the Future</div>
+          <div class="tl-desc">We're now building institute dashboards, AI-powered recommendations, and expanding to every city in India. Our goal — every student in India should be able to find their perfect coaching on Classify.</div>
+        </div>
+        <div class="tl-dot">🎯</div>
+        <div class="tl-space"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section class="team-section">
+  <div class="inner" style="text-align:center;">
+    <div class="sec-badge">👥 The Team</div>
+    <h2 class="sec-title">The People Behind <em>Classify</em></h2>
+    <p class="sec-sub" style="margin:0 auto;">A small passionate team on a big mission</p>
+    <div class="team-grid" style="text-align:left;">
+      <div class="team-card">
+        <div class="team-avatar av-1">RK</div>
+        <div class="team-name">Rahul Kumar</div>
+        <div class="team-role">Founder & CEO</div>
+        <div class="team-bio">JEE aspirant turned entrepreneur. Built Classify after experiencing the coaching discovery problem firsthand. Passionate about EdTech and student welfare.</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar av-2">PS</div>
+        <div class="team-name">Priya Singh</div>
+        <div class="team-role">Co-Founder & COO</div>
+        <div class="team-bio">Former NEET aspirant. Heads operations and institute partnerships. Has personally onboarded 200+ coaching institutes on Classify across India.</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar av-3">AM</div>
+        <div class="team-name">Arjun Mehta</div>
+        <div class="team-role">Lead Developer</div>
+        <div class="team-bio">Full-stack developer with expertise in React and Node.js. Built the entire Classify platform from scratch. Loves clean code and fast websites.</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar av-4">NK</div>
+        <div class="team-name">Neha Kapoor</div>
+        <div class="team-role">Head of Design</div>
+        <div class="team-bio">UI/UX designer passionate about making complex decisions feel simple. Designed every screen on Classify with students in mind.</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar av-5">VS</div>
+        <div class="team-name">Vikram Sharma</div>
+        <div class="team-role">Head of Growth</div>
+        <div class="team-bio">Digital marketing expert who grew Classify from 0 to 50,000 students. Specialises in SEO, content marketing and student community building.</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar av-6">DG</div>
+        <div class="team-name">Deepa Gupta</div>
+        <div class="team-role">Institute Relations</div>
+        <div class="team-bio">Manages relationships with 500+ coaching institutes across India. Ensures all data on Classify is accurate, up-to-date and verified.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW WE MAKE MONEY -->
+<section class="business-section">
+  <div class="business-inner">
+    <div style="text-align:center; margin-bottom:0;">
+      <div class="sec-badge">💰 Business Model</div>
+      <h2 class="sec-title">How <em>Classify</em> Works as a Business</h2>
+      <p class="sec-sub" style="margin:0 auto;">Classify is completely free for students. Here's how we sustain ourselves.</p>
+    </div>
+    <div class="biz-grid">
+      <div class="biz-card">
+        <div class="biz-icon">🎯</div>
+        <div class="biz-title">Lead Commission</div>
+        <div class="biz-desc">When a student applies to an institute through Classify, the institute pays us a small commission per verified lead. The institute gets a qualified student, the student gets into a great coaching — everyone wins.</div>
+      </div>
+      <div class="biz-card">
+        <div class="biz-icon">⭐</div>
+        <div class="biz-title">Premium Listings</div>
+        <div class="biz-desc">Institutes can pay for a featured/premium listing to appear higher in search results and get a verified badge. This is optional — basic listings are always free.</div>
+      </div>
+      <div class="biz-card">
+        <div class="biz-icon">📊</div>
+        <div class="biz-title">Institute Dashboard</div>
+        <div class="biz-desc">Institutes pay a monthly subscription for access to their dashboard — where they can see lead details, application analytics, and manage their Classify profile.</div>
+      </div>
+      <div class="biz-card">
+        <div class="biz-icon">🤝</div>
+        <div class="biz-title">Always Free for Students</div>
+        <div class="biz-desc">Browsing, comparing, reading reviews and applying through Classify is 100% free for students. No hidden fees, no subscriptions, no tricks. We make money from institutes, not students.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="inner">
+    <h2>Want to Be Part of Our Journey?</h2>
+    <p>Whether you're a student looking for coaching or an institute wanting to reach more students — Classify is for you.</p>
+    <div class="cta-btns">
+      <a href="login.html" class="btn-navy">🎓 Join as Student</a>
+      <a href="login.html" class="btn-outline-dark">🏫 List Your Institute</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div>
+        <a href="index.html" class="footer-logo">Classi<span>fy</span></a>
+        <p class="footer-desc">India's most trusted platform to discover, compare and choose the right coaching institute for every competitive exam.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Exams</h4>
+        <ul>
+          <li><a href="#">JEE Main & Advanced</a></li>
+          <li><a href="#">NEET UG</a></li>
+          <li><a href="#">NDA / CDS</a></li>
+          <li><a href="#">CUET</a></li>
+          <li><a href="#">UPSC CSE</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Platform</h4>
+        <ul>
+          <li><a href="institutes.html">Browse Institutes</a></li>
+          <li><a href="compare.html">Compare</a></li>
+          <li><a href="#">Write a Review</a></li>
+          <li><a href="#">List Your Institute</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="#">Contact</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Use</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 Classify. All rights reserved.</span>
+      <span>Made with ❤️ for Indian students</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('ham').addEventListener('click',()=>document.getElementById('mobileMenu').classList.toggle('open'));
+</script>
+</body>
+</html>
