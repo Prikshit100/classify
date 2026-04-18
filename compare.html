@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Classify – Compare Institutes</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy:#1a237e; --navy-dark:#0d1257; --navy-mid:#283593;
+      --gold:#FFC107; --gold-dark:#f9a825; --gold-pale:#FFF8E1;
+      --white:#ffffff; --bg:#f4f5ff; --card-bg:#ffffff;
+      --border:#dde0f5; --text:#0d1257; --muted:#6b7280; --light:#e8eaf6;
+      --success:#22c55e; --danger:#ef4444;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family:'Nunito',sans-serif; background:var(--bg); color:var(--text); overflow-x:hidden; }
+
+    /* NAVBAR */
+    nav { position:sticky; top:0; z-index:999; background:var(--navy-dark); height:66px; display:flex; align-items:center; padding:0 2rem; justify-content:space-between; box-shadow:0 2px 24px rgba(13,18,87,0.45); }
+    .logo { font-family:'Syne',sans-serif; font-weight:800; font-size:1.65rem; color:var(--white); text-decoration:none; }
+    .logo span { color:var(--gold); }
+    .nav-center { display:flex; gap:2.2rem; list-style:none; }
+    .nav-center a { color:rgba(255,255,255,0.78); text-decoration:none; font-size:0.95rem; font-weight:600; transition:color 0.2s; }
+    .nav-center a:hover, .nav-center a.active { color:var(--gold); }
+    .nav-right { display:flex; gap:0.8rem; align-items:center; }
+    .btn-ghost { background:transparent; border:2px solid rgba(255,255,255,0.3); color:white; padding:0.42rem 1.1rem; border-radius:25px; font-family:'Syne',sans-serif; font-weight:700; font-size:0.85rem; cursor:pointer; transition:all 0.2s; text-decoration:none; }
+    .btn-ghost:hover { border-color:var(--gold); color:var(--gold); }
+    .btn-gold { background:var(--gold); border:none; color:var(--navy-dark); padding:0.48rem 1.2rem; border-radius:25px; font-family:'Syne',sans-serif; font-weight:800; font-size:0.85rem; cursor:pointer; transition:all 0.2s; text-decoration:none; }
+    .btn-gold:hover { background:var(--gold-dark); }
+    .hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; background:none; border:none; padding:4px; }
+    .hamburger span { width:24px; height:2.5px; background:white; border-radius:3px; display:block; }
+    .mobile-menu { display:none; flex-direction:column; background:var(--navy-dark); padding:1rem 2rem 1.5rem; gap:1rem; border-top:1px solid rgba(255,255,255,0.1); }
+    .mobile-menu a { color:rgba(255,255,255,0.8); text-decoration:none; font-weight:600; font-size:1rem; padding:0.4rem 0; border-bottom:1px solid rgba(255,255,255,0.07); }
+    .mobile-menu.open { display:flex; }
+
+    /* PAGE HERO */
+    .page-hero { background:linear-gradient(140deg,var(--navy-dark) 0%,var(--navy) 60%,#1e3a8a 100%); padding:3rem 2rem; position:relative; overflow:hidden; }
+    .page-hero::before { content:''; position:absolute; top:-80px; right:-80px; width:360px; height:360px; border-radius:50%; background:radial-gradient(circle,rgba(255,193,7,0.1) 0%,transparent 65%); pointer-events:none; }
+    .hero-dots { position:absolute; inset:0; background-image:radial-gradient(rgba(255,255,255,0.05) 1px,transparent 1px); background-size:28px 28px; pointer-events:none; }
+    .hero-inner { max-width:1200px; margin:0 auto; position:relative; z-index:1; text-align:center; }
+    .breadcrumb { display:flex; align-items:center; gap:0.5rem; font-size:0.8rem; color:rgba(255,255,255,0.5); margin-bottom:1rem; justify-content:center; }
+    .breadcrumb a { color:rgba(255,255,255,0.5); text-decoration:none; transition:color 0.2s; }
+    .breadcrumb a:hover { color:var(--gold); }
+    .breadcrumb .sep { color:rgba(255,255,255,0.25); }
+    .breadcrumb .current { color:var(--gold); font-weight:600; }
+    .page-hero h1 { font-family:'Syne',sans-serif; font-size:clamp(1.6rem,3.5vw,2.4rem); font-weight:800; color:white; margin-bottom:0.5rem; animation:fadeUp 0.6s ease both; }
+    .page-hero h1 em { font-style:normal; color:var(--gold); }
+    .page-hero p { color:rgba(255,255,255,0.6); font-size:0.95rem; animation:fadeUp 0.6s 0.1s ease both; }
+
+    /* MAIN */
+    .main-wrap { max-width:1200px; margin:0 auto; padding:2.5rem 2rem 4rem; }
+
+    /* INSTITUTE SELECTOR ROW */
+    .selector-row {
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:1.5rem;
+      margin-bottom:2.5rem;
+      animation:fadeUp 0.5s 0.1s ease both;
+    }
+
+    .inst-slot {
+      background:white; border-radius:20px;
+      border:2px dashed var(--border);
+      padding:1.5rem; text-align:center;
+      transition:all 0.3s; position:relative;
+      min-height:160px; display:flex; flex-direction:column;
+      align-items:center; justify-content:center;
+    }
+    .inst-slot.filled { border-style:solid; border-color:var(--navy-mid); }
+    .inst-slot.filled:hover { box-shadow:0 8px 24px rgba(26,35,126,0.1); }
+
+    /* Empty slot */
+    .slot-empty .slot-icon { font-size:2.5rem; margin-bottom:0.8rem; opacity:0.3; }
+    .slot-empty p { font-size:0.85rem; color:var(--muted); margin-bottom:1rem; }
+    .btn-add-inst {
+      background:var(--navy); color:white; border:none;
+      padding:0.6rem 1.3rem; border-radius:25px;
+      font-family:'Syne',sans-serif; font-weight:700; font-size:0.82rem;
+      cursor:pointer; transition:all 0.2s;
+    }
+    .btn-add-inst:hover { background:var(--navy-mid); transform:translateY(-1px); }
+
+    /* Filled slot */
+    .slot-filled { width:100%; }
+    .slot-header { display:flex; align-items:center; gap:0.8rem; margin-bottom:0.8rem; text-align:left; }
+    .slot-avatar { width:48px; height:48px; border-radius:14px; background:var(--light); display:flex; align-items:center; justify-content:center; font-size:1.4rem; flex-shrink:0; }
+    .slot-name { font-family:'Syne',sans-serif; font-weight:700; font-size:0.92rem; color:var(--navy-dark); }
+    .slot-loc { font-size:0.76rem; color:var(--muted); margin-top:0.1rem; }
+    .slot-stars { color:var(--gold); font-size:0.82rem; margin-top:0.1rem; }
+    .slot-chips { display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:0.9rem; }
+    .slot-chip { background:var(--light); color:var(--navy); padding:0.18rem 0.6rem; border-radius:8px; font-size:0.72rem; font-weight:700; }
+    .slot-chip.gold { background:var(--gold-pale); color:#b45309; }
+    .slot-actions { display:flex; gap:0.5rem; width:100%; }
+    .btn-slot-apply { flex:1; background:var(--gold); color:var(--navy-dark); border:none; padding:0.6rem; border-radius:10px; font-family:'Syne',sans-serif; font-weight:800; font-size:0.82rem; cursor:pointer; transition:all 0.2s; }
+    .btn-slot-apply:hover { background:var(--gold-dark); }
+    .btn-slot-remove { width:36px; background:var(--light); border:none; border-radius:10px; font-size:1rem; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; justify-content:center; }
+    .btn-slot-remove:hover { background:#fecaca; }
+
+    /* COMPARE TABLE */
+    .compare-table-wrap {
+      background:white; border-radius:24px;
+      border:1.5px solid var(--border); overflow:hidden;
+      animation:fadeUp 0.5s 0.2s ease both;
+      margin-bottom:1.5rem;
+    }
+
+    /* Sticky section headers */
+    .compare-section-header {
+      background:linear-gradient(135deg,var(--navy-dark),var(--navy));
+      padding:1rem 1.5rem;
+      display:flex; align-items:center; gap:0.6rem;
+    }
+    .compare-section-header span { font-family:'Syne',sans-serif; font-weight:800; font-size:0.95rem; color:white; }
+    .compare-section-header em { font-style:normal; color:var(--gold); }
+
+    /* Table */
+    .ctable { width:100%; border-collapse:collapse; }
+    .ctable tr { border-bottom:1px solid var(--border); transition:background 0.15s; }
+    .ctable tr:last-child { border-bottom:none; }
+    .ctable tr:hover { background:var(--bg); }
+
+    .ctable td { padding:1rem 1.2rem; vertical-align:middle; }
+    .ctable td:first-child {
+      font-weight:700; font-size:0.85rem; color:var(--muted);
+      background:var(--bg); width:200px;
+      border-right:1px solid var(--border);
+    }
+    .ctable td:not(:first-child) { text-align:center; font-size:0.9rem; color:var(--text); font-weight:600; }
+
+    /* winner highlight */
+    .winner { background:rgba(255,193,7,0.08) !important; }
+    .winner-badge { display:inline-flex; align-items:center; gap:0.3rem; background:var(--gold); color:var(--navy-dark); font-size:0.7rem; font-weight:800; padding:0.2rem 0.5rem; border-radius:8px; margin-left:0.4rem; }
+
+    /* Good / Bad indicators */
+    .good { color:var(--success); font-weight:800; }
+    .bad  { color:var(--danger);  font-weight:700; }
+    .mid  { color:var(--gold-dark); font-weight:700; }
+
+    /* Rating stars in table */
+    .tbl-stars { color:var(--gold); font-size:0.85rem; }
+
+    /* Verdict row */
+    .verdict-row td { padding:1.4rem 1.2rem !important; }
+    .verdict-box {
+      border-radius:14px; padding:1rem;
+      text-align:center; font-size:0.82rem;
+    }
+    .verdict-box.best { background:linear-gradient(135deg,rgba(34,197,94,0.12),rgba(34,197,94,0.06)); border:1.5px solid rgba(34,197,94,0.25); }
+    .verdict-box.good2 { background:rgba(255,193,7,0.08); border:1.5px solid rgba(255,193,7,0.25); }
+    .verdict-box.avg { background:var(--bg); border:1.5px solid var(--border); }
+    .verdict-title { font-family:'Syne',sans-serif; font-weight:800; font-size:0.9rem; color:var(--navy-dark); margin-bottom:0.3rem; }
+    .verdict-desc { font-size:0.78rem; color:var(--muted); line-height:1.5; }
+
+    /* QUICK SEARCH MODAL */
+    .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9000; align-items:center; justify-content:center; }
+    .modal-overlay.open { display:flex; }
+    .modal-box { background:white; border-radius:24px; width:90%; max-width:520px; max-height:80vh; overflow-y:auto; animation:fadeUp 0.3s ease both; }
+    .modal-header { background:linear-gradient(135deg,var(--navy-dark),var(--navy)); padding:1.5rem; border-radius:24px 24px 0 0; display:flex; align-items:center; justify-content:space-between; }
+    .modal-header h3 { font-family:'Syne',sans-serif; font-weight:800; color:white; font-size:1rem; }
+    .modal-close { background:rgba(255,255,255,0.1); border:none; color:white; width:32px; height:32px; border-radius:8px; font-size:1rem; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background 0.2s; }
+    .modal-close:hover { background:rgba(255,255,255,0.2); }
+    .modal-search { padding:1rem 1.2rem; border-bottom:1px solid var(--border); }
+    .modal-search input { width:100%; padding:0.75rem 1rem; border:1.5px solid var(--border); border-radius:12px; font-family:'Nunito',sans-serif; font-size:0.9rem; outline:none; transition:border-color 0.2s; }
+    .modal-search input:focus { border-color:var(--navy); }
+    .modal-list { padding:0.8rem; }
+    .modal-inst-item { display:flex; align-items:center; gap:0.8rem; padding:0.85rem 0.8rem; border-radius:12px; cursor:pointer; transition:background 0.2s; border:1.5px solid transparent; margin-bottom:0.5rem; }
+    .modal-inst-item:hover { background:var(--bg); border-color:var(--border); }
+    .modal-inst-item.already-added { opacity:0.45; pointer-events:none; }
+    .mii-icon { width:42px; height:42px; border-radius:12px; background:var(--light); display:flex; align-items:center; justify-content:center; font-size:1.2rem; flex-shrink:0; }
+    .mii-info { flex:1; }
+    .mii-name { font-weight:700; font-size:0.88rem; color:var(--navy-dark); }
+    .mii-meta { font-size:0.74rem; color:var(--muted); }
+    .mii-stars { font-size:0.74rem; color:var(--gold); }
+    .mii-tag { background:var(--light); color:var(--navy); padding:0.15rem 0.5rem; border-radius:8px; font-size:0.7rem; font-weight:700; margin-left:0.4rem; }
+
+    /* SUMMARY CARDS */
+    .summary-row { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; margin-top:1.5rem; animation:fadeUp 0.5s 0.3s ease both; }
+    .summary-card { background:white; border-radius:20px; border:1.5px solid var(--border); padding:1.5rem; }
+    .sc-head { display:flex; align-items:center; gap:0.7rem; margin-bottom:1.2rem; }
+    .sc-avatar { width:48px; height:48px; border-radius:14px; background:var(--light); display:flex; align-items:center; justify-content:center; font-size:1.3rem; flex-shrink:0; }
+    .sc-name { font-family:'Syne',sans-serif; font-weight:700; font-size:0.9rem; color:var(--navy-dark); }
+    .sc-loc { font-size:0.74rem; color:var(--muted); }
+    .sc-stat-list { display:flex; flex-direction:column; gap:0.5rem; }
+    .sc-stat-item { display:flex; justify-content:space-between; align-items:center; font-size:0.83rem; padding:0.4rem 0; border-bottom:1px solid var(--border); }
+    .sc-stat-item:last-child { border-bottom:none; }
+    .sc-stat-lbl { color:var(--muted); }
+    .sc-stat-val { font-weight:700; color:var(--navy-dark); }
+    .btn-apply-summary { width:100%; padding:0.72rem; background:var(--gold); border:none; border-radius:12px; font-family:'Syne',sans-serif; font-weight:800; font-size:0.88rem; color:var(--navy-dark); cursor:pointer; transition:all 0.2s; margin-top:1rem; }
+    .btn-apply-summary:hover { background:var(--gold-dark); transform:translateY(-1px); }
+
+    /* EMPTY STATE */
+    .empty-compare { text-align:center; padding:4rem 2rem; background:white; border-radius:24px; border:1.5px solid var(--border); }
+    .empty-compare .ec-icon { font-size:3.5rem; margin-bottom:1rem; }
+    .empty-compare h3 { font-family:'Syne',sans-serif; font-size:1.2rem; font-weight:800; color:var(--navy-dark); margin-bottom:0.5rem; }
+    .empty-compare p { font-size:0.88rem; color:var(--muted); }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+    /* RESPONSIVE */
+    @media(max-width:900px){
+      .selector-row { grid-template-columns:1fr; }
+      .summary-row { grid-template-columns:1fr; }
+      .nav-center,.nav-right { display:none; }
+      .hamburger { display:flex; }
+      .ctable td:first-child { width:130px; font-size:0.78rem; }
+    }
+    @media(max-width:600px){
+      .ctable { font-size:0.8rem; }
+      .ctable td { padding:0.75rem 0.7rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <a href="index.html" class="logo">Classi<span>fy</span></a>
+  <ul class="nav-center">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="institutes.html">Institutes</a></li>
+    <li><a href="compare.html" class="active">Compare</a></li>
+    <li><a href="about.html">About</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="login.html" class="btn-ghost">Log In</a>
+    <a href="login.html" class="btn-gold">Sign Up Free</a>
+  </div>
+  <button class="hamburger" id="ham"><span></span><span></span><span></span></button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html">Home</a>
+  <a href="institutes.html">Institutes</a>
+  <a href="compare.html">Compare</a>
+  <a href="about.html">About</a>
+  <a href="login.html">Log In</a>
+  <a href="login.html">Sign Up →</a>
+</div>
+
+<!-- HERO -->
+<div class="page-hero">
+  <div class="hero-dots"></div>
+  <div class="hero-inner">
+    <div class="breadcrumb">
+      <a href="index.html">Home</a><span class="sep"> › </span>
+      <span class="current">Compare Institutes</span>
+    </div>
+    <h1>Compare <em>Institutes</em> Side by Side</h1>
+    <p>Select up to 3 institutes and compare fees, faculty, ratings, results & more</p>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main-wrap">
+
+  <!-- SELECTOR ROW -->
+  <div class="selector-row" id="selectorRow">
+
+    <!-- Slot 1 — pre-filled with Allen -->
+    <div class="inst-slot filled" id="slot0">
+      <div class="slot-filled">
+        <div class="slot-header">
+          <div class="slot-avatar">🏫</div>
+          <div>
+            <div class="slot-name">Allen Career Institute</div>
+            <div class="slot-loc">📍 Kota, Rajasthan</div>
+            <div class="slot-stars">★★★★★ 4.8</div>
+          </div>
+        </div>
+        <div class="slot-chips">
+          <span class="slot-chip">JEE</span>
+          <span class="slot-chip">NEET</span>
+          <span class="slot-chip gold">🏆 Top Ranked</span>
+        </div>
+        <div class="slot-actions">
+          <button class="btn-slot-apply" onclick="location.href='apply.html'">Apply Now</button>
+          <button class="btn-slot-remove" onclick="removeSlot(0)" title="Remove">✕</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slot 2 — pre-filled with Aakash -->
+    <div class="inst-slot filled" id="slot1">
+      <div class="slot-filled">
+        <div class="slot-header">
+          <div class="slot-avatar">⚗️</div>
+          <div>
+            <div class="slot-name">Aakash Institute</div>
+            <div class="slot-loc">📍 Delhi, NCR</div>
+            <div class="slot-stars">★★★★★ 4.7</div>
+          </div>
+        </div>
+        <div class="slot-chips">
+          <span class="slot-chip">NEET</span>
+          <span class="slot-chip">JEE</span>
+          <span class="slot-chip gold">🏆 Top Ranked</span>
+        </div>
+        <div class="slot-actions">
+          <button class="btn-slot-apply" onclick="location.href='apply.html'">Apply Now</button>
+          <button class="btn-slot-remove" onclick="removeSlot(1)" title="Remove">✕</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slot 3 — empty -->
+    <div class="inst-slot" id="slot2">
+      <div class="slot-empty">
+        <div class="slot-icon">🏫</div>
+        <p>Add a third institute to compare</p>
+        <button class="btn-add-inst" onclick="openModal(2)">+ Add Institute</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- COMPARE TABLE -->
+  <div class="compare-table-wrap" id="compareTableWrap">
+
+    <!-- OVERVIEW -->
+    <div class="compare-section-header"><span>📋 Overview <em>Comparison</em></span></div>
+    <table class="ctable">
+      <tr>
+        <td>Institute</td>
+        <td>Allen Career Institute</td>
+        <td>Aakash Institute</td>
+        <td class="slot2-col" style="color:var(--muted);font-style:italic;">—</td>
+      </tr>
+      <tr>
+        <td>Location</td>
+        <td>Kota, Rajasthan</td>
+        <td>Delhi, NCR</td>
+        <td class="slot2-col">—</td>
+      </tr>
+      <tr>
+        <td>Established</td>
+        <td>1988</td>
+        <td>1988</td>
+        <td class="slot2-col">—</td>
+      </tr>
+      <tr>
+        <td>Rating</td>
+        <td class="winner"><span class="tbl-stars">★★★★★</span> 4.8 <span class="winner-badge">🏆 Best</span></td>
+        <td><span class="tbl-stars">★★★★★</span> 4.7</td>
+        <td class="slot2-col">—</td>
+      </tr>
+      <tr>
+        <td>Total Reviews</td>
+        <td>1,530</td>
+        <td class="winner">2,210 <span class="winner-badge">🏆 Most</span></td>
+        <td class="slot2-col">—</td>
+      </tr>
+      <tr>
+        <td>Exams Covered</td>
+        <td>JEE, NEET, CUET</td>
+        <td>NEET, JEE, CUET</td>
+        <td class="slot2-col">—</td>
+      </tr>
+      <tr>
+        <td>Study Mode</td>
+        <td>Online + Offline</td>
+        <td>Online + Offline</td>
+        <td class="slot2-col">—</td>
+      </tr>
+    </table>
+
+    <!-- FEES -->
+    <div class="compare-section-header"><span>💰 Fees <em>Comparison</em></span></div>
+    <table class="ctable">
+      <tr>
+        <td>Fees / Year</td>
+        <td>₹1.2L – 1.8L</td>
+        <td>₹1L – 2L</td>
+        <td class="slot2-col">—</td>
+      </tr>
+      <tr>
+        <td>Registration Fee</td>
+        <td>₹500</td>
+        <td class="winner">Free <span class="winner-badge">🏆 Best</span></td>
+        <td class="slot2-col">—</td>
+      </tr>
+      <tr>
+        <td>Scholarship Available</td>
+        <td class="good">✅ Yes</td>
+        <td class="good">✅ Yes</td>
+        <td class="slot2-col">—</td>
+      </tr>
+      <tr>
+        <td>EMI / Instalments</td>
+        <td class="good">✅ Available</td>
+        <td class="good">✅ Available</td>
+        <td class="slot2-col">—</td>
+      </tr>
+      <tr>
+        <td>Hostel (if applicable)</td>
+        <td>₹8K – 12K/month</td>
+        <td class="mid">Not Available</td>
+        <td class="slot2-col">—</td>
+      </tr>
+    </table>
+
+    <!-- FACULTY -->
+    <div class="compare-section-header"><span>👨‍🏫 Faculty <em>Comparison</em></span></div>
+    <table class="ctable">
+      <tr>
+        <td>Total Faculty</td>
+        <td class="winner">500+ <span class="winner-badge">🏆 Most</span></td>
+        <td>300+</td>
+        <td class="slot2-col">—</td>
+      </tr>
+      <tr>
+        <td>Faculty Qualification</td>
+        <td class="winner">IIT/AIIMS <span class="winner-badge">🏆 Best</span></td>
+        <td>MBBS/IIT</td>
+        <td class="slot2-col">—</td>
+      </tr>
+      <tr>
+        <td>Avg. Experience</td>
+        <td class="winner">14+ years <span class="winner-badge">🏆 More</span></td>
+        <td>10+ years</td>
+        <td class="slot2-col">—</td>
+      </tr>
+      <tr>
+        <td>Doubt Sessions</td>
+        <td class="good">✅ Daily</td>
+        <td class="good">✅ Daily</td>
+        <td class="slot2-col">—</td>
+      </tr>
+      <tr>
+        <td>Online Faculty Access</td>
+        <td class="good">✅ Yes</td>
+        <td class="good">✅ Yes</td>
+        <td class="slot2-col">—</td>
+      </tr>
+    </table>
+
+    <!-- BATCH & INFRA -->
+    <div class="compare-section-header"><span>🏫 Batch & <em>Infrastructure</em></span></div>
+    <table class="ctable">
+      <tr>
+        <td>Batch Size</td>
+        <td>60 – 80 students</td>
+        <td class="winner">40 – 60 students <span class="winner-badge">🏆 Smaller</span></td>
+        <td class="slot2-col">—</td>
+      </tr>
+      <tr>
+        <td>Test Series</td>
+        <td class="winner">Weekly <span class="winner-badge">🏆 More</span></td>
+        <td>Bi-weekly</td>
+        <td class="slot2-col">—</td>
+      </tr>
+      <tr>
+        <td>Study Material</td>
+        <td class="winner">Included (Top-rated) <span class="winner-badge">🏆 Best</span></td>
+        <td>Included</td>
+        <td class="slot2-col">—</td>
+      </tr>
+      <tr>
+        <td>Digital App Access</td>
+        <td class="good">✅ Allen App</td>
+        <td class="good">✅ Aakash App</td>
+        <td class="slot2-col">—</td>
+      </tr>
+      <tr>
+        <td>Hostel Facility</td>
+        <td class="good">✅ Available</td>
+        <td class="bad">❌ Not Available</td>
+        <td class="slot2-col">—</td>
+      </tr>
+      <tr>
+        <td>Transport</td>
+        <td class="good">✅ Yes</td>
+        <td class="mid">🔸 Limited</td>
+        <td class="slot2-col">—</td>
+      </tr>
+    </table>
+
+    <!-- RESULTS -->
+    <div class="compare-section-header"><span>🏆 Results & <em>Success</em></span></div>
+    <table class="ctable">
+      <tr>
+        <td>Success Rate</td>
+        <td class="winner">82% <span class="winner-badge">🏆 Higher</span></td>
+        <td>79%</td>
+        <td class="slot2-col">—</td>
+      </tr>
+      <tr>
+        <td>JEE Selections 2024</td>
+        <td class="winner">2,450+ <span class="winner-badge">🏆 More</span></td>
+        <td>1,800+</td>
+        <td class="slot2-col">—</td>
+      </tr>
+      <tr>
+        <td>NEET Selections 2024</td>
+        <td>3,100+</td>
+        <td class="winner">3,400+ <span class="winner-badge">🏆 More</span></td>
+        <td class="slot2-col">—</td>
+      </tr>
+      <tr>
+        <td>AIR Top 100 (JEE)</td>
+        <td class="winner">18 students <span class="winner-badge">🏆 More</span></td>
+        <td>12 students</td>
+        <td class="slot2-col">—</td>
+      </tr>
+      <tr>
+        <td>AIR Top 100 (NEET)</td>
+        <td>9 students</td>
+        <td class="winner">14 students <span class="winner-badge">🏆 More</span></td>
+        <td class="slot2-col">—</td>
+      </tr>
+    </table>
+
+    <!-- VERDICT -->
+    <div class="compare-section-header"><span>🎯 Our <em>Verdict</em></span></div>
+    <table class="ctable">
+      <tr class="verdict-row">
+        <td style="font-weight:700;color:var(--navy-dark);">Best For</td>
+        <td>
+          <div class="verdict-box best">
+            <div class="verdict-title">🥇 Best Overall for JEE</div>
+            <div class="verdict-desc">Allen is the top choice for JEE aspirants. Unmatched study material, larger faculty pool, and proven results over 35 years. Best if you're serious about IIT.</div>
+          </div>
+        </td>
+        <td>
+          <div class="verdict-box good2">
+            <div class="verdict-title">🥈 Best Overall for NEET</div>
+            <div class="verdict-desc">Aakash leads in NEET selections and has a smaller batch size giving more individual attention. Best choice for medical aspirants targeting AIIMS.</div>
+          </div>
+        </td>
+        <td class="slot2-col">
+          <div class="verdict-box avg">
+            <div class="verdict-title">Add an Institute</div>
+            <div class="verdict-desc">Add a third institute to get a full 3-way comparison verdict.</div>
+          </div>
+        </td>
+      </tr>
+    </table>
+
+  </div>
+
+  <!-- SUMMARY CARDS -->
+  <div class="summary-row" id="summaryRow">
+    <div class="summary-card">
+      <div class="sc-head">
+        <div class="sc-avatar">🏫</div>
+        <div><div class="sc-name">Allen Career Institute</div><div class="sc-loc">Kota, Rajasthan</div></div>
+      </div>
+      <div class="sc-stat-list">
+        <div class="sc-stat-item"><span class="sc-stat-lbl">Rating</span><span class="sc-stat-val">★★★★★ 4.8</span></div>
+        <div class="sc-stat-item"><span class="sc-stat-lbl">Fees/year</span><span class="sc-stat-val">₹1.2L – 1.8L</span></div>
+        <div class="sc-stat-item"><span class="sc-stat-lbl">Success Rate</span><span class="sc-stat-val">82%</span></div>
+        <div class="sc-stat-item"><span class="sc-stat-lbl">Best For</span><span class="sc-stat-val">JEE</span></div>
+      </div>
+      <button class="btn-apply-summary" onclick="location.href='apply.html'">🚀 Apply Now</button>
+    </div>
+    <div class="summary-card">
+      <div class="sc-head">
+        <div class="sc-avatar">⚗️</div>
+        <div><div class="sc-name">Aakash Institute</div><div class="sc-loc">Delhi, NCR</div></div>
+      </div>
+      <div class="sc-stat-list">
+        <div class="sc-stat-item"><span class="sc-stat-lbl">Rating</span><span class="sc-stat-val">★★★★★ 4.7</span></div>
+        <div class="sc-stat-item"><span class="sc-stat-lbl">Fees/year</span><span class="sc-stat-val">₹1L – 2L</span></div>
+        <div class="sc-stat-item"><span class="sc-stat-lbl">Success Rate</span><span class="sc-stat-val">79%</span></div>
+        <div class="sc-stat-item"><span class="sc-stat-lbl">Best For</span><span class="sc-stat-val">NEET</span></div>
+      </div>
+      <button class="btn-apply-summary" onclick="location.href='apply.html'">🚀 Apply Now</button>
+    </div>
+    <div class="summary-card" id="summary2" style="display:none;">
+      <div class="sc-head">
+        <div class="sc-avatar" id="sum2Icon">🏫</div>
+        <div><div class="sc-name" id="sum2Name">—</div><div class="sc-loc" id="sum2Loc">—</div></div>
+      </div>
+      <div class="sc-stat-list">
+        <div class="sc-stat-item"><span class="sc-stat-lbl">Rating</span><span class="sc-stat-val" id="sum2Rating">—</span></div>
+        <div class="sc-stat-item"><span class="sc-stat-lbl">Fees/year</span><span class="sc-stat-val" id="sum2Fees">—</span></div>
+        <div class="sc-stat-item"><span class="sc-stat-lbl">Success Rate</span><span class="sc-stat-val" id="sum2Success">—</span></div>
+        <div class="sc-stat-item"><span class="sc-stat-lbl">Best For</span><span class="sc-stat-val" id="sum2Best">—</span></div>
+      </div>
+      <button class="btn-apply-summary" onclick="location.href='apply.html'">🚀 Apply Now</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- ADD INSTITUTE MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3>🔍 Select an Institute to Add</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-search">
+      <input type="text" placeholder="Search institute name or exam…" oninput="filterModal(this.value)" id="modalSearch"/>
+    </div>
+    <div class="modal-list" id="modalList">
+      <div class="modal-inst-item" onclick="addInstitute({icon:'📚',name:'Resonance Institute',loc:'Kota, Rajasthan',stars:'★★★★☆ 4.5',exams:'JEE, CUET',fees:'₹90K–1.5L',success:'74%',best:'JEE'})">
+        <div class="mii-icon">📚</div>
+        <div class="mii-info"><div class="mii-name">Resonance Institute <span class="mii-tag">JEE</span><span class="mii-tag">CUET</span></div><div class="mii-meta">Kota, Rajasthan</div><div class="mii-stars">★★★★☆ 4.5</div></div>
+      </div>
+      <div class="modal-inst-item" onclick="addInstitute({icon:'🎖️',name:'Centurion Defence Academy',loc:'Lucknow, UP',stars:'★★★★☆ 4.4',exams:'NDA, CDS',fees:'₹60K–1L',success:'68%',best:'NDA'})">
+        <div class="mii-icon">🎖️</div>
+        <div class="mii-info"><div class="mii-name">Centurion Defence Academy <span class="mii-tag">NDA</span></div><div class="mii-meta">Lucknow, UP</div><div class="mii-stars">★★★★☆ 4.4</div></div>
+      </div>
+      <div class="modal-inst-item" onclick="addInstitute({icon:'🔬',name:'FIITJEE Delhi',loc:'New Delhi',stars:'★★★★☆ 4.3',exams:'JEE, CUET',fees:'₹1.1L–1.9L',success:'71%',best:'JEE'})">
+        <div class="mii-icon">🔬</div>
+        <div class="mii-info"><div class="mii-name">FIITJEE Delhi <span class="mii-tag">JEE</span></div><div class="mii-meta">New Delhi</div><div class="mii-stars">★★★★☆ 4.3</div></div>
+      </div>
+      <div class="modal-inst-item" onclick="addInstitute({icon:'🧬',name:'Narayana Institute',loc:'Hyderabad, TS',stars:'★★★★☆ 4.2',exams:'NEET, JEE',fees:'₹75K–1.3L',success:'76%',best:'NEET'})">
+        <div class="mii-icon">🧬</div>
+        <div class="mii-info"><div class="mii-name">Narayana Institute <span class="mii-tag">NEET</span><span class="mii-tag">JEE</span></div><div class="mii-meta">Hyderabad, TS</div><div class="mii-stars">★★★★☆ 4.2</div></div>
+      </div>
+      <div class="modal-inst-item" onclick="addInstitute({icon:'🏛️',name:'Vajiram & Ravi IAS',loc:'New Delhi',stars:'★★★★★ 4.6',exams:'UPSC',fees:'₹80K–1.2L',success:'71%',best:'UPSC'})">
+        <div class="mii-icon">🏛️</div>
+        <div class="mii-info"><div class="mii-name">Vajiram & Ravi IAS <span class="mii-tag">UPSC</span></div><div class="mii-meta">New Delhi</div><div class="mii-stars">★★★★★ 4.6</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Hamburger
+  document.getElementById('ham').addEventListener('click',()=>document.getElementById('mobileMenu').classList.toggle('open'));
+
+  let targetSlot = 2;
+
+  function openModal(slot) {
+    targetSlot = slot;
+    document.getElementById('modal').classList.add('open');
+    document.getElementById('modalSearch').value = '';
+    filterModal('');
+  }
+
+  function closeModal() {
+    document.getElementById('modal').classList.remove('open');
+  }
+
+  // Close modal on outside click
+  document.getElementById('modal').addEventListener('click', e => {
+    if(e.target === document.getElementById('modal')) closeModal();
+  });
+
+  function filterModal(q) {
+    const query = q.toLowerCase();
+    document.querySelectorAll('.modal-inst-item').forEach(item => {
+      const text = item.textContent.toLowerCase();
+      item.style.display = text.includes(query) ? '' : 'none';
+    });
+  }
+
+  function addInstitute(data) {
+    const slot = document.getElementById('slot' + targetSlot);
+    slot.classList.add('filled');
+    slot.innerHTML = `
+      <div class="slot-filled">
+        <div class="slot-header">
+          <div class="slot-avatar">${data.icon}</div>
+          <div>
+            <div class="slot-name">${data.name}</div>
+            <div class="slot-loc">📍 ${data.loc}</div>
+            <div class="slot-stars">${data.stars}</div>
+          </div>
+        </div>
+        <div class="slot-chips">
+          ${data.exams.split(', ').map(e=>`<span class="slot-chip">${e}</span>`).join('')}
+        </div>
+        <div class="slot-actions">
+          <button class="btn-slot-apply" onclick="location.href='apply.html'">Apply Now</button>
+          <button class="btn-slot-remove" onclick="removeSlot(${targetSlot})" title="Remove">✕</button>
+        </div>
+      </div>`;
+
+    // Update slot2 columns in table
+    document.querySelectorAll('.slot2-col').forEach(td => {
+      td.style.color = 'var(--text)';
+      td.style.fontStyle = 'normal';
+    });
+    document.querySelectorAll('.slot2-col')[0].textContent = data.name;
+    document.querySelectorAll('.slot2-col')[1].textContent = data.loc;
+    document.querySelectorAll('.slot2-col')[2].textContent = '—';
+    document.querySelectorAll('.slot2-col')[3].innerHTML = `<span class="tbl-stars">★★★★☆</span> ${data.stars.split(' ')[1] || '4.2'}`;
+    document.querySelectorAll('.slot2-col')[4].textContent = '—';
+    document.querySelectorAll('.slot2-col')[5].textContent = data.exams;
+    document.querySelectorAll('.slot2-col')[6].textContent = 'Online + Offline';
+
+    // Update summary card 3
+    document.getElementById('summary2').style.display = 'block';
+    document.getElementById('sum2Icon').textContent = data.icon;
+    document.getElementById('sum2Name').textContent = data.name;
+    document.getElementById('sum2Loc').textContent = data.loc;
+    document.getElementById('sum2Rating').textContent = data.stars;
+    document.getElementById('sum2Fees').textContent = data.fees;
+    document.getElementById('sum2Success').textContent = data.success;
+    document.getElementById('sum2Best').textContent = data.best;
+
+    closeModal();
+  }
+
+  function removeSlot(index) {
+    const slot = document.getElementById('slot' + index);
+    slot.classList.remove('filled');
+    slot.innerHTML = `
+      <div class="slot-empty">
+        <div class="slot-icon">🏫</div>
+        <p>Add an institute to compare</p>
+        <button class="btn-add-inst" onclick="openModal(${index})">+ Add Institute</button>
+      </div>`;
+    if(index === 2) {
+      document.querySelectorAll('.slot2-col').forEach(td => {
+        td.style.color = 'var(--muted)';
+        td.style.fontStyle = 'italic';
+        td.textContent = '—';
+      });
+      document.getElementById('summary2').style.display = 'none';
+    }
+  }
+</script>
+</body>
+</html>
