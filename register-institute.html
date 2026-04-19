@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Classify – List Your Institute</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy:#1a237e; --navy-dark:#0d1257; --navy-mid:#283593;
+      --gold:#FFC107; --gold-dark:#f9a825; --gold-pale:#FFF8E1;
+      --white:#ffffff; --bg:#f4f5ff; --border:#dde0f5;
+      --text:#0d1257; --muted:#6b7280; --light:#e8eaf6;
+      --success:#22c55e; --error:#ef4444;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family:'Nunito',sans-serif; background:var(--bg); color:var(--text); overflow-x:hidden; }
+
+    /* NAVBAR */
+    nav { position:sticky; top:0; z-index:999; background:var(--navy-dark); height:66px; display:flex; align-items:center; padding:0 2rem; justify-content:space-between; box-shadow:0 2px 24px rgba(13,18,87,0.45); }
+    .logo { font-family:'Syne',sans-serif; font-weight:800; font-size:1.65rem; color:var(--white); text-decoration:none; }
+    .logo span { color:var(--gold); }
+    .nav-right { display:flex; gap:0.8rem; align-items:center; }
+    .btn-ghost { background:transparent; border:2px solid rgba(255,255,255,0.3); color:white; padding:0.42rem 1.1rem; border-radius:25px; font-family:'Syne',sans-serif; font-weight:700; font-size:0.85rem; cursor:pointer; transition:all 0.2s; text-decoration:none; }
+    .btn-ghost:hover { border-color:var(--gold); color:var(--gold); }
+    .nav-center { display:flex; gap:2.2rem; list-style:none; }
+    .nav-center a { color:rgba(255,255,255,0.78); text-decoration:none; font-size:0.95rem; font-weight:600; transition:color 0.2s; }
+    .nav-center a:hover { color:var(--gold); }
+    .hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; background:none; border:none; padding:4px; }
+    .hamburger span { width:24px; height:2.5px; background:white; border-radius:3px; display:block; }
+    .mobile-menu { display:none; flex-direction:column; background:var(--navy-dark); padding:1rem 2rem 1.5rem; gap:1rem; border-top:1px solid rgba(255,255,255,0.1); }
+    .mobile-menu a { color:rgba(255,255,255,0.8); text-decoration:none; font-weight:600; font-size:1rem; padding:0.4rem 0; border-bottom:1px solid rgba(255,255,255,0.07); }
+    .mobile-menu.open { display:flex; }
+
+    /* PROGRESS BAR */
+    .progress-wrap { background:var(--navy-dark); padding:0 2rem 1.4rem; }
+    .progress-inner { max-width:900px; margin:0 auto; }
+    .steps-row { display:flex; align-items:center; }
+    .step-item { display:flex; align-items:center; flex:1; }
+    .step-circle { width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'Syne',sans-serif; font-weight:800; font-size:0.8rem; flex-shrink:0; transition:all 0.3s; border:2px solid rgba(255,255,255,0.2); color:rgba(255,255,255,0.4); }
+    .step-circle.active { background:var(--gold); border-color:var(--gold); color:var(--navy-dark); }
+    .step-circle.done { background:var(--success); border-color:var(--success); color:white; }
+    .step-label { font-size:0.7rem; font-weight:700; color:rgba(255,255,255,0.4); margin-left:0.45rem; white-space:nowrap; transition:color 0.3s; }
+    .step-label.active { color:var(--gold); }
+    .step-label.done { color:var(--success); }
+    .step-line { flex:1; height:2px; background:rgba(255,255,255,0.12); margin:0 0.6rem; transition:background 0.3s; }
+    .step-line.done { background:var(--success); }
+
+    /* HERO */
+    .page-hero { background:linear-gradient(140deg,var(--navy-dark) 0%,var(--navy) 60%,#1e3a8a 100%); padding:3rem 2rem; position:relative; overflow:hidden; }
+    .page-hero::before { content:''; position:absolute; top:-80px; right:-80px; width:360px; height:360px; border-radius:50%; background:radial-gradient(circle,rgba(255,193,7,0.1) 0%,transparent 65%); pointer-events:none; }
+    .hero-dots { position:absolute; inset:0; background-image:radial-gradient(rgba(255,255,255,0.05) 1px,transparent 1px); background-size:28px 28px; pointer-events:none; }
+    .hero-inner { max-width:900px; margin:0 auto; position:relative; z-index:1; display:grid; grid-template-columns:1fr 1fr; gap:3rem; align-items:center; }
+    .hero-text { animation:fadeUp 0.6s ease both; }
+    .hero-badge { display:inline-flex; align-items:center; gap:0.4rem; background:rgba(255,193,7,0.14); border:1px solid rgba(255,193,7,0.3); color:var(--gold); padding:0.3rem 0.9rem; border-radius:20px; font-size:0.76rem; font-weight:700; letter-spacing:0.8px; text-transform:uppercase; margin-bottom:1rem; }
+    .hero-text h1 { font-family:'Syne',sans-serif; font-size:clamp(1.5rem,3vw,2.2rem); font-weight:800; color:white; margin-bottom:0.6rem; line-height:1.2; }
+    .hero-text h1 em { font-style:normal; color:var(--gold); }
+    .hero-text p { color:rgba(255,255,255,0.6); font-size:0.92rem; line-height:1.7; }
+    .hero-benefits { display:flex; flex-direction:column; gap:0.7rem; animation:fadeUp 0.6s 0.15s ease both; }
+    .benefit-item { display:flex; align-items:center; gap:0.8rem; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.1); border-radius:12px; padding:0.8rem 1rem; }
+    .bi-icon { width:36px; height:36px; border-radius:10px; background:var(--gold); display:flex; align-items:center; justify-content:center; font-size:1rem; flex-shrink:0; }
+    .bi-text { font-size:0.84rem; font-weight:600; color:white; }
+    .bi-sub { font-size:0.72rem; color:rgba(255,255,255,0.5); margin-top:0.1rem; }
+
+    /* MAIN */
+    .main-wrap { max-width:900px; margin:2.5rem auto; padding:0 2rem 4rem; }
+
+    /* STEP PANELS */
+    .step-panel { display:none; }
+    .step-panel.active { display:block; animation:fadeUp 0.4s ease both; }
+
+    /* FORM CARDS */
+    .form-card { background:white; border-radius:22px; border:1.5px solid var(--border); overflow:hidden; margin-bottom:1.4rem; }
+    .form-card-header { background:linear-gradient(135deg,var(--navy-dark),var(--navy)); padding:1.2rem 1.8rem; display:flex; align-items:center; gap:0.8rem; }
+    .fch-icon { width:40px; height:40px; border-radius:12px; background:rgba(255,193,7,0.2); border:1px solid rgba(255,193,7,0.3); display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0; }
+    .fch-title { font-family:'Syne',sans-serif; font-weight:800; font-size:1rem; color:white; }
+    .fch-sub { font-size:0.76rem; color:rgba(255,255,255,0.5); margin-top:0.1rem; }
+    .form-card-body { padding:1.8rem; }
+
+    /* INPUTS */
+    .input-row { display:grid; grid-template-columns:1fr 1fr; gap:1.2rem; }
+    .input-row.three { grid-template-columns:1fr 1fr 1fr; }
+    .input-group { margin-bottom:1.2rem; }
+    .input-group:last-child { margin-bottom:0; }
+    .input-group label { display:block; font-size:0.82rem; font-weight:700; color:var(--navy-dark); margin-bottom:0.4rem; }
+    .req { color:var(--error); margin-left:2px; }
+    .input-wrap { position:relative; display:flex; align-items:center; }
+    .input-icon { position:absolute; left:1rem; font-size:1rem; pointer-events:none; opacity:0.4; }
+    .input-wrap input,
+    .input-wrap select,
+    .input-wrap textarea {
+      width:100%; padding:0.8rem 1rem 0.8rem 2.7rem;
+      border:1.5px solid var(--border); border-radius:12px;
+      font-family:'Nunito',sans-serif; font-size:0.9rem;
+      color:var(--text); background:var(--bg); outline:none;
+      transition:border-color 0.2s,box-shadow 0.2s;
+    }
+    .input-wrap input:focus,
+    .input-wrap select:focus,
+    .input-wrap textarea:focus { border-color:var(--navy); background:white; box-shadow:0 0 0 3px rgba(26,35,126,0.08); }
+    .input-wrap input::placeholder,
+    .input-wrap textarea::placeholder { color:#aab; }
+    .input-wrap select { appearance:none; cursor:pointer; }
+    .input-wrap textarea { padding-top:0.8rem; resize:vertical; min-height:100px; }
+    .no-icon input, .no-icon select, .no-icon textarea { padding-left:1rem; }
+
+    /* CHECKBOX */
+    .checkbox-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:0.6rem; }
+    .cb-item { display:flex; align-items:center; gap:0.6rem; background:var(--bg); border:1.5px solid var(--border); border-radius:10px; padding:0.6rem 0.9rem; cursor:pointer; transition:all 0.2s; }
+    .cb-item:hover { border-color:var(--navy-mid); }
+    .cb-item.selected { border-color:var(--navy); background:var(--light); }
+    .cb-item input { accent-color:var(--navy); cursor:pointer; width:15px; height:15px; }
+    .cb-item label { font-size:0.84rem; font-weight:600; color:var(--text); cursor:pointer; }
+
+    /* RADIO */
+    .radio-group { display:flex; gap:0.7rem; flex-wrap:wrap; }
+    .radio-item { display:flex; align-items:center; gap:0.5rem; background:var(--bg); border:1.5px solid var(--border); border-radius:10px; padding:0.6rem 1rem; cursor:pointer; transition:all 0.2s; }
+    .radio-item:hover { border-color:var(--navy-mid); }
+    .radio-item.selected { border-color:var(--navy); background:var(--light); }
+    .radio-item input { accent-color:var(--navy); cursor:pointer; }
+    .radio-item label { font-size:0.84rem; font-weight:600; color:var(--text); cursor:pointer; }
+
+    /* UPLOAD */
+    .upload-area { border:2px dashed var(--border); border-radius:14px; padding:1.5rem; text-align:center; cursor:pointer; transition:all 0.2s; background:var(--bg); }
+    .upload-area:hover { border-color:var(--navy); background:var(--light); }
+    .upload-area .up-icon { font-size:2rem; margin-bottom:0.5rem; }
+    .upload-area p { font-size:0.84rem; color:var(--muted); }
+    .upload-area strong { color:var(--navy); }
+    .upload-area input[type="file"] { display:none; }
+    .uploaded-file { display:none; align-items:center; gap:0.6rem; background:var(--light); border-radius:10px; padding:0.6rem 0.9rem; margin-top:0.6rem; font-size:0.82rem; font-weight:600; color:var(--navy-dark); }
+    .uploaded-file.show { display:flex; }
+
+    /* PLAN CARDS */
+    .plan-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.2rem; }
+    .plan-card { border:2px solid var(--border); border-radius:18px; padding:1.5rem; cursor:pointer; transition:all 0.25s; position:relative; background:white; }
+    .plan-card:hover { border-color:var(--navy-mid); transform:translateY(-3px); }
+    .plan-card.selected { border-color:var(--navy); box-shadow:0 8px 24px rgba(26,35,126,0.15); }
+    .plan-card.recommended::before { content:'⭐ Recommended'; position:absolute; top:-12px; left:50%; transform:translateX(-50%); background:var(--gold); color:var(--navy-dark); font-family:'Syne',sans-serif; font-weight:800; font-size:0.68rem; padding:0.2rem 0.8rem; border-radius:20px; white-space:nowrap; }
+    .plan-name { font-family:'Syne',sans-serif; font-weight:800; font-size:1rem; color:var(--navy-dark); margin-bottom:0.3rem; }
+    .plan-price { font-family:'Syne',sans-serif; font-size:1.6rem; font-weight:800; color:var(--gold-dark); margin-bottom:0.3rem; }
+    .plan-price span { font-size:0.8rem; font-weight:600; color:var(--muted); }
+    .plan-desc { font-size:0.78rem; color:var(--muted); margin-bottom:1rem; line-height:1.5; }
+    .plan-features { display:flex; flex-direction:column; gap:0.4rem; }
+    .plan-feat { font-size:0.78rem; color:var(--text); display:flex; align-items:center; gap:0.4rem; }
+    .plan-feat::before { content:'✅'; font-size:0.7rem; }
+    .plan-select-btn { width:100%; padding:0.65rem; margin-top:1rem; border:2px solid var(--navy); border-radius:12px; background:transparent; font-family:'Syne',sans-serif; font-weight:700; font-size:0.84rem; color:var(--navy); cursor:pointer; transition:all 0.2s; }
+    .plan-card.selected .plan-select-btn { background:var(--navy); color:white; }
+
+    /* NAV BUTTONS */
+    .form-nav { display:flex; justify-content:space-between; align-items:center; margin-top:2rem; }
+    .btn-prev { background:var(--light); border:none; padding:0.85rem 2rem; border-radius:50px; font-family:'Syne',sans-serif; font-weight:700; font-size:0.92rem; color:var(--navy); cursor:pointer; transition:all 0.2s; }
+    .btn-prev:hover { background:var(--border); }
+    .btn-next { background:var(--gold); border:none; padding:0.85rem 2.2rem; border-radius:50px; font-family:'Syne',sans-serif; font-weight:800; font-size:0.92rem; color:var(--navy-dark); cursor:pointer; transition:all 0.25s; }
+    .btn-next:hover { background:var(--gold-dark); transform:translateY(-2px); box-shadow:0 8px 24px rgba(255,193,7,0.35); }
+    .step-counter { font-size:0.82rem; color:var(--muted); font-weight:600; }
+
+    /* SUCCESS */
+    .success-screen { display:none; text-align:center; padding:4rem 2rem; background:white; border-radius:24px; border:1.5px solid var(--border); animation:fadeUp 0.6s ease both; }
+    .success-screen.show { display:block; }
+    .success-icon { width:90px; height:90px; border-radius:50%; background:linear-gradient(135deg,#22c55e,#16a34a); display:flex; align-items:center; justify-content:center; font-size:2.5rem; margin:0 auto 1.5rem; animation:popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both; }
+    @keyframes popIn { from{transform:scale(0);opacity:0} to{transform:scale(1);opacity:1} }
+    .success-screen h2 { font-family:'Syne',sans-serif; font-size:1.8rem; font-weight:800; color:var(--navy-dark); margin-bottom:0.6rem; }
+    .success-screen p { color:var(--muted); font-size:0.95rem; margin-bottom:2rem; line-height:1.7; max-width:500px; margin-left:auto; margin-right:auto; }
+    .success-details { background:var(--bg); border-radius:18px; border:1.5px solid var(--border); padding:1.4rem; max-width:460px; margin:0 auto 2rem; text-align:left; }
+    .sd-row { display:flex; justify-content:space-between; padding:0.6rem 0; border-bottom:1px solid var(--border); font-size:0.87rem; }
+    .sd-row:last-child { border-bottom:none; }
+    .sd-lbl { color:var(--muted); }
+    .sd-val { font-weight:700; color:var(--navy-dark); }
+    .success-actions { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; }
+    .btn-dashboard { background:var(--navy-dark); color:white; border:none; padding:0.85rem 2rem; border-radius:50px; font-family:'Syne',sans-serif; font-weight:800; font-size:0.9rem; cursor:pointer; transition:all 0.2s; text-decoration:none; display:inline-block; }
+    .btn-dashboard:hover { background:var(--navy); transform:translateY(-2px); }
+    .btn-home { background:var(--light); color:var(--navy); border:none; padding:0.85rem 2rem; border-radius:50px; font-family:'Syne',sans-serif; font-weight:700; font-size:0.9rem; cursor:pointer; transition:all 0.2s; text-decoration:none; display:inline-block; }
+    .btn-home:hover { background:var(--border); }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+    /* RESPONSIVE */
+    @media(max-width:800px){
+      .hero-inner { grid-template-columns:1fr; }
+      .hero-benefits { display:none; }
+      .input-row { grid-template-columns:1fr; }
+      .input-row.three { grid-template-columns:1fr; }
+      .checkbox-grid { grid-template-columns:1fr 1fr; }
+      .plan-grid { grid-template-columns:1fr; }
+      .nav-center,.nav-right { display:none; }
+      .hamburger { display:flex; }
+      .steps-row { gap:0; }
+      .step-label { display:none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <a href="index.html" class="logo">Classi<span>fy</span></a>
+  <ul class="nav-center">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="institutes.html">Institutes</a></li>
+    <li><a href="about.html">About</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="login.html" class="btn-ghost">Already Registered? Log In</a>
+  </div>
+  <button class="hamburger" id="ham"><span></span><span></span><span></span></button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html">Home</a>
+  <a href="institutes.html">Institutes</a>
+  <a href="about.html">About</a>
+  <a href="login.html">Log In</a>
+</div>
+
+<!-- PROGRESS BAR -->
+<div class="progress-wrap">
+  <div class="progress-inner">
+    <div class="steps-row" id="stepsRow">
+      <div class="step-item">
+        <div class="step-circle active" id="sc0">1</div>
+        <span class="step-label active" id="sl0">Basic Info</span>
+      </div>
+      <div class="step-line" id="line0"></div>
+      <div class="step-item">
+        <div class="step-circle" id="sc1">2</div>
+        <span class="step-label" id="sl1">Institute Details</span>
+      </div>
+      <div class="step-line" id="line1"></div>
+      <div class="step-item">
+        <div class="step-circle" id="sc2">3</div>
+        <span class="step-label" id="sl2">Courses & Faculty</span>
+      </div>
+      <div class="step-line" id="line2"></div>
+      <div class="step-item">
+        <div class="step-circle" id="sc3">4</div>
+        <span class="step-label" id="sl3">Documents</span>
+      </div>
+      <div class="step-line" id="line3"></div>
+      <div class="step-item">
+        <div class="step-circle" id="sc4">5</div>
+        <span class="step-label" id="sl4">Choose Plan</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="page-hero">
+  <div class="hero-dots"></div>
+  <div class="hero-inner">
+    <div class="hero-text">
+      <div class="hero-badge">🏫 For Institutes</div>
+      <h1>List Your Institute on <em>Classify</em> & Get More Students</h1>
+      <p>Join 500+ coaching institutes already on Classify. Reach thousands of students searching for the right coaching every day.</p>
+    </div>
+    <div class="hero-benefits">
+      <div class="benefit-item">
+        <div class="bi-icon">🎯</div>
+        <div><div class="bi-text">Qualified Student Leads</div><div class="bi-sub">Only serious, registered students apply</div></div>
+      </div>
+      <div class="benefit-item">
+        <div class="bi-icon">📊</div>
+        <div><div class="bi-text">Your Own Dashboard</div><div class="bi-sub">See applications, analytics & manage profile</div></div>
+      </div>
+      <div class="benefit-item">
+        <div class="bi-icon">⭐</div>
+        <div><div class="bi-text">Build Trust with Reviews</div><div class="bi-sub">Genuine student reviews boost admissions</div></div>
+      </div>
+      <div class="benefit-item">
+        <div class="bi-icon">💰</div>
+        <div><div class="bi-text">Pay Only for Results</div><div class="bi-sub">Commission only on successful enrollments</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN FORM AREA -->
+<div class="main-wrap">
+
+  <!-- ═══ STEP 1: BASIC INFO ═══ -->
+  <div class="step-panel active" id="step0">
+    <div class="form-card">
+      <div class="form-card-header">
+        <div class="fch-icon">👤</div>
+        <div><div class="fch-title">Contact Person Details</div><div class="fch-sub">Who should we contact about your listing?</div></div>
+      </div>
+      <div class="form-card-body">
+        <div class="input-row">
+          <div class="input-group">
+            <label>First Name <span class="req">*</span></label>
+            <div class="input-wrap"><span class="input-icon">👤</span><input type="text" id="contactFirst" placeholder="Rajesh"/></div>
+          </div>
+          <div class="input-group">
+            <label>Last Name <span class="req">*</span></label>
+            <div class="input-wrap"><span class="input-icon">👤</span><input type="text" id="contactLast" placeholder="Sharma"/></div>
+          </div>
+        </div>
+        <div class="input-row">
+          <div class="input-group">
+            <label>Designation <span class="req">*</span></label>
+            <div class="input-wrap">
+              <span class="input-icon">💼</span>
+              <select id="designation">
+                <option value="" disabled selected>Select designation</option>
+                <option>Director / Owner</option>
+                <option>Principal</option>
+                <option>Admin Manager</option>
+                <option>Marketing Head</option>
+                <option>Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="input-group">
+            <label>Phone Number <span class="req">*</span></label>
+            <div class="input-wrap"><span class="input-icon">📱</span><input type="tel" id="contactPhone" placeholder="+91 98765 43210"/></div>
+          </div>
+        </div>
+        <div class="input-row">
+          <div class="input-group">
+            <label>Email Address <span class="req">*</span></label>
+            <div class="input-wrap"><span class="input-icon">📧</span><input type="email" id="contactEmail" placeholder="director@yourinstitute.com"/></div>
+          </div>
+          <div class="input-group">
+            <label>WhatsApp Number</label>
+            <div class="input-wrap"><span class="input-icon">💬</span><input type="tel" placeholder="Same as phone or different"/></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <div class="form-card-header">
+        <div class="fch-icon">🔒</div>
+        <div><div class="fch-title">Create Account Password</div><div class="fch-sub">You'll use this to log into your institute dashboard</div></div>
+      </div>
+      <div class="form-card-body">
+        <div class="input-row">
+          <div class="input-group">
+            <label>Password <span class="req">*</span></label>
+            <div class="input-wrap"><span class="input-icon">🔒</span><input type="password" id="pwd" placeholder="Min 8 characters"/></div>
+          </div>
+          <div class="input-group">
+            <label>Confirm Password <span class="req">*</span></label>
+            <div class="input-wrap"><span class="input-icon">🔒</span><input type="password" id="pwd2" placeholder="Repeat password"/></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-nav">
+      <span class="step-counter">Step 1 of 5</span>
+      <button class="btn-next" onclick="nextStep(0)">Next — Institute Details →</button>
+    </div>
+  </div>
+
+  <!-- ═══ STEP 2: INSTITUTE DETAILS ═══ -->
+  <div class="step-panel" id="step1">
+    <div class="form-card">
+      <div class="form-card-header">
+        <div class="fch-icon">🏫</div>
+        <div><div class="fch-title">Institute Basic Information</div><div class="fch-sub">Tell students about your institute</div></div>
+      </div>
+      <div class="form-card-body">
+        <div class="input-group">
+          <label>Institute Name <span class="req">*</span></label>
+          <div class="input-wrap"><span class="input-icon">🏫</span><input type="text" id="instName" placeholder="e.g. Sharma Classes, ABC Academy"/></div>
+        </div>
+        <div class="input-row">
+          <div class="input-group">
+            <label>Year Established <span class="req">*</span></label>
+            <div class="input-wrap"><span class="input-icon">📅</span><input type="number" placeholder="e.g. 2010" min="1950" max="2025"/></div>
+          </div>
+          <div class="input-group">
+            <label>Type of Institute <span class="req">*</span></label>
+            <div class="input-wrap">
+              <span class="input-icon">🏛️</span>
+              <select>
+                <option value="" disabled selected>Select type</option>
+                <option>Coaching Institute</option>
+                <option>Tutorial Centre</option>
+                <option>Online Academy</option>
+                <option>Hybrid (Online + Offline)</option>
+                <option>Defence Academy</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="input-group">
+          <label>About Your Institute <span class="req">*</span></label>
+          <div class="input-wrap no-icon"><textarea id="instAbout" placeholder="Describe your institute — teaching methodology, achievements, what makes you unique (min 100 characters)…"></textarea></div>
+        </div>
+        <div class="input-group">
+          <label>Exams You Coach For <span class="req">*</span></label>
+          <div class="checkbox-grid" id="examCbGroup">
+            <div class="cb-item" onclick="toggleCb(this)"><input type="checkbox" value="JEE"/><label>⚛️ JEE Main</label></div>
+            <div class="cb-item" onclick="toggleCb(this)"><input type="checkbox" value="JEE Adv"/><label>🔬 JEE Advanced</label></div>
+            <div class="cb-item" onclick="toggleCb(this)"><input type="checkbox" value="NEET"/><label>🧬 NEET UG</label></div>
+            <div class="cb-item" onclick="toggleCb(this)"><input type="checkbox" value="NDA"/><label>🎖️ NDA / CDS</label></div>
+            <div class="cb-item" onclick="toggleCb(this)"><input type="checkbox" value="CUET"/><label>🎓 CUET</label></div>
+            <div class="cb-item" onclick="toggleCb(this)"><input type="checkbox" value="UPSC"/><label>🏛️ UPSC</label></div>
+            <div class="cb-item" onclick="toggleCb(this)"><input type="checkbox" value="Banking"/><label>🏦 Banking/SSC</label></div>
+            <div class="cb-item" onclick="toggleCb(this)"><input type="checkbox" value="Board"/><label>📚 Board Exams</label></div>
+            <div class="cb-item" onclick="toggleCb(this)"><input type="checkbox" value="Other"/><label>➕ Other</label></div>
+          </div>
+        </div>
+        <div class="input-group" style="margin-top:1.2rem;">
+          <label>Mode of Teaching <span class="req">*</span></label>
+          <div class="radio-group" id="modeRg">
+            <div class="radio-item" onclick="toggleRb(this,'modeRg')"><input type="radio" name="mode"/><label>🏫 Offline Only</label></div>
+            <div class="radio-item" onclick="toggleRb(this,'modeRg')"><input type="radio" name="mode"/><label>💻 Online Only</label></div>
+            <div class="radio-item" onclick="toggleRb(this,'modeRg')"><input type="radio" name="mode"/><label>🔄 Both (Hybrid)</label></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <div class="form-card-header">
+        <div class="fch-icon">📍</div>
+        <div><div class="fch-title">Location & Contact</div><div class="fch-sub">Where can students find you?</div></div>
+      </div>
+      <div class="form-card-body">
+        <div class="input-group">
+          <label>Full Address <span class="req">*</span></label>
+          <div class="input-wrap no-icon"><textarea placeholder="Complete address including street, area, landmark…" style="min-height:70px;"></textarea></div>
+        </div>
+        <div class="input-row three">
+          <div class="input-group">
+            <label>City <span class="req">*</span></label>
+            <div class="input-wrap"><span class="input-icon">🏙️</span><input type="text" placeholder="e.g. Kota"/></div>
+          </div>
+          <div class="input-group">
+            <label>State <span class="req">*</span></label>
+            <div class="input-wrap">
+              <span class="input-icon">🗺️</span>
+              <select>
+                <option value="" disabled selected>Select state</option>
+                <option>Delhi</option><option>Rajasthan</option><option>Uttar Pradesh</option>
+                <option>Maharashtra</option><option>Karnataka</option><option>Tamil Nadu</option>
+                <option>Telangana</option><option>Gujarat</option><option>Bihar</option>
+                <option>West Bengal</option><option>Madhya Pradesh</option><option>Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="input-group">
+            <label>PIN Code <span class="req">*</span></label>
+            <div class="input-wrap"><span class="input-icon">📮</span><input type="text" placeholder="e.g. 324005"/></div>
+          </div>
+        </div>
+        <div class="input-row">
+          <div class="input-group">
+            <label>Institute Phone <span class="req">*</span></label>
+            <div class="input-wrap"><span class="input-icon">📞</span><input type="tel" placeholder="Enquiry helpline number"/></div>
+          </div>
+          <div class="input-group">
+            <label>Institute Website</label>
+            <div class="input-wrap"><span class="input-icon">🌐</span><input type="url" placeholder="https://yourwebsite.com"/></div>
+          </div>
+        </div>
+        <div class="input-row">
+          <div class="input-group">
+            <label>Institute Email <span class="req">*</span></label>
+            <div class="input-wrap"><span class="input-icon">📧</span><input type="email" placeholder="info@yourinstitute.com"/></div>
+          </div>
+          <div class="input-group">
+            <label>Number of Branches</label>
+            <div class="input-wrap">
+              <span class="input-icon">🏫</span>
+              <select>
+                <option value="" disabled selected>Select</option>
+                <option>1 (Single centre)</option>
+                <option>2 – 5</option>
+                <option>6 – 10</option>
+                <option>10+</option>
+                <option>20+</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-nav">
+      <button class="btn-prev" onclick="prevStep(1)">← Back</button>
+      <span class="step-counter">Step 2 of 5</span>
+      <button class="btn-next" onclick="nextStep(1)">Next — Courses & Faculty →</button>
+    </div>
+  </div>
+
+  <!-- ═══ STEP 3: COURSES & FACULTY ═══ -->
+  <div class="step-panel" id="step2">
+    <div class="form-card">
+      <div class="form-card-header">
+        <div class="fch-icon">📚</div>
+        <div><div class="fch-title">Courses & Fees</div><div class="fch-sub">Add the courses you offer with fee details</div></div>
+      </div>
+      <div class="form-card-body">
+        <div id="coursesList">
+          <div class="course-entry" style="background:var(--bg);border-radius:14px;padding:1.2rem;border:1.5px solid var(--border);margin-bottom:1rem;">
+            <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.88rem;color:var(--navy-dark);margin-bottom:0.8rem;">📚 Course 1</div>
+            <div class="input-row">
+              <div class="input-group">
+                <label>Course Name <span class="req">*</span></label>
+                <div class="input-wrap"><span class="input-icon">📖</span><input type="text" placeholder="e.g. JEE Main + Advanced (2 Year)"/></div>
+              </div>
+              <div class="input-group">
+                <label>Duration</label>
+                <div class="input-wrap">
+                  <span class="input-icon">⏱️</span>
+                  <select>
+                    <option>6 Months</option><option>1 Year</option>
+                    <option>2 Years</option><option>3 Years</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="input-row">
+              <div class="input-group">
+                <label>Fees (₹/year) <span class="req">*</span></label>
+                <div class="input-wrap"><span class="input-icon">💰</span><input type="text" placeholder="e.g. 1,20,000"/></div>
+              </div>
+              <div class="input-group">
+                <label>Batch Size</label>
+                <div class="input-wrap"><span class="input-icon">👥</span><input type="text" placeholder="e.g. 40–60 students"/></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button onclick="addCourse()" style="background:var(--light);border:2px dashed var(--border);border-radius:12px;padding:0.7rem 1.4rem;font-family:'Syne',sans-serif;font-weight:700;font-size:0.84rem;color:var(--navy);cursor:pointer;width:100%;transition:all 0.2s;" onmouseover="this.style.background='var(--border)'" onmouseout="this.style.background='var(--light)'">+ Add Another Course</button>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <div class="form-card-header">
+        <div class="fch-icon">👨‍🏫</div>
+        <div><div class="fch-title">Faculty Information</div><div class="fch-sub">Tell students about your teachers</div></div>
+      </div>
+      <div class="form-card-body">
+        <div class="input-row">
+          <div class="input-group">
+            <label>Total Number of Faculty <span class="req">*</span></label>
+            <div class="input-wrap"><span class="input-icon">👨‍🏫</span><input type="number" placeholder="e.g. 25"/></div>
+          </div>
+          <div class="input-group">
+            <label>Average Experience</label>
+            <div class="input-wrap">
+              <span class="input-icon">⏳</span>
+              <select>
+                <option value="" disabled selected>Select</option>
+                <option>1–3 years</option><option>3–5 years</option>
+                <option>5–10 years</option><option>10+ years</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="input-group">
+          <label>Faculty Qualification Background</label>
+          <div class="checkbox-grid">
+            <div class="cb-item" onclick="toggleCb(this)"><input type="checkbox"/><label>🎓 IIT Graduates</label></div>
+            <div class="cb-item" onclick="toggleCb(this)"><input type="checkbox"/><label>🏥 MBBS/AIIMS</label></div>
+            <div class="cb-item" onclick="toggleCb(this)"><input type="checkbox"/><label>🎖️ Ex-Defence</label></div>
+            <div class="cb-item" onclick="toggleCb(this)"><input type="checkbox"/><label>🏛️ Ex-IAS/IPS</label></div>
+            <div class="cb-item" onclick="toggleCb(this)"><input type="checkbox"/><label>📚 M.Sc/M.Tech</label></div>
+            <div class="cb-item" onclick="toggleCb(this)"><input type="checkbox"/><label>🎯 Subject Experts</label></div>
+          </div>
+        </div>
+        <div class="input-row" style="margin-top:1.2rem;">
+          <div class="input-group">
+            <label>Success Rate (%) <span class="req">*</span></label>
+            <div class="input-wrap"><span class="input-icon">📈</span><input type="number" placeholder="e.g. 75" min="0" max="100"/></div>
+          </div>
+          <div class="input-group">
+            <label>Total Selections Till Date</label>
+            <div class="input-wrap"><span class="input-icon">🏆</span><input type="text" placeholder="e.g. 5,000+"/></div>
+          </div>
+        </div>
+        <div class="input-group">
+          <label>Facilities Available</label>
+          <div class="checkbox-grid">
+            <div class="cb-item" onclick="toggleCb(this)"><input type="checkbox"/><label>🏠 Hostel</label></div>
+            <div class="cb-item" onclick="toggleCb(this)"><input type="checkbox"/><label>🚌 Transport</label></div>
+            <div class="cb-item" onclick="toggleCb(this)"><input type="checkbox"/><label>📚 Library</label></div>
+            <div class="cb-item" onclick="toggleCb(this)"><input type="checkbox"/><label>🧪 Lab</label></div>
+            <div class="cb-item" onclick="toggleCb(this)"><input type="checkbox"/><label>📱 Mobile App</label></div>
+            <div class="cb-item" onclick="toggleCb(this)"><input type="checkbox"/><label>🎯 Mock Tests</label></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-nav">
+      <button class="btn-prev" onclick="prevStep(2)">← Back</button>
+      <span class="step-counter">Step 3 of 5</span>
+      <button class="btn-next" onclick="nextStep(2)">Next — Documents →</button>
+    </div>
+  </div>
+
+  <!-- ═══ STEP 4: DOCUMENTS ═══ -->
+  <div class="step-panel" id="step3">
+    <div class="form-card">
+      <div class="form-card-header">
+        <div class="fch-icon">📄</div>
+        <div><div class="fch-title">Verification Documents</div><div class="fch-sub">Required to verify your institute before going live on Classify</div></div>
+      </div>
+      <div class="form-card-body">
+        <div style="background:var(--gold-pale);border:1.5px solid rgba(255,193,7,0.3);border-radius:12px;padding:1rem 1.2rem;margin-bottom:1.5rem;font-size:0.84rem;color:#b45309;display:flex;gap:0.6rem;align-items:flex-start;">
+          <span style="font-size:1.1rem;flex-shrink:0;">ℹ️</span>
+          <span>Your documents are reviewed by our team within <strong>24–48 hours</strong>. Your listing goes live only after verification. All documents are kept strictly confidential.</span>
+        </div>
+        <div class="input-row">
+          <div class="input-group">
+            <label>Institute Registration Certificate <span class="req">*</span></label>
+            <div class="upload-area" onclick="triggerUpload(this)">
+              <div class="up-icon">📋</div>
+              <p><strong>Click to upload</strong></p>
+              <p style="font-size:0.74rem;margin-top:0.2rem;">PDF, JPG · Max 5MB</p>
+              <input type="file" accept=".pdf,.jpg,.png" onchange="showFile(this)"/>
+            </div>
+            <div class="uploaded-file">✅ <span class="fname"></span></div>
+          </div>
+          <div class="input-group">
+            <label>GST Certificate / PAN Card <span class="req">*</span></label>
+            <div class="upload-area" onclick="triggerUpload(this)">
+              <div class="up-icon">🪪</div>
+              <p><strong>Click to upload</strong></p>
+              <p style="font-size:0.74rem;margin-top:0.2rem;">PDF, JPG · Max 5MB</p>
+              <input type="file" accept=".pdf,.jpg,.png" onchange="showFile(this)"/>
+            </div>
+            <div class="uploaded-file">✅ <span class="fname"></span></div>
+          </div>
+        </div>
+        <div class="input-row">
+          <div class="input-group">
+            <label>Institute Logo <span class="req">*</span></label>
+            <div class="upload-area" onclick="triggerUpload(this)">
+              <div class="up-icon">🖼️</div>
+              <p><strong>Click to upload logo</strong></p>
+              <p style="font-size:0.74rem;margin-top:0.2rem;">PNG, JPG · Min 200×200px</p>
+              <input type="file" accept=".jpg,.png" onchange="showFile(this)"/>
+            </div>
+            <div class="uploaded-file">✅ <span class="fname"></span></div>
+          </div>
+          <div class="input-group">
+            <label>Institute Photos (Campus, Classrooms)</label>
+            <div class="upload-area" onclick="triggerUpload(this)">
+              <div class="up-icon">📸</div>
+              <p><strong>Upload up to 5 photos</strong></p>
+              <p style="font-size:0.74rem;margin-top:0.2rem;">JPG, PNG · Max 5MB each</p>
+              <input type="file" accept=".jpg,.png" multiple onchange="showFile(this)"/>
+            </div>
+            <div class="uploaded-file">✅ <span class="fname"></span></div>
+          </div>
+        </div>
+        <div class="input-group">
+          <label>Any Awards / Recognitions (Optional)</label>
+          <div class="upload-area" onclick="triggerUpload(this)">
+            <div class="up-icon">🏆</div>
+            <p><strong>Upload certificates or award photos</strong></p>
+            <p style="font-size:0.74rem;margin-top:0.2rem;">PDF, JPG · Max 5MB each</p>
+            <input type="file" accept=".pdf,.jpg,.png" multiple onchange="showFile(this)"/>
+          </div>
+          <div class="uploaded-file">✅ <span class="fname"></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-nav">
+      <button class="btn-prev" onclick="prevStep(3)">← Back</button>
+      <span class="step-counter">Step 4 of 5</span>
+      <button class="btn-next" onclick="nextStep(3)">Next — Choose Plan →</button>
+    </div>
+  </div>
+
+  <!-- ═══ STEP 5: CHOOSE PLAN ═══ -->
+  <div class="step-panel" id="step4">
+    <div class="form-card">
+      <div class="form-card-header">
+        <div class="fch-icon">💰</div>
+        <div><div class="fch-title">Choose Your Listing Plan</div><div class="fch-sub">Select what works best for your institute</div></div>
+      </div>
+      <div class="form-card-body">
+        <div class="plan-grid">
+          <div class="plan-card" id="plan0" onclick="selectPlan(0)">
+            <div class="plan-name">Basic</div>
+            <div class="plan-price">Free <span>/ forever</span></div>
+            <div class="plan-desc">Perfect to get started and test the platform</div>
+            <div class="plan-features">
+              <div class="plan-feat">Basic institute profile</div>
+              <div class="plan-feat">Listed in search results</div>
+              <div class="plan-feat">Up to 5 student leads/month</div>
+              <div class="plan-feat">1 course listing</div>
+            </div>
+            <button class="plan-select-btn">Select Basic</button>
+          </div>
+
+          <div class="plan-card recommended" id="plan1" onclick="selectPlan(1)">
+            <div class="plan-name">Growth</div>
+            <div class="plan-price">₹2,999 <span>/ month</span></div>
+            <div class="plan-desc">Best for institutes serious about growth</div>
+            <div class="plan-features">
+              <div class="plan-feat">Full verified profile</div>
+              <div class="plan-feat">Featured in search results</div>
+              <div class="plan-feat">Unlimited student leads</div>
+              <div class="plan-feat">Up to 10 course listings</div>
+              <div class="plan-feat">Institute dashboard access</div>
+              <div class="plan-feat">Analytics & insights</div>
+              <div class="plan-feat">Priority support</div>
+            </div>
+            <button class="plan-select-btn">Select Growth</button>
+          </div>
+
+          <div class="plan-card" id="plan2" onclick="selectPlan(2)">
+            <div class="plan-name">Premium</div>
+            <div class="plan-price">₹6,999 <span>/ month</span></div>
+            <div class="plan-desc">Maximum visibility for top institutes</div>
+            <div class="plan-features">
+              <div class="plan-feat">Everything in Growth</div>
+              <div class="plan-feat">Top of search results</div>
+              <div class="plan-feat">Homepage featured spot</div>
+              <div class="plan-feat">Unlimited course listings</div>
+              <div class="plan-feat">Dedicated account manager</div>
+              <div class="plan-feat">Custom branding options</div>
+              <div class="plan-feat">Social media promotion</div>
+            </div>
+            <button class="plan-select-btn">Select Premium</button>
+          </div>
+        </div>
+
+        <div style="background:var(--bg);border-radius:14px;padding:1.2rem;margin-top:1.5rem;border:1.5px solid var(--border);font-size:0.84rem;color:var(--muted);text-align:center;line-height:1.6;">
+          💡 <strong style="color:var(--navy-dark);">Commission Model:</strong> On all plans, Classify charges a small commission only on successful student enrollments. You only pay when we deliver real results.
+        </div>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <div class="form-card-header">
+        <div class="fch-icon">✅</div>
+        <div><div class="fch-title">Terms & Agreement</div><div class="fch-sub">Please read and agree before submitting</div></div>
+      </div>
+      <div class="form-card-body">
+        <div style="display:flex;flex-direction:column;gap:0.8rem;">
+          <label style="display:flex;align-items:flex-start;gap:0.7rem;cursor:pointer;background:var(--bg);border-radius:12px;padding:1rem;border:1.5px solid var(--border);">
+            <input type="checkbox" id="terms1" style="accent-color:var(--navy);width:16px;height:16px;margin-top:2px;flex-shrink:0;"/>
+            <span style="font-size:0.84rem;color:var(--muted);line-height:1.6;">I confirm that all information provided about my institute is <strong style="color:var(--navy-dark);">accurate and truthful</strong>. I understand that false information will result in permanent removal from Classify.</span>
+          </label>
+          <label style="display:flex;align-items:flex-start;gap:0.7rem;cursor:pointer;background:var(--bg);border-radius:12px;padding:1rem;border:1.5px solid var(--border);">
+            <input type="checkbox" id="terms2" style="accent-color:var(--navy);width:16px;height:16px;margin-top:2px;flex-shrink:0;"/>
+            <span style="font-size:0.84rem;color:var(--muted);line-height:1.6;">I agree to Classify's <a href="#" style="color:var(--navy);font-weight:700;">Institute Partner Terms</a>, <a href="#" style="color:var(--navy);font-weight:700;">Commission Policy</a> and <a href="#" style="color:var(--navy);font-weight:700;">Privacy Policy</a>.</span>
+          </label>
+          <label style="display:flex;align-items:flex-start;gap:0.7rem;cursor:pointer;background:var(--bg);border-radius:12px;padding:1rem;border:1.5px solid var(--border);">
+            <input type="checkbox" id="terms3" style="accent-color:var(--navy);width:16px;height:16px;margin-top:2px;flex-shrink:0;"/>
+            <span style="font-size:0.84rem;color:var(--muted);line-height:1.6;">I agree to allow Classify to display student reviews about my institute, including critical ones, as part of our <strong style="color:var(--navy-dark);">transparency commitment</strong>.</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-nav">
+      <button class="btn-prev" onclick="prevStep(4)">← Back</button>
+      <span class="step-counter">Step 5 of 5</span>
+      <button class="btn-next" style="background:var(--success);" onclick="submitRegistration()">🚀 Submit for Verification</button>
+    </div>
+  </div>
+
+  <!-- SUCCESS SCREEN -->
+  <div class="success-screen" id="successScreen">
+    <div class="success-icon">✅</div>
+    <h2>Registration Submitted! 🎉</h2>
+    <p>Your institute has been successfully registered on Classify. Our verification team will review your documents and get back to you within <strong>24–48 hours</strong>.</p>
+    <div class="success-details">
+      <div class="sd-row"><span class="sd-lbl">Registration ID</span><span class="sd-val">#INST-2025-04821</span></div>
+      <div class="sd-row"><span class="sd-lbl">Institute Name</span><span class="sd-val" id="successInstName">—</span></div>
+      <div class="sd-row"><span class="sd-lbl">Plan Selected</span><span class="sd-val" id="successPlan">Growth</span></div>
+      <div class="sd-row"><span class="sd-lbl">Submitted On</span><span class="sd-val" id="successDate">—</span></div>
+      <div class="sd-row"><span class="sd-lbl">Status</span><span class="sd-val" style="color:#f59e0b;">⏳ Under Verification</span></div>
+    </div>
+    <div class="success-actions">
+      <a href="index.html" class="btn-dashboard">Go to Home</a>
+      <a href="institutes.html" class="btn-home">Browse Institutes</a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // Hamburger
+  document.getElementById('ham').addEventListener('click',()=>document.getElementById('mobileMenu').classList.toggle('open'));
+
+  let currentStep = 0;
+  let selectedPlan = -1;
+  const planNames = ['Basic','Growth','Premium'];
+
+  // Step navigation
+  function nextStep(from) {
+    if (!validateStep(from)) return;
+    goToStep(from + 1);
+  }
+  function prevStep(from) { goToStep(from - 1); }
+
+  function goToStep(to) {
+    // Hide current
+    document.getElementById('step' + currentStep).classList.remove('active');
+    // Mark done
+    document.getElementById('sc' + currentStep).className = 'step-circle done';
+    document.getElementById('sc' + currentStep).textContent = '✓';
+    document.getElementById('sl' + currentStep).className = 'step-label done';
+    if (currentStep < 4) {
+      document.getElementById('line' + currentStep).classList.add('done');
+    }
+    currentStep = to;
+    // Show new
+    document.getElementById('step' + currentStep).classList.add('active');
+    document.getElementById('sc' + currentStep).className = 'step-circle active';
+    document.getElementById('sc' + currentStep).textContent = currentStep + 1;
+    document.getElementById('sl' + currentStep).className = 'step-label active';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // Validation per step
+  function validateStep(step) {
+    if (step === 0) {
+      const f = document.getElementById('contactFirst').value.trim();
+      const l = document.getElementById('contactLast').value.trim();
+      const e = document.getElementById('contactEmail').value.trim();
+      const p = document.getElementById('contactPhone').value.trim();
+      const pw = document.getElementById('pwd').value;
+      const pw2 = document.getElementById('pwd2').value;
+      const d = document.getElementById('designation').value;
+      if (!f||!l||!e||!p||!d) { alert('Please fill in all required fields.'); return false; }
+      if (pw.length < 8) { alert('Password must be at least 8 characters.'); return false; }
+      if (pw !== pw2) { alert('Passwords do not match.'); return false; }
+    }
+    if (step === 1) {
+      const n = document.getElementById('instName').value.trim();
+      const a = document.getElementById('instAbout').value.trim();
+      if (!n) { alert('Please enter your institute name.'); return false; }
+      if (a.length < 50) { alert('Please write at least 50 characters about your institute.'); return false; }
+      const exams = document.querySelectorAll('#examCbGroup input:checked');
+      if (exams.length === 0) { alert('Please select at least one exam.'); return false; }
+    }
+    if (step === 4) {
+      if (selectedPlan === -1) { alert('Please select a listing plan.'); return false; }
+      if (!document.getElementById('terms1').checked || !document.getElementById('terms2').checked || !document.getElementById('terms3').checked) {
+        alert('Please agree to all terms before submitting.'); return false;
+      }
+    }
+    return true;
+  }
+
+  // Checkbox toggle
+  function toggleCb(item) {
+    item.classList.toggle('selected');
+    const cb = item.querySelector('input[type="checkbox"]');
+    cb.checked = !cb.checked;
+  }
+
+  // Radio toggle
+  function toggleRb(item, groupId) {
+    document.querySelectorAll('#' + groupId + ' .radio-item').forEach(r => {
+      r.classList.remove('selected');
+      r.querySelector('input').checked = false;
+    });
+    item.classList.add('selected');
+    item.querySelector('input').checked = true;
+  }
+
+  // Plan selection
+  function selectPlan(index) {
+    selectedPlan = index;
+    document.querySelectorAll('.plan-card').forEach((c,i) => {
+      c.classList.toggle('selected', i === index);
+    });
+  }
+
+  // Upload trigger
+  function triggerUpload(area) {
+    area.querySelector('input[type="file"]').click();
+  }
+
+  // Show uploaded filename
+  function showFile(input) {
+    const files = input.files;
+    if (!files.length) return;
+    const names = Array.from(files).map(f => f.name).join(', ');
+    const display = input.closest('.input-group').querySelector('.uploaded-file');
+    if (display) {
+      display.querySelector('.fname').textContent = names;
+      display.classList.add('show');
+    }
+  }
+
+  // Add course
+  let courseCount = 1;
+  function addCourse() {
+    courseCount++;
+    const div = document.createElement('div');
+    div.className = 'course-entry';
+    div.style.cssText = 'background:var(--bg);border-radius:14px;padding:1.2rem;border:1.5px solid var(--border);margin-bottom:1rem;';
+    div.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.8rem;">
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.88rem;color:var(--navy-dark);">📚 Course ${courseCount}</div>
+        <button onclick="this.closest('.course-entry').remove()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.1rem;">✕</button>
+      </div>
+      <div class="input-row">
+        <div class="input-group">
+          <label>Course Name</label>
+          <div class="input-wrap"><span class="input-icon">📖</span><input type="text" placeholder="e.g. NEET UG (2 Year)"/></div>
+        </div>
+        <div class="input-group">
+          <label>Duration</label>
+          <div class="input-wrap">
+            <span class="input-icon">⏱️</span>
+            <select><option>6 Months</option><option>1 Year</option><option>2 Years</option><option>3 Years</option></select>
+          </div>
+        </div>
+      </div>
+      <div class="input-row">
+        <div class="input-group">
+          <label>Fees (₹/year)</label>
+          <div class="input-wrap"><span class="input-icon">💰</span><input type="text" placeholder="e.g. 1,50,000"/></div>
+        </div>
+        <div class="input-group">
+          <label>Batch Size</label>
+          <div class="input-wrap"><span class="input-icon">👥</span><input type="text" placeholder="e.g. 30–50 students"/></div>
+        </div>
+      </div>`;
+    document.getElementById('coursesList').appendChild(div);
+  }
+
+  // Submit
+  function submitRegistration() {
+    if (!validateStep(4)) return;
+    const instName = document.getElementById('instName').value || 'Your Institute';
+    document.getElementById('successInstName').textContent = instName;
+    document.getElementById('successPlan').textContent = planNames[selectedPlan];
+    document.getElementById('successDate').textContent = new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});
+
+    // Hide last step
+    document.getElementById('step4').style.opacity = '0';
+    document.getElementById('step4').style.transform = 'translateY(-20px)';
+    document.getElementById('step4').style.transition = 'all 0.4s ease';
+
+    // Mark step 5 done in progress
+    document.getElementById('sc4').className = 'step-circle done';
+    document.getElementById('sc4').textContent = '✓';
+    document.getElementById('sl4').className = 'step-label done';
+
+    setTimeout(() => {
+      document.getElementById('step4').style.display = 'none';
+      document.getElementById('successScreen').classList.add('show');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 400);
+  }
+</script>
+</body>
+</html>
