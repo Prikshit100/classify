@@ -276,7 +276,7 @@
           <span class="slot-chip gold">🏆 Top Ranked</span>
         </div>
         <div class="slot-actions">
-          <button class="btn-slot-apply" onclick="location.href='apply.html'">Apply Now</button>
+          <button class="btn-slot-apply" onclick="location.href='login.html?redirect=apply.html'">Apply Now</button>
           <button class="btn-slot-remove" onclick="removeSlot(0)" title="Remove">✕</button>
         </div>
       </div>
@@ -299,7 +299,7 @@
           <span class="slot-chip gold">🏆 Top Ranked</span>
         </div>
         <div class="slot-actions">
-          <button class="btn-slot-apply" onclick="location.href='apply.html'">Apply Now</button>
+          <button class="btn-slot-apply" onclick="location.href='login.html?redirect=apply.html'">Apply Now</button>
           <button class="btn-slot-remove" onclick="removeSlot(1)" title="Remove">✕</button>
         </div>
       </div>
@@ -553,7 +553,7 @@
         <div class="sc-stat-item"><span class="sc-stat-lbl">Success Rate</span><span class="sc-stat-val">82%</span></div>
         <div class="sc-stat-item"><span class="sc-stat-lbl">Best For</span><span class="sc-stat-val">JEE</span></div>
       </div>
-      <button class="btn-apply-summary" onclick="location.href='apply.html'">🚀 Apply Now</button>
+      <button class="btn-apply-summary" onclick="location.href='login.html?redirect=apply.html'">🚀 Apply Now</button>
     </div>
     <div class="summary-card">
       <div class="sc-head">
@@ -566,7 +566,7 @@
         <div class="sc-stat-item"><span class="sc-stat-lbl">Success Rate</span><span class="sc-stat-val">79%</span></div>
         <div class="sc-stat-item"><span class="sc-stat-lbl">Best For</span><span class="sc-stat-val">NEET</span></div>
       </div>
-      <button class="btn-apply-summary" onclick="location.href='apply.html'">🚀 Apply Now</button>
+      <button class="btn-apply-summary" onclick="location.href='login.html?redirect=apply.html'">🚀 Apply Now</button>
     </div>
     <div class="summary-card" id="summary2" style="display:none;">
       <div class="sc-head">
@@ -579,7 +579,7 @@
         <div class="sc-stat-item"><span class="sc-stat-lbl">Success Rate</span><span class="sc-stat-val" id="sum2Success">—</span></div>
         <div class="sc-stat-item"><span class="sc-stat-lbl">Best For</span><span class="sc-stat-val" id="sum2Best">—</span></div>
       </div>
-      <button class="btn-apply-summary" onclick="location.href='apply.html'">🚀 Apply Now</button>
+      <button class="btn-apply-summary" onclick="location.href='login.html?redirect=apply.html'">🚀 Apply Now</button>
     </div>
   </div>
 
@@ -667,7 +667,7 @@
           ${data.exams.split(', ').map(e=>`<span class="slot-chip">${e}</span>`).join('')}
         </div>
         <div class="slot-actions">
-          <button class="btn-slot-apply" onclick="location.href='apply.html'">Apply Now</button>
+          <button class="btn-slot-apply" onclick="location.href='login.html?redirect=apply.html'">Apply Now</button>
           <button class="btn-slot-remove" onclick="removeSlot(${targetSlot})" title="Remove">✕</button>
         </div>
       </div>`;
@@ -716,6 +716,18 @@
       document.getElementById('summary2').style.display = 'none';
     }
   }
+</script>
+
+<script>
+  // AUTH GUARD — if not logged in, redirect to login
+  // We simulate login state using sessionStorage
+  // When backend is built, replace this with real auth check
+  (function() {
+    const isLoggedIn = sessionStorage.getItem('classify_logged_in');
+    if (!isLoggedIn) {
+      window.location.href = 'login.html?redirect=compare.html';
+    }
+  })();
 </script>
 </body>
 </html>
