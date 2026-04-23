@@ -332,6 +332,15 @@
       cursor: pointer; transition: all 0.2s;
     }
     .btn-apply:hover { background: var(--gold-dark); transform: scale(1.02); }
+    .btn-details { flex:1; background:var(--light); color:var(--navy); border:none; padding:0.72rem; border-radius:12px; font-family:'Syne',sans-serif; font-weight:700; font-size:0.85rem; cursor:pointer; transition:all 0.2s; }
+    .btn-details:hover { background:var(--border); }
+    .btn-details {
+      flex: 1; background: var(--light); color: var(--navy); border: none;
+      padding: 0.72rem; border-radius: 12px;
+      font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.85rem;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .btn-details:hover { background: var(--border); }
     .btn-save {
       width: 44px; background: var(--light); border: none; border-radius: 12px;
       font-size: 1.1rem; cursor: pointer;
@@ -483,9 +492,29 @@
       <div class="hero-badge">🎓 India's #1 Coaching Discovery Platform</div>
       <h1>Find the <em>Best Coaching</em><br/>Near You</h1>
       <p class="hero-sub">Compare institutes, read real student reviews, and choose the right coaching for JEE, NEET, NDA, CUET & more — all in one place.</p>
-      <div class="search-wrap">
-        <input type="text" placeholder="Search by coaching name, city or exam…"/>
-        <button>🔍 Search</button>
+      <div class="search-wrap" style="position:relative;">
+        <input type="text" id="heroSearchInput" placeholder="Search by coaching name, city or exam…" autocomplete="off" oninput="showSuggestions(this.value)" onkeydown="handleSearchKey(event)"/>
+        <button onclick="doSearch()">🔍 Search</button>
+
+        <!-- SUGGESTIONS DROPDOWN -->
+        <div id="searchSuggestions" style="
+          display:none; position:absolute; top:calc(100% + 8px); left:0; right:0;
+          background:white; border-radius:18px; border:1.5px solid var(--border);
+          box-shadow:0 16px 40px rgba(13,18,87,0.18); z-index:999; overflow:hidden;
+          animation:fadeUp 0.2s ease both;
+        ">
+          <!-- Recent searches -->
+          <div id="recentSection" style="padding:0.8rem 1rem 0.3rem;">
+            <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:0.5rem;">🕐 Recent Searches</div>
+            <div id="recentList"></div>
+          </div>
+          <!-- Results -->
+          <div id="suggestionList" style="padding:0.3rem 0.5rem 0.8rem;"></div>
+          <!-- View all -->
+          <div id="viewAllRow" style="display:none;padding:0.6rem 1rem;border-top:1px solid var(--border);text-align:center;">
+            <button onclick="doSearch()" style="background:none;border:none;color:var(--navy);font-family:'Syne',sans-serif;font-weight:700;font-size:0.84rem;cursor:pointer;">View all results →</button>
+          </div>
+        </div>
       </div>
       <div class="hero-tags">
         <span class="hero-tag active">All</span>
@@ -582,7 +611,8 @@
             <div><div class="cs-lbl">Success Rate</div><div class="cs-val">82%</div></div>
           </div>
           <div class="card-footer-btns">
-            <button class="btn-apply" onclick="location.href='login.html'">Apply Now</button>
+            <button class="btn-details" onclick="location.href='login.html?redirect=detail.html'">View Details</button>
+            <button class="btn-apply" onclick="location.href='login.html?redirect=apply.html'">Apply Now</button>
             <button class="btn-save">🔖</button>
           </div>
         </div>
@@ -613,7 +643,8 @@
             <div><div class="cs-lbl">Success Rate</div><div class="cs-val">79%</div></div>
           </div>
           <div class="card-footer-btns">
-            <button class="btn-apply" onclick="location.href='login.html'">Apply Now</button>
+            <button class="btn-details" onclick="location.href='login.html?redirect=detail.html'">View Details</button>
+            <button class="btn-apply" onclick="location.href='login.html?redirect=apply.html'">Apply Now</button>
             <button class="btn-save">🔖</button>
           </div>
         </div>
@@ -643,7 +674,8 @@
             <div><div class="cs-lbl">Success Rate</div><div class="cs-val">74%</div></div>
           </div>
           <div class="card-footer-btns">
-            <button class="btn-apply" onclick="location.href='login.html'">Apply Now</button>
+            <button class="btn-details" onclick="location.href='login.html?redirect=detail.html'">View Details</button>
+            <button class="btn-apply" onclick="location.href='login.html?redirect=apply.html'">Apply Now</button>
             <button class="btn-save">🔖</button>
           </div>
         </div>
@@ -826,11 +858,161 @@
   document.getElementById('ham').addEventListener('click', () => {
     document.getElementById('mobileMenu').classList.toggle('open');
   });
-  // Hero exam tags
+  // ── SEARCH DATA ──
+  const searchData = [
+    // Institutes
+    { type:'institute', icon:'🏫', name:'Allen Career Institute', meta:'Kota, Rajasthan · JEE · NEET', url:'login.html?redirect=detail.html' },
+    { type:'institute', icon:'⚗️', name:'Aakash Institute', meta:'Delhi, NCR · NEET · JEE', url:'login.html?redirect=detail.html' },
+    { type:'institute', icon:'📚', name:'Resonance Institute', meta:'Kota, Rajasthan · JEE · CUET', url:'login.html?redirect=detail.html' },
+    { type:'institute', icon:'🎖️', name:'Centurion Defence Academy', meta:'Lucknow, UP · NDA · CDS', url:'login.html?redirect=detail.html' },
+    { type:'institute', icon:'🔬', name:'FIITJEE Delhi', meta:'New Delhi · JEE · CUET', url:'login.html?redirect=detail.html' },
+    { type:'institute', icon:'🧬', name:'Narayana Institute', meta:'Hyderabad, TS · NEET · JEE', url:'login.html?redirect=detail.html' },
+    { type:'institute', icon:'🏛️', name:'Vajiram & Ravi IAS', meta:'New Delhi · UPSC', url:'login.html?redirect=detail.html' },
+    { type:'institute', icon:'🧪', name:'Sri Chaitanya Institute', meta:'Chennai, TN · NEET · JEE', url:'login.html?redirect=detail.html' },
+    // Exams
+    { type:'exam', icon:'⚛️', name:'JEE Main & Advanced', meta:'Engineering entrance · 180+ institutes', url:'institutes.html?exam=JEE' },
+    { type:'exam', icon:'🧬', name:'NEET UG', meta:'Medical entrance · 150+ institutes', url:'institutes.html?exam=NEET' },
+    { type:'exam', icon:'🎖️', name:'NDA / CDS', meta:'Defence entrance · 60+ institutes', url:'institutes.html?exam=NDA' },
+    { type:'exam', icon:'🎓', name:'CUET', meta:'University entrance · 90+ institutes', url:'institutes.html?exam=CUET' },
+    { type:'exam', icon:'🏛️', name:'UPSC CSE', meta:'Civil services · 70+ institutes', url:'institutes.html?exam=UPSC' },
+    { type:'exam', icon:'🏦', name:'Banking / SSC', meta:'Bank & govt exams · 40+ institutes', url:'institutes.html?exam=Banking' },
+    // Cities
+    { type:'city', icon:'📍', name:'Kota, Rajasthan', meta:'42+ institutes · JEE & NEET hub', url:'institutes.html?city=Kota' },
+    { type:'city', icon:'📍', name:'Delhi / NCR', meta:'85+ institutes · All exams', url:'institutes.html?city=Delhi' },
+    { type:'city', icon:'📍', name:'Mumbai', meta:'38+ institutes · JEE & Banking', url:'institutes.html?city=Mumbai' },
+    { type:'city', icon:'📍', name:'Hyderabad', meta:'29+ institutes · NEET & JEE', url:'institutes.html?city=Hyderabad' },
+    { type:'city', icon:'📍', name:'Lucknow', meta:'22+ institutes · NDA & UPSC', url:'institutes.html?city=Lucknow' },
+    { type:'city', icon:'📍', name:'Chennai', meta:'18+ institutes · NEET focus', url:'institutes.html?city=Chennai' },
+  ];
+
+  const typeLabels = { institute:'Institute', exam:'Exam', city:'City' };
+  const typeColors = { institute:'#e8eaf6', exam:'#FFF8E1', city:'#f0fdf4' };
+  const typeTextColors = { institute:'#1a237e', exam:'#b45309', city:'#15803d' };
+
+  let recentSearches = JSON.parse(localStorage.getItem('classify_recent') || '[]');
+
+  function showSuggestions(query) {
+    const box = document.getElementById('searchSuggestions');
+    const list = document.getElementById('suggestionList');
+    const recentSection = document.getElementById('recentSection');
+    const viewAll = document.getElementById('viewAllRow');
+    const recentList = document.getElementById('recentList');
+
+    box.style.display = 'block';
+    query = query.trim().toLowerCase();
+
+    // Show recent if no query
+    if (!query) {
+      recentSection.style.display = recentSearches.length ? 'block' : 'none';
+      recentList.innerHTML = recentSearches.slice(0,3).map(r => `
+        <div onclick="selectSuggestion('${r.name}','${r.url}')" style="display:flex;align-items:center;gap:0.7rem;padding:0.55rem 0.4rem;border-radius:10px;cursor:pointer;transition:background 0.15s;" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='none'">
+          <span style="font-size:1rem;opacity:0.5;">🕐</span>
+          <span style="font-size:0.86rem;font-weight:600;color:var(--text);">${r.name}</span>
+          <span style="font-size:0.74rem;color:var(--muted);margin-left:auto;">${r.meta}</span>
+        </div>`).join('');
+      list.innerHTML = `
+        <div style="padding:0.5rem 0.5rem 0.2rem;">
+          <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:0.5rem;">🔥 Popular Searches</div>
+          ${['JEE','NEET','NDA','Kota'].map(q=>`
+            <div onclick="selectQuick('${q}')" style="display:inline-flex;align-items:center;gap:0.3rem;background:var(--light);color:var(--navy);padding:0.3rem 0.8rem;border-radius:20px;font-size:0.8rem;font-weight:700;cursor:pointer;margin:0.2rem;transition:all 0.2s;" onmouseover="this.style.background='var(--border)'" onmouseout="this.style.background='var(--light)'">${q}</div>`).join('')}
+        </div>`;
+      viewAll.style.display = 'none';
+      return;
+    }
+
+    recentSection.style.display = 'none';
+
+    // Filter results
+    const results = searchData.filter(d =>
+      d.name.toLowerCase().includes(query) ||
+      d.meta.toLowerCase().includes(query) ||
+      d.type.toLowerCase().includes(query)
+    ).slice(0, 6);
+
+    if (!results.length) {
+      list.innerHTML = `<div style="text-align:center;padding:1.5rem;color:var(--muted);font-size:0.88rem;">😕 No results for "<strong>${query}</strong>"<br/><span style="font-size:0.8rem;">Try searching by exam, city or institute name</span></div>`;
+      viewAll.style.display = 'none';
+      return;
+    }
+
+    list.innerHTML = results.map(r => `
+      <div onclick="selectSuggestion('${r.name}','${r.url}')" style="display:flex;align-items:center;gap:0.9rem;padding:0.7rem 0.6rem;border-radius:12px;cursor:pointer;transition:background 0.15s;" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='none'">
+        <div style="width:38px;height:38px;border-radius:10px;background:${typeColors[r.type]};display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">${r.icon}</div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-weight:700;font-size:0.88rem;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${highlightMatch(r.name, query)}</div>
+          <div style="font-size:0.74rem;color:var(--muted);margin-top:0.1rem;">${r.meta}</div>
+        </div>
+        <span style="background:${typeColors[r.type]};color:${typeTextColors[r.type]};font-size:0.68rem;font-weight:700;padding:0.15rem 0.5rem;border-radius:8px;white-space:nowrap;flex-shrink:0;">${typeLabels[r.type]}</span>
+      </div>`).join('');
+
+    viewAll.style.display = 'block';
+  }
+
+  function highlightMatch(text, query) {
+    const idx = text.toLowerCase().indexOf(query.toLowerCase());
+    if (idx === -1) return text;
+    return text.slice(0,idx) + '<strong style="color:var(--navy);">' + text.slice(idx, idx+query.length) + '</strong>' + text.slice(idx+query.length);
+  }
+
+  function selectSuggestion(name, url) {
+    document.getElementById('heroSearchInput').value = name;
+    hideSuggestions();
+    saveRecent(name, url);
+    window.location.href = url;
+  }
+
+  function selectQuick(q) {
+    document.getElementById('heroSearchInput').value = q;
+    showSuggestions(q);
+  }
+
+  function saveRecent(name, url) {
+    const item = searchData.find(d => d.name === name);
+    if (!item) return;
+    recentSearches = recentSearches.filter(r => r.name !== name);
+    recentSearches.unshift({ name, url, meta: item.meta });
+    if (recentSearches.length > 5) recentSearches.pop();
+    localStorage.setItem('classify_recent', JSON.stringify(recentSearches));
+  }
+
+  function doSearch() {
+    const q = document.getElementById('heroSearchInput').value.trim();
+    hideSuggestions();
+    if (q) {
+      saveRecent(q, 'institutes.html?search=' + encodeURIComponent(q));
+      window.location.href = 'institutes.html?search=' + encodeURIComponent(q);
+    } else {
+      window.location.href = 'institutes.html';
+    }
+  }
+
+  function handleSearchKey(e) {
+    if (e.key === 'Enter') doSearch();
+    if (e.key === 'Escape') hideSuggestions();
+  }
+
+  function hideSuggestions() {
+    document.getElementById('searchSuggestions').style.display = 'none';
+  }
+
+  // Hide on outside click
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.search-wrap')) hideSuggestions();
+  });
+
+  // Hero exam tags — filter search
   document.querySelectorAll('.hero-tag').forEach(t => {
     t.addEventListener('click', () => {
       document.querySelectorAll('.hero-tag').forEach(x => x.classList.remove('active'));
       t.classList.add('active');
+      const exam = t.textContent.trim();
+      if (exam !== 'All') {
+        document.getElementById('heroSearchInput').value = exam;
+        showSuggestions(exam);
+      } else {
+        document.getElementById('heroSearchInput').value = '';
+        hideSuggestions();
+      }
     });
   });
   // Filter buttons
