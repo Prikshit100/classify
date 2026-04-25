@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Classify – Privacy Policy</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy:#1a237e; --navy-dark:#0d1257; --navy-mid:#283593;
+      --gold:#FFC107; --gold-dark:#f9a825; --gold-pale:#FFF8E1;
+      --white:#ffffff; --bg:#f4f5ff; --border:#dde0f5;
+      --text:#0d1257; --muted:#6b7280; --light:#e8eaf6;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family:'Nunito',sans-serif; background:var(--bg); color:var(--text); overflow-x:hidden; }
+
+    /* NAVBAR */
+    nav { position:sticky; top:0; z-index:999; background:var(--navy-dark); height:66px; display:flex; align-items:center; padding:0 2rem; justify-content:space-between; box-shadow:0 2px 24px rgba(13,18,87,0.45); }
+    .logo { font-family:'Syne',sans-serif; font-weight:800; font-size:1.65rem; color:var(--white); text-decoration:none; }
+    .logo span { color:var(--gold); }
+    .nav-center { display:flex; gap:2.2rem; list-style:none; }
+    .nav-center a { color:rgba(255,255,255,0.78); text-decoration:none; font-size:0.95rem; font-weight:600; transition:color 0.2s; }
+    .nav-center a:hover { color:var(--gold); }
+    .nav-right { display:flex; gap:0.8rem; align-items:center; }
+    .btn-ghost { background:transparent; border:2px solid rgba(255,255,255,0.3); color:white; padding:0.42rem 1.1rem; border-radius:25px; font-family:'Syne',sans-serif; font-weight:700; font-size:0.85rem; cursor:pointer; transition:all 0.2s; text-decoration:none; }
+    .btn-ghost:hover { border-color:var(--gold); color:var(--gold); }
+    .btn-gold { background:var(--gold); border:none; color:var(--navy-dark); padding:0.48rem 1.2rem; border-radius:25px; font-family:'Syne',sans-serif; font-weight:800; font-size:0.85rem; cursor:pointer; transition:all 0.2s; text-decoration:none; }
+    .btn-gold:hover { background:var(--gold-dark); }
+    .hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; background:none; border:none; padding:4px; }
+    .hamburger span { width:24px; height:2.5px; background:white; border-radius:3px; display:block; }
+    .mobile-menu { display:none; flex-direction:column; background:var(--navy-dark); padding:1rem 2rem 1.5rem; gap:1rem; border-top:1px solid rgba(255,255,255,0.1); }
+    .mobile-menu a { color:rgba(255,255,255,0.8); text-decoration:none; font-weight:600; font-size:1rem; padding:0.4rem 0; border-bottom:1px solid rgba(255,255,255,0.07); }
+    .mobile-menu.open { display:flex; }
+
+    /* HERO */
+    .hero { background:linear-gradient(140deg,var(--navy-dark) 0%,var(--navy) 60%,#1e3a8a 100%); padding:4rem 2rem; position:relative; overflow:hidden; text-align:center; }
+    .hero::before { content:''; position:absolute; top:-80px; right:-80px; width:360px; height:360px; border-radius:50%; background:radial-gradient(circle,rgba(255,193,7,0.1) 0%,transparent 65%); pointer-events:none; }
+    .hero-dots { position:absolute; inset:0; background-image:radial-gradient(rgba(255,255,255,0.05) 1px,transparent 1px); background-size:28px 28px; pointer-events:none; }
+    .hero-inner { max-width:700px; margin:0 auto; position:relative; z-index:1; animation:fadeUp 0.6s ease both; }
+    .hero-badge { display:inline-flex; align-items:center; gap:0.4rem; background:rgba(255,193,7,0.14); border:1px solid rgba(255,193,7,0.3); color:var(--gold); padding:0.3rem 0.9rem; border-radius:20px; font-size:0.76rem; font-weight:700; letter-spacing:0.8px; text-transform:uppercase; margin-bottom:1.2rem; }
+    .hero h1 { font-family:'Syne',sans-serif; font-size:clamp(1.8rem,4vw,2.8rem); font-weight:800; color:white; margin-bottom:0.8rem; }
+    .hero h1 em { font-style:normal; color:var(--gold); }
+    .hero-meta { display:flex; align-items:center; justify-content:center; gap:1.5rem; flex-wrap:wrap; margin-top:1.2rem; }
+    .hero-meta span { font-size:0.82rem; color:rgba(255,255,255,0.55); display:flex; align-items:center; gap:0.3rem; }
+
+    /* MAIN LAYOUT */
+    .main-wrap { max-width:1100px; margin:3rem auto; padding:0 2rem 5rem; display:grid; grid-template-columns:260px 1fr; gap:2.5rem; align-items:start; }
+
+    /* TABLE OF CONTENTS */
+    .toc { position:sticky; top:86px; background:white; border-radius:20px; border:1.5px solid var(--border); overflow:hidden; animation:fadeUp 0.5s ease both; }
+    .toc-header { background:linear-gradient(135deg,var(--navy-dark),var(--navy)); padding:1rem 1.2rem; }
+    .toc-header h3 { font-family:'Syne',sans-serif; font-weight:800; font-size:0.9rem; color:white; }
+    .toc-list { padding:0.8rem; }
+    .toc-item { display:block; padding:0.55rem 0.8rem; border-radius:10px; font-size:0.83rem; font-weight:600; color:var(--muted); text-decoration:none; transition:all 0.2s; margin-bottom:0.2rem; }
+    .toc-item:hover, .toc-item.active { background:var(--light); color:var(--navy); }
+    .toc-item.active { font-weight:700; border-left:3px solid var(--gold); padding-left:0.6rem; }
+    .toc-num { font-size:0.72rem; color:var(--gold-dark); font-weight:800; margin-right:0.3rem; }
+
+    /* CONTENT */
+    .content { animation:fadeUp 0.5s 0.1s ease both; }
+
+    /* LAST UPDATED BANNER */
+    .updated-banner { background:var(--gold-pale); border:1.5px solid rgba(255,193,7,0.3); border-radius:14px; padding:1rem 1.3rem; display:flex; align-items:center; gap:0.8rem; margin-bottom:2rem; }
+    .ub-icon { font-size:1.3rem; flex-shrink:0; }
+    .ub-text { font-size:0.84rem; color:#b45309; line-height:1.5; }
+    .ub-text strong { color:#92400e; }
+
+    /* POLICY SECTIONS */
+    .policy-section { background:white; border-radius:20px; border:1.5px solid var(--border); padding:2rem; margin-bottom:1.5rem; transition:box-shadow 0.2s; }
+    .policy-section:hover { box-shadow:0 8px 24px rgba(26,35,126,0.07); }
+
+    .ps-header { display:flex; align-items:center; gap:0.9rem; margin-bottom:1.3rem; padding-bottom:1.2rem; border-bottom:1.5px solid var(--border); }
+    .ps-icon { width:46px; height:46px; border-radius:14px; background:var(--light); display:flex; align-items:center; justify-content:center; font-size:1.3rem; flex-shrink:0; }
+    .ps-num { font-size:0.72rem; font-weight:800; color:var(--gold-dark); letter-spacing:0.5px; }
+    .ps-title { font-family:'Syne',sans-serif; font-weight:800; font-size:1.1rem; color:var(--navy-dark); }
+
+    .ps-body p { font-size:0.92rem; color:#374151; line-height:1.85; margin-bottom:1rem; }
+    .ps-body p:last-child { margin-bottom:0; }
+
+    .ps-body h4 { font-family:'Syne',sans-serif; font-weight:700; font-size:0.92rem; color:var(--navy-dark); margin:1.2rem 0 0.5rem; }
+
+    /* LISTS */
+    .policy-list { list-style:none; display:flex; flex-direction:column; gap:0.5rem; margin:0.8rem 0; }
+    .policy-list li { display:flex; align-items:flex-start; gap:0.7rem; font-size:0.9rem; color:#374151; line-height:1.65; }
+    .policy-list li::before { content:'✅'; font-size:0.8rem; flex-shrink:0; margin-top:0.15rem; }
+    .policy-list.cross li::before { content:'❌'; }
+    .policy-list.dot li::before { content:'•'; color:var(--gold-dark); font-size:1.1rem; font-weight:800; }
+
+    /* HIGHLIGHT BOX */
+    .highlight-box { border-radius:14px; padding:1.1rem 1.3rem; margin:1rem 0; font-size:0.88rem; line-height:1.65; }
+    .highlight-box.blue { background:var(--light); border-left:4px solid var(--navy); color:var(--navy-dark); }
+    .highlight-box.gold { background:var(--gold-pale); border-left:4px solid var(--gold-dark); color:#92400e; }
+    .highlight-box.green { background:#f0fdf4; border-left:4px solid #22c55e; color:#15803d; }
+    .highlight-box.red { background:#fff5f5; border-left:4px solid #ef4444; color:#991b1b; }
+
+    /* DATA TABLE */
+    .data-table { width:100%; border-collapse:collapse; margin:1rem 0; font-size:0.86rem; }
+    .data-table th { background:var(--navy-dark); color:white; padding:0.75rem 1rem; text-align:left; font-family:'Syne',sans-serif; font-weight:700; font-size:0.82rem; }
+    .data-table th:first-child { border-radius:10px 0 0 0; }
+    .data-table th:last-child { border-radius:0 10px 0 0; }
+    .data-table td { padding:0.75rem 1rem; border-bottom:1px solid var(--border); color:#374151; vertical-align:top; }
+    .data-table tr:last-child td { border-bottom:none; }
+    .data-table tr:hover td { background:var(--bg); }
+
+    /* CONTACT CARD */
+    .contact-card { background:linear-gradient(135deg,var(--navy-dark),var(--navy)); border-radius:18px; padding:1.5rem; margin-top:1rem; }
+    .contact-card h4 { font-family:'Syne',sans-serif; font-weight:700; color:white; margin-bottom:0.5rem; }
+    .contact-card p { font-size:0.84rem; color:rgba(255,255,255,0.6); margin-bottom:1rem; line-height:1.6; }
+    .contact-row-pp { display:flex; align-items:center; gap:0.7rem; padding:0.5rem 0; border-bottom:1px solid rgba(255,255,255,0.1); }
+    .contact-row-pp:last-child { border-bottom:none; }
+    .cr-icon { width:32px; height:32px; border-radius:8px; background:rgba(255,193,7,0.2); display:flex; align-items:center; justify-content:center; font-size:0.9rem; flex-shrink:0; }
+    .cr-val { font-size:0.84rem; color:rgba(255,255,255,0.8); font-weight:600; }
+
+    /* FOOTER */
+    footer { background:var(--navy-dark); padding:3rem 2rem 1.5rem; }
+    .footer-inner { max-width:1100px; margin:0 auto; }
+    .footer-grid { display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:2.5rem; margin-bottom:2rem; }
+    .footer-logo { font-family:'Syne',sans-serif; font-weight:800; font-size:1.5rem; color:white; text-decoration:none; display:block; margin-bottom:0.8rem; }
+    .footer-logo span { color:var(--gold); }
+    .footer-desc { font-size:0.84rem; color:rgba(255,255,255,0.5); line-height:1.7; max-width:220px; }
+    .footer-col h4 { font-family:'Syne',sans-serif; font-weight:700; color:white; font-size:0.9rem; margin-bottom:1rem; }
+    .footer-col ul { list-style:none; }
+    .footer-col ul li { margin-bottom:0.5rem; }
+    .footer-col ul li a { color:rgba(255,255,255,0.5); text-decoration:none; font-size:0.84rem; transition:color 0.2s; }
+    .footer-col ul li a:hover { color:var(--gold); }
+    .footer-bottom { border-top:1px solid rgba(255,255,255,0.08); padding-top:1.2rem; display:flex; justify-content:space-between; font-size:0.8rem; color:rgba(255,255,255,0.4); flex-wrap:wrap; gap:0.5rem; }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+    /* RESPONSIVE */
+    @media(max-width:900px){
+      .main-wrap { grid-template-columns:1fr; }
+      .toc { position:static; }
+      .nav-center,.nav-right { display:none; }
+      .hamburger { display:flex; }
+      .footer-grid { grid-template-columns:1fr 1fr; }
+    }
+    @media(max-width:560px){
+      .footer-grid { grid-template-columns:1fr; }
+      .data-table { font-size:0.78rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <a href="index.html" class="logo">Classi<span>fy</span></a>
+  <ul class="nav-center">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="institutes.html">Institutes</a></li>
+    <li><a href="compare.html">Compare</a></li>
+    <li><a href="about.html">About</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="login.html" class="btn-ghost">Log In</a>
+    <a href="login.html" class="btn-gold">Sign Up Free</a>
+  </div>
+  <button class="hamburger" id="ham"><span></span><span></span><span></span></button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html">Home</a>
+  <a href="institutes.html">Institutes</a>
+  <a href="compare.html">Compare</a>
+  <a href="about.html">About</a>
+  <a href="login.html">Log In</a>
+  <a href="login.html">Sign Up →</a>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-dots"></div>
+  <div class="hero-inner">
+    <div class="hero-badge">🔒 Legal</div>
+    <h1>Privacy <em>Policy</em></h1>
+    <p style="color:rgba(255,255,255,0.65);font-size:0.95rem;line-height:1.7;">We take your privacy seriously. This policy explains what data we collect, why we collect it, and how we protect it.</p>
+    <div class="hero-meta">
+      <span>📅 Last Updated: April 25, 2025</span>
+      <span>📄 Version 1.0</span>
+      <span>🌐 Applicable in India</span>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main-wrap">
+
+  <!-- TABLE OF CONTENTS -->
+  <aside class="toc">
+    <div class="toc-header"><h3>📋 Table of Contents</h3></div>
+    <div class="toc-list">
+      <a href="#s1" class="toc-item active"><span class="toc-num">01</span>Introduction</a>
+      <a href="#s2" class="toc-item"><span class="toc-num">02</span>Data We Collect</a>
+      <a href="#s3" class="toc-item"><span class="toc-num">03</span>How We Use Data</a>
+      <a href="#s4" class="toc-item"><span class="toc-num">04</span>Data Sharing</a>
+      <a href="#s5" class="toc-item"><span class="toc-num">05</span>Cookies</a>
+      <a href="#s6" class="toc-item"><span class="toc-num">06</span>Data Security</a>
+      <a href="#s7" class="toc-item"><span class="toc-num">07</span>Your Rights</a>
+      <a href="#s8" class="toc-item"><span class="toc-num">08</span>Children's Privacy</a>
+      <a href="#s9" class="toc-item"><span class="toc-num">09</span>Third Party Links</a>
+      <a href="#s10" class="toc-item"><span class="toc-num">10</span>Policy Changes</a>
+      <a href="#s11" class="toc-item"><span class="toc-num">11</span>Contact Us</a>
+    </div>
+  </aside>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- UPDATED BANNER -->
+    <div class="updated-banner">
+      <div class="ub-icon">ℹ️</div>
+      <div class="ub-text">This Privacy Policy was last updated on <strong>April 25, 2025</strong>. By using Classify, you agree to the terms described below. If you have any questions, <a href="contact.html" style="color:#92400e;font-weight:700;">contact us</a>.</div>
+    </div>
+
+    <!-- S1: INTRODUCTION -->
+    <div class="policy-section" id="s1">
+      <div class="ps-header">
+        <div class="ps-icon">👋</div>
+        <div><div class="ps-num">SECTION 01</div><div class="ps-title">Introduction</div></div>
+      </div>
+      <div class="ps-body">
+        <p>Welcome to <strong>Classify</strong> ("we", "our", or "us"). Classify is an online platform that helps students discover, compare, and apply to coaching institutes across India for competitive exams like JEE, NEET, NDA, CUET, UPSC and more.</p>
+        <p>This Privacy Policy explains how we collect, use, share and protect information about you when you use our website at <strong>classify.in</strong> and related services (collectively, the "Platform").</p>
+        <p>By accessing or using Classify, you agree to this Privacy Policy. If you do not agree, please do not use our Platform.</p>
+        <div class="highlight-box blue">
+          <strong>📌 Key Principle:</strong> Classify is completely free for students. We earn from coaching institutes — not from selling your personal data. Your data is only used to improve your experience and connect you with the right coaching.
+        </div>
+      </div>
+    </div>
+
+    <!-- S2: DATA WE COLLECT -->
+    <div class="policy-section" id="s2">
+      <div class="ps-header">
+        <div class="ps-icon">📊</div>
+        <div><div class="ps-num">SECTION 02</div><div class="ps-title">Data We Collect</div></div>
+      </div>
+      <div class="ps-body">
+        <h4>2.1 — Information You Provide</h4>
+        <p>When you create an account or use our services, we may collect:</p>
+        <ul class="policy-list">
+          <li>Full name, email address and phone number</li>
+          <li>Date of birth and gender</li>
+          <li>City and state of residence</li>
+          <li>Target exam (JEE, NEET, NDA etc.) and target year</li>
+          <li>Current class / education details</li>
+          <li>Application form data when you apply to an institute</li>
+          <li>Reviews and ratings you submit for institutes</li>
+          <li>Messages you send us through the contact form</li>
+        </ul>
+
+        <h4>2.2 — Information We Collect Automatically</h4>
+        <p>When you use the Platform, we automatically collect:</p>
+        <ul class="policy-list">
+          <li>IP address and device information (browser, OS)</li>
+          <li>Pages you visit and time spent on each page</li>
+          <li>Search queries you enter on Classify</li>
+          <li>Institutes you view, save or apply to</li>
+          <li>Cookies and similar tracking technologies</li>
+        </ul>
+
+        <h4>2.3 — Information from Institutes</h4>
+        <p>If you are a <strong>coaching institute</strong> registering on Classify, we collect:</p>
+        <ul class="policy-list">
+          <li>Institute name, address and contact details</li>
+          <li>Registration certificates and legal documents</li>
+          <li>Course details, fees and faculty information</li>
+          <li>Bank account / payment details for commission settlements</li>
+        </ul>
+
+        <div class="highlight-box gold">
+          <strong>📌 Note:</strong> We only collect information that is necessary to provide our services. We do not collect sensitive data like caste, religion, financial details (except for institutes) or Aadhaar numbers.
+        </div>
+      </div>
+    </div>
+
+    <!-- S3: HOW WE USE DATA -->
+    <div class="policy-section" id="s3">
+      <div class="ps-header">
+        <div class="ps-icon">⚙️</div>
+        <div><div class="ps-num">SECTION 03</div><div class="ps-title">How We Use Your Data</div></div>
+      </div>
+      <div class="ps-body">
+        <p>We use the data we collect for the following purposes:</p>
+        <table class="data-table">
+          <thead>
+            <tr><th>Purpose</th><th>Data Used</th><th>Legal Basis</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Create and manage your account</td><td>Name, email, phone</td><td>Contract</td></tr>
+            <tr><td>Process your institute application</td><td>All application data</td><td>Contract</td></tr>
+            <tr><td>Send you relevant institute recommendations</td><td>Exam, city, preferences</td><td>Legitimate Interest</td></tr>
+            <tr><td>Improve search and discovery features</td><td>Search queries, clicks</td><td>Legitimate Interest</td></tr>
+            <tr><td>Send updates, notifications and alerts</td><td>Email, phone</td><td>Consent</td></tr>
+            <tr><td>Prevent fraud and ensure security</td><td>IP, device info</td><td>Legal Obligation</td></tr>
+            <tr><td>Comply with legal requirements</td><td>As required by law</td><td>Legal Obligation</td></tr>
+          </tbody>
+        </table>
+        <div class="highlight-box green">
+          <strong>✅ We do NOT use your data for:</strong> Selling to advertisers, profiling for political purposes, or any purpose not listed above.
+        </div>
+      </div>
+    </div>
+
+    <!-- S4: DATA SHARING -->
+    <div class="policy-section" id="s4">
+      <div class="ps-header">
+        <div class="ps-icon">🤝</div>
+        <div><div class="ps-num">SECTION 04</div><div class="ps-title">Data Sharing & Disclosure</div></div>
+      </div>
+      <div class="ps-body">
+        <h4>4.1 — With Coaching Institutes</h4>
+        <p>When you submit an application through Classify, we share your application details with the specific institute you applied to. This is the core service we provide. The institute receives:</p>
+        <ul class="policy-list">
+          <li>Your name, phone number and email address</li>
+          <li>Your exam preference and target year</li>
+          <li>Your course preference and message</li>
+        </ul>
+        <p>We do <strong>not</strong> share your data with institutes you have not applied to.</p>
+
+        <h4>4.2 — With Service Providers</h4>
+        <p>We may share data with trusted third-party providers who help us operate the platform:</p>
+        <ul class="policy-list">
+          <li>Cloud storage and hosting providers (e.g. AWS, Google Cloud)</li>
+          <li>Email and SMS service providers for notifications</li>
+          <li>Analytics providers to understand platform usage</li>
+          <li>Payment processors for institute subscription payments</li>
+        </ul>
+
+        <h4>4.3 — Legal Requirements</h4>
+        <p>We may disclose your data if required by law, court order, or government authority.</p>
+
+        <div class="highlight-box red">
+          <strong>❌ We will NEVER:</strong> Sell your personal data to advertisers, data brokers or any third party for commercial gain. Your data is not a product.
+        </div>
+      </div>
+    </div>
+
+    <!-- S5: COOKIES -->
+    <div class="policy-section" id="s5">
+      <div class="ps-header">
+        <div class="ps-icon">🍪</div>
+        <div><div class="ps-num">SECTION 05</div><div class="ps-title">Cookies & Tracking</div></div>
+      </div>
+      <div class="ps-body">
+        <p>Classify uses cookies and similar technologies to improve your experience. Here's what we use:</p>
+        <table class="data-table">
+          <thead><tr><th>Cookie Type</th><th>Purpose</th><th>Duration</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Essential</strong></td><td>Keep you logged in, remember your session</td><td>Session</td></tr>
+            <tr><td><strong>Preference</strong></td><td>Remember your search filters and saved institutes</td><td>30 days</td></tr>
+            <tr><td><strong>Analytics</strong></td><td>Understand how users navigate the platform</td><td>90 days</td></tr>
+            <tr><td><strong>Performance</strong></td><td>Track page load times and errors</td><td>7 days</td></tr>
+          </tbody>
+        </table>
+        <p>You can disable cookies in your browser settings, but this may affect some features of the Platform.</p>
+        <div class="highlight-box blue">
+          <strong>📌 Note:</strong> We do not use advertising cookies or allow third-party ad networks to track you on Classify. Our platform is completely ad-free.
+        </div>
+      </div>
+    </div>
+
+    <!-- S6: DATA SECURITY -->
+    <div class="policy-section" id="s6">
+      <div class="ps-header">
+        <div class="ps-icon">🔒</div>
+        <div><div class="ps-num">SECTION 06</div><div class="ps-title">Data Security</div></div>
+      </div>
+      <div class="ps-body">
+        <p>We take the security of your personal data seriously. We implement the following measures:</p>
+        <ul class="policy-list">
+          <li>All data is transmitted using <strong>SSL/TLS encryption</strong> (HTTPS)</li>
+          <li>Passwords are stored using <strong>bcrypt hashing</strong> — never in plain text</li>
+          <li>Our servers are hosted on <strong>ISO-certified cloud infrastructure</strong></li>
+          <li>Regular security audits and vulnerability assessments</li>
+          <li>Access to personal data is restricted to authorised staff only</li>
+          <li>Automatic logout after periods of inactivity</li>
+        </ul>
+        <div class="highlight-box gold">
+          <strong>⚠️ Important:</strong> While we take every precaution, no system is 100% secure. If you suspect your account has been compromised, please contact us immediately at <strong>security@classify.in</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- S7: YOUR RIGHTS -->
+    <div class="policy-section" id="s7">
+      <div class="ps-header">
+        <div class="ps-icon">⚖️</div>
+        <div><div class="ps-num">SECTION 07</div><div class="ps-title">Your Rights</div></div>
+      </div>
+      <div class="ps-body">
+        <p>As a user of Classify, you have the following rights over your personal data:</p>
+        <ul class="policy-list">
+          <li><strong>Right to Access</strong> — You can request a copy of all data we hold about you</li>
+          <li><strong>Right to Correction</strong> — You can update incorrect or outdated information</li>
+          <li><strong>Right to Deletion</strong> — You can request deletion of your account and data</li>
+          <li><strong>Right to Portability</strong> — You can request your data in a machine-readable format</li>
+          <li><strong>Right to Withdraw Consent</strong> — You can opt out of marketing communications at any time</li>
+          <li><strong>Right to Object</strong> — You can object to how we process your data</li>
+        </ul>
+        <p>To exercise any of these rights, please contact us at <strong>privacy@classify.in</strong>. We will respond within <strong>30 days</strong>.</p>
+        <div class="highlight-box green">
+          <strong>✅ How to delete your account:</strong> Log in → Go to Account Settings → Click "Delete My Account". All your data will be permanently deleted within 30 days.
+        </div>
+      </div>
+    </div>
+
+    <!-- S8: CHILDREN -->
+    <div class="policy-section" id="s8">
+      <div class="ps-header">
+        <div class="ps-icon">👶</div>
+        <div><div class="ps-num">SECTION 08</div><div class="ps-title">Children's Privacy</div></div>
+      </div>
+      <div class="ps-body">
+        <p>Classify is designed for students preparing for competitive exams. Many of our users may be under 18 years of age.</p>
+        <p>We do not knowingly collect personal data from children under <strong>13 years of age</strong>. If you are under 13, please do not use Classify without a parent or guardian.</p>
+        <p>If a parent or guardian believes their child under 13 has provided personal data to Classify, please contact us at <strong>privacy@classify.in</strong> and we will promptly delete the data.</p>
+        <p>For users between 13–18 years, we encourage parental guidance when using the platform and applying to coaching institutes.</p>
+      </div>
+    </div>
+
+    <!-- S9: THIRD PARTY -->
+    <div class="policy-section" id="s9">
+      <div class="ps-header">
+        <div class="ps-icon">🔗</div>
+        <div><div class="ps-num">SECTION 09</div><div class="ps-title">Third Party Links</div></div>
+      </div>
+      <div class="ps-body">
+        <p>Classify may contain links to external websites — such as coaching institute websites, YouTube channels, or other resources. These links are provided for your convenience.</p>
+        <p>We are <strong>not responsible</strong> for the privacy practices or content of these external websites. We encourage you to read the privacy policy of any website you visit through a link on Classify.</p>
+        <ul class="policy-list dot">
+          <li>Clicking on an institute's website link will take you to their site, governed by their own privacy policy</li>
+          <li>Social media share buttons may send data to those platforms</li>
+          <li>Embedded YouTube videos are subject to Google's privacy policy</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- S10: POLICY CHANGES -->
+    <div class="policy-section" id="s10">
+      <div class="ps-header">
+        <div class="ps-icon">🔄</div>
+        <div><div class="ps-num">SECTION 10</div><div class="ps-title">Changes to This Policy</div></div>
+      </div>
+      <div class="ps-body">
+        <p>We may update this Privacy Policy from time to time as our services evolve or legal requirements change. When we make significant changes, we will:</p>
+        <ul class="policy-list">
+          <li>Update the "Last Updated" date at the top of this page</li>
+          <li>Send an email notification to all registered users</li>
+          <li>Show a banner on the platform informing you of the update</li>
+        </ul>
+        <p>Your continued use of Classify after any changes constitutes your acceptance of the updated Privacy Policy.</p>
+        <div class="highlight-box blue">
+          <strong>📌 Tip:</strong> We recommend bookmarking this page and checking it periodically. We will never make changes that reduce your rights without giving you adequate notice.
+        </div>
+      </div>
+    </div>
+
+    <!-- S11: CONTACT -->
+    <div class="policy-section" id="s11">
+      <div class="ps-header">
+        <div class="ps-icon">📬</div>
+        <div><div class="ps-num">SECTION 11</div><div class="ps-title">Contact Us</div></div>
+      </div>
+      <div class="ps-body">
+        <p>If you have any questions, concerns or requests regarding this Privacy Policy or your personal data, please reach out to us:</p>
+        <div class="contact-card">
+          <h4>🔒 Privacy & Data Protection Team</h4>
+          <p>We aim to respond to all privacy-related queries within 30 working days.</p>
+          <div class="contact-row-pp">
+            <div class="cr-icon">📧</div>
+            <div class="cr-val">privacy@classify.in</div>
+          </div>
+          <div class="contact-row-pp">
+            <div class="cr-icon">📞</div>
+            <div class="cr-val">1800-000-1234 (Mon–Sat, 9AM–6PM)</div>
+          </div>
+          <div class="contact-row-pp">
+            <div class="cr-icon">📍</div>
+            <div class="cr-val">123, EdTech Hub, Connaught Place, New Delhi – 110001</div>
+          </div>
+          <div class="contact-row-pp">
+            <div class="cr-icon">🌐</div>
+            <div class="cr-val">classify.in/privacy</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div>
+        <a href="index.html" class="footer-logo">Classi<span>fy</span></a>
+        <p class="footer-desc">India's most trusted platform to discover, compare and choose the right coaching institute.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Platform</h4>
+        <ul>
+          <li><a href="institutes.html">Browse Institutes</a></li>
+          <li><a href="compare.html">Compare</a></li>
+          <li><a href="register-institute.html">List Your Institute</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="privacy.html">Privacy Policy</a></li>
+          <li><a href="#">Terms of Use</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="privacy.html">Privacy Policy</a></li>
+          <li><a href="#">Terms of Use</a></li>
+          <li><a href="#">Cookie Policy</a></li>
+          <li><a href="#">Refund Policy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 Classify. All rights reserved.</span>
+      <span>Made with ❤️ for Indian students</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Hamburger
+  document.getElementById('ham').addEventListener('click',()=>document.getElementById('mobileMenu').classList.toggle('open'));
+
+  // Active TOC on scroll
+  const sections = ['s1','s2','s3','s4','s5','s6','s7','s8','s9','s10','s11'];
+  window.addEventListener('scroll', () => {
+    let current = 's1';
+    sections.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (el.getBoundingClientRect().top <= 120) current = id;
+    });
+    document.querySelectorAll('.toc-item').forEach(item => {
+      item.classList.toggle('active', item.getAttribute('href') === '#' + current);
+    });
+  });
+</script>
+</body>
+</html>
